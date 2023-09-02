@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Requirement;
+use App\Models\RequirementDetail;
 
 class RequirementController extends Controller
 {
@@ -13,6 +14,14 @@ class RequirementController extends Controller
     public function index()
     {
         $requirements = Requirement::all();
+        $requirements->transform(function ($item) {
+            $requirementDetails = RequirementDetail::getQuery()
+            ->where('requirement_id', $item->id)
+            ->select('requirement_details.name')
+            ->get();
+            $item->requirementDetails = $requirementDetails; // Count the related data items
+            return $item;
+        });
         return response()->json($requirements);
     }
 
@@ -47,7 +56,6 @@ class RequirementController extends Controller
     {
         $requirement = Requirement::findOrFail($id);
         $requirement->update($request->all());
-        return response()->json($requirement);
     }
 
     // Remove the specified requirement from storage.
@@ -57,4 +65,5 @@ class RequirementController extends Controller
         $requirement->delete();
         return response()->json(null, 204);
     }
+
 }
