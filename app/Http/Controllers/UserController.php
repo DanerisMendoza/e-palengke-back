@@ -39,7 +39,7 @@ class UserController extends Controller
      */
     public function create(Request $request)
     {
-
+        // You can optionally implement this if needed.
     }
 
     /**
@@ -81,11 +81,7 @@ class UserController extends Controller
      */
     public function edit(string $id)
     {
-        // $user = User::find($id);
-        // if (!$user) {
-        //     return 'User not found';
-        // }
-        // return view('users.edit', ['user' => $user]);
+        // You can optionally implement this if needed.
     }
 
     /**
@@ -109,10 +105,8 @@ class UserController extends Controller
         if (!$user) {
             return 'User not found';
         }
-    
         // Delete the user
         $user->delete();
-    
         return 'success';
     }
 }
