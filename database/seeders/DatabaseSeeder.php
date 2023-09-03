@@ -6,6 +6,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Database\Seeders\User;
 use Database\Seeders\UserRole;
+use Database\Seeders\StoreTypeDetail;
 
 class DatabaseSeeder extends Seeder
 {
@@ -19,6 +20,7 @@ class DatabaseSeeder extends Seeder
             UserRole::class,
             Requirement::class,
             RequirementDetail::class,
+            StoreTypeDetail::class,
         ]);
 
         // \App\Models\User::factory(10)->create();
