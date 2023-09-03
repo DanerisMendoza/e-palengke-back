@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RequirementController;
+use App\Http\Controllers\RequirementDetailController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,3 +26,4 @@ Route::resource('users', UserController::class);
 Route::post('loginUser', [UserController::class, 'loginUser']);
 //requirement api
 Route::resource('requirements', RequirementController::class);
+Route::resource('RequirementDetail', RequirementDetailController::class);

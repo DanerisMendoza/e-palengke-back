@@ -16,8 +16,9 @@ class RequirementController extends Controller
         $requirements = Requirement::all();
         $requirements->transform(function ($item) {
             $requirementDetails = RequirementDetail::getQuery()
+            ->whereNull('deleted_at')
             ->where('requirement_id', $item->id)
-            ->select('requirement_details.name')
+            ->select('requirement_details.name','requirement_details.id')
             ->get();
             $item->requirementDetails = $requirementDetails; // Count the related data items
             return $item;
