@@ -36,4 +36,4 @@ Route::resource('StoreTypeDetail', StoreTypeDetailController::class);
 Route::resource('UserRole', UserRoleController::class);
 //applicant credential api
 Route::resource('ApplicantCrendential', ApplicantCredentialController::class);
-Route::post('/SubmitApplicantCrendential', [UserRoleController::class, 'SubmitApplicantCrendential']);
+Route::post('/SubmitApplicantCrendential', [ApplicantCredentialController::class, 'SubmitApplicantCrendential']);
