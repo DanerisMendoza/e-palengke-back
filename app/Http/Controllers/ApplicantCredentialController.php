@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\ApplicantCrendential;
+use App\Models\ApplicantCredential;
 
 class ApplicantCredentialController extends Controller
 {

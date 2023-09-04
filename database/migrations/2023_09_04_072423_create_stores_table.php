@@ -11,13 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('applicant_credentials', function (Blueprint $table) {
+        Schema::create('stores', function (Blueprint $table) {
             $table->id();
-            $table->integer('requirement_details_id');
             $table->integer('user_role_id');
-            $table->string('picture_path');
+            $table->string('name');
+            $table->string('status')->nullable();
+            $table->string('latitude');
+            $table->string('longitude');
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
@@ -26,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('applicant_credentials');
+        Schema::dropIfExists('stores');
     }
 };

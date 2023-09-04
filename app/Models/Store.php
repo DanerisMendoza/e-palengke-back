@@ -4,9 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\softDeletes;
 
-class ApplicantCrendential extends Model
+class Store extends Model
 {
-    use HasFactory,softDeletes;
+    use HasFactory;
 }
