@@ -5,6 +5,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RequirementController;
 use App\Http\Controllers\RequirementDetailController;
+use App\Http\Controllers\StoreTypeDetailController;
+use App\Http\Controllers\UserRoleController;
+use App\Http\Controllers\ApplicantCredentialController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,3 +30,10 @@ Route::post('loginUser', [UserController::class, 'loginUser']);
 //requirement api
 Route::resource('requirements', RequirementController::class);
 Route::resource('RequirementDetail', RequirementDetailController::class);
+//store api
+Route::resource('StoreTypeDetail', StoreTypeDetailController::class);
+//user role api
+Route::resource('UserRole', UserRoleController::class);
+//applicant credential api
+Route::resource('ApplicantCrendential', ApplicantCredentialController::class);
+Route::post('/SubmitApplicantCrendential', [UserRoleController::class, 'SubmitApplicantCrendential']);

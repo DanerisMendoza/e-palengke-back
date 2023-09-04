@@ -1,8 +1,9 @@
-<?php
+<?php 
 
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\StoreTypeDetail;
 
 class StoreTypeDetailController extends Controller
 {
@@ -11,7 +12,9 @@ class StoreTypeDetailController extends Controller
      */
     public function index()
     {
-        //
+        // Retrieve a list of StoreTypeDetails from the database and return it as JSON
+        $storeTypeDetails = StoreTypeDetail::all();
+        return response()->json($storeTypeDetails);
     }
 
     /**
@@ -19,7 +22,8 @@ class StoreTypeDetailController extends Controller
      */
     public function create()
     {
-        //
+        // This method should display a form for creating a new StoreTypeDetail
+        // You can return a view here to render the form.
     }
 
     /**
@@ -27,7 +31,21 @@ class StoreTypeDetailController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // Validate the incoming request data
+        $request->validate([
+            'name' => 'required|string|max:255',
+            // Add more validation rules for your fields
+        ]);
+
+        // Create a new StoreTypeDetail instance and save it to the database
+        $storeTypeDetail = new StoreTypeDetail([
+            'name' => $request->input('name'),
+            // Map other request data to your model fields
+        ]);
+        $storeTypeDetail->save();
+
+        // Return a response, e.g., a success message or a redirect
+        return response()->json(['message' => 'StoreTypeDetail created successfully']);
     }
 
     /**
@@ -35,7 +53,16 @@ class StoreTypeDetailController extends Controller
      */
     public function show(string $id)
     {
-        //
+        // Retrieve a specific StoreTypeDetail by ID from the database
+        $storeTypeDetail = StoreTypeDetail::find($id);
+
+        if (!$storeTypeDetail) {
+            // Return a response if the resource was not found
+            return response()->json(['message' => 'StoreTypeDetail not found'], 404);
+        }
+
+        // Return the StoreTypeDetail as JSON
+        return response()->json($storeTypeDetail);
     }
 
     /**
@@ -43,7 +70,8 @@ class StoreTypeDetailController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        // This method should display a form for editing an existing StoreTypeDetail
+        // You can return a view here to render the edit form.
     }
 
     /**
@@ -51,7 +79,27 @@ class StoreTypeDetailController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        // Validate the incoming request data
+        $request->validate([
+            'name' => 'required|string|max:255',
+            // Add more validation rules for your fields
+        ]);
+
+        // Retrieve the StoreTypeDetail by ID from the database
+        $storeTypeDetail = StoreTypeDetail::find($id);
+
+        if (!$storeTypeDetail) {
+            // Return a response if the resource was not found
+            return response()->json(['message' => 'StoreTypeDetail not found'], 404);
+        }
+
+        // Update the fields of the StoreTypeDetail instance
+        $storeTypeDetail->name = $request->input('name');
+        // Map other request data to your model fields
+        $storeTypeDetail->save();
+
+        // Return a response, e.g., a success message or a redirect
+        return response()->json(['message' => 'StoreTypeDetail updated successfully']);
     }
 
     /**
@@ -59,6 +107,18 @@ class StoreTypeDetailController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        // Retrieve the StoreTypeDetail by ID from the database
+        $storeTypeDetail = StoreTypeDetail::find($id);
+
+        if (!$storeTypeDetail) {
+            // Return a response if the resource was not found
+            return response()->json(['message' => 'StoreTypeDetail not found'], 404);
+        }
+
+        // Delete the StoreTypeDetail
+        $storeTypeDetail->delete();
+
+        // Return a response, e.g., a success message or a redirect
+        return response()->json(['message' => 'StoreTypeDetail deleted successfully']);
     }
 }
