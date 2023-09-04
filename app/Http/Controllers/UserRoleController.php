@@ -8,6 +8,7 @@ use App\Models\Store;
 use App\Models\StoreType;
 use App\Models\ApplicantCredential;
 use App\Models\RequirementDetail;
+use App\Models\DeliveryLocation;
 use Illuminate\Support\Facades\DB;
 
 
@@ -15,6 +16,7 @@ class UserRoleController extends Controller
 {
 
     public function SubmitApplicantCrendential(Request $request){
+        \Log::info($request);
         $applicantCredential = json_decode($request['applicantCredential'], true);
         $userRole = new UserRole();
         $userRole->user_id  = $request['user_id' ];
@@ -24,6 +26,7 @@ class UserRoleController extends Controller
         $userRole->save();
     
 
+        $requirement_id = null;
         if ($request->hasFile('files')) {
             $i=0;
             foreach ($request->file('files') as $file) {
@@ -38,25 +41,35 @@ class UserRoleController extends Controller
                     'user_role_id' => $userRole->id,
                     'picture_path' => '/applicant_credentials/' . $name,
                 ]);
-                
+                $requirement_id =  $applicantCredential[$i]['id'];
                 $i++;
             }
         }
-        $store = new Store();
-        $store->user_role_id = $userRole->user_id;
-        $store->name = $request['storeName'];
-        $store->latitude = $request['latitude'];
-        $store->longitude = $request['longitude'];
-        $store->save();
 
-        foreach (json_decode($request->storeType, true) as $id) {
-            $storeType = new StoreType();
-            $storeType->store_id = $store->id;
-            $storeType->store_type_details_id = $id;
-            $storeType->save();
+        //seller
+        if($requirement_id === 1){
+            $store = new Store();
+            $store->user_role_id = $userRole->user_id;
+            $store->name = $request['storeName'];
+            $store->latitude = $request['latitude'];
+            $store->longitude = $request['longitude'];
+            $store->save();
+
+            foreach (json_decode($request->storeType, true) as $id) {
+                $storeType = new StoreType();
+                $storeType->store_id = $store->id;
+                $storeType->store_type_details_id = $id;
+                $storeType->save();
+            }
         }
-    
-
+        // delivery
+        else if($requirement_id === 2){
+            $DeliveryLocation = new DeliveryLocation();
+            $DeliveryLocation->user_role_id = $userRole->user_id;
+            $DeliveryLocation->latitude = $request['latitude'];
+            $DeliveryLocation->longitude = $request['longitude'];
+            $DeliveryLocation->save();
+        }
     }
 
     /**
