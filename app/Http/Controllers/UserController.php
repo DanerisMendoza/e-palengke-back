@@ -6,24 +6,75 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
+use Laravel\Passport\Client;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
 
-    public function loginUser(Request $request){
-        $credentials = $request->only('username', 'password');
+    // public function loginUser(Request $request){
+    //     $credentials = $request->only('username', 'password');
 
-        $user = User::where('username', $credentials['username'])->first();
+    //     $user = User::where('username', $credentials['username'])->first();
     
-        if ($user && Hash::check($credentials['password'], $user->password)) {
-            // Authentication successful
-            return response()->json($user);
-        } else {
-            // Authentication failed
-            return 'invalid';
-        }
+    //     if ($user && Hash::check($credentials['password'], $user->password)) {
+    //         // Authentication successful
+    //         return response()->json($user);
+    //     } else {
+    //         // Authentication failed
+    //         return 'invalid';
+    //     }
      
+    // }
+
+    public function login(Request $request)
+    {
+        $credentials = $request->validate([
+            'username'    => 'required',
+            'password' => 'required'
+        ]);
+        $login = DB::table('users')
+            ->select('password', 'username')
+            ->where('username', $request->username)
+            ->first();
+        if ($login) {
+            if (Hash::check($request->password, $login->password)) {
+                $passwordGrantClient = Client::where('password_client', 1)->first();
+                $response = [
+                    'grant_type'    => 'password',
+                    'client_id'     => $passwordGrantClient->id,
+                    'client_secret' => $passwordGrantClient->secret,
+                    'username'      => $request->username,
+                    'password'      => $request->password,
+                    'scope'         => '*',
+                ];
+                if (Auth::attempt($credentials)) {
+                    $tokenrequest = Request::create('/oauth/token', 'post', $response);
+                    // return app()->handle($tokenrequest);
+                    return Auth::user();
+                }
+            } else {
+                return response()->json(
+                    [
+                        'message' => 'Incorrect Password.'
+                    ],
+                    Response::HTTP_NOT_ACCEPTABLE
+                );
+            }
+        } else {
+            return response()->json(
+                [
+                    'message' => 'The username were incorrect'
+                ],
+                Response::HTTP_NOT_ACCEPTABLE
+            );
+        }
     }
+
+    
+
+
 
     /**
      * Display a listing of the resource.

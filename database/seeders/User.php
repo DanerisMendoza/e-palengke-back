@@ -19,14 +19,19 @@ class User extends Seeder
         $user->password = Hash::make('admin');
         $user->save();
 
-        $user2 = new UserModel();
-        $user2->username = 'seller1';
-        $user2->password = Hash::make('123');
-        $user2->save();
+        $user = new UserModel();
+        $user->username = 'seller1';
+        $user->password = Hash::make('123');
+        $user->save();
      
-        $user2 = new UserModel();
-        $user2->username = 'delivery1';
-        $user2->password = Hash::make('123');
-        $user2->save();
+        $user = new UserModel();
+        $user->username = 'delivery1';
+        $user->password = Hash::make('123');
+        $user->save();
+
+        $user = new UserModel();
+        $user->username = 'customer1';
+        $user->password = Hash::make('123');
+        $user->save();
     }
 }

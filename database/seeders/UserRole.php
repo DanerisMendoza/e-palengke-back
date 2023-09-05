@@ -21,12 +21,26 @@ class UserRole extends Seeder
         $userRole->status = "active";
         $userRole->save();
      
-        $userRole2 = new userRoleModel();
-        $userRole2->user_id = 2;
-        $userRole2->requirement_id = 1;
-        $userRole2->name = "seller";
-        $userRole2->status = "application-pending";
-        $userRole2->save();
+        $userRole = new userRoleModel();
+        $userRole->user_id = 2;
+        $userRole->requirement_id = 1;
+        $userRole->name = "seller";
+        $userRole->status = "application-pending";
+        $userRole->save();
+   
+        $userRole = new userRoleModel();
+        $userRole->user_id = 3;
+        $userRole->requirement_id = 2;
+        $userRole->name = "delivery";
+        $userRole->status = "application-pending";
+        $userRole->save();
+
+        $userRole = new userRoleModel();
+        $userRole->user_id = 4;
+        $userRole->requirement_id = 0;
+        $userRole->name = "customer";
+        $userRole->status = "active";
+        $userRole->save();
 
     }
 }
