@@ -20,31 +20,13 @@ use App\Http\Controllers\ApplicantCredentialController;
 |
 */
 
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
-
-// Route::middleware('auth:api')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
-
 Route::post('/login', [UserController::class, 'login']);
 
-// Route::middleware('auth:api')->get('/GET_USER_INFO', function (Request $request) {
-//     $user_info = $request->user();
-//     return $user_info;
-// });
-
-Route::middleware('auth:api')->get('/logout', function (Request $request) {
-    return $request->user()->token()->revoke();
-});
-
-
 Route::middleware('auth:api')->group(function () {
-
     //user api
     Route::resource('users', UserController::class);
-    // Route::post('loginUser', [UserController::class, 'loginUser']);
+    Route::post('/logout', [UserController::class, 'logout']);
+    Route::get('/getUserDetails', [UserController::class, 'getUserDetails']);
     //requirement api
     Route::resource('requirements', RequirementController::class);
     Route::resource('RequirementDetail', RequirementDetailController::class);
@@ -55,5 +37,4 @@ Route::middleware('auth:api')->group(function () {
     //applicant credential api
     Route::resource('ApplicantCrendential', ApplicantCredentialController::class);
     Route::post('/SubmitApplicantCrendential', [ApplicantCredentialController::class, 'SubmitApplicantCrendential']);
-
 });

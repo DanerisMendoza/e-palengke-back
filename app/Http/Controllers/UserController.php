@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\UserDetail;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
@@ -13,20 +14,21 @@ use Illuminate\Support\Facades\Auth;
 class UserController extends Controller
 {
 
-    // public function loginUser(Request $request){
-    //     $credentials = $request->only('username', 'password');
+    public function logout(Request $request){
+        $user = $request->user();
+        $user->token()->revoke();
+        return 'success';
+    }
 
-    //     $user = User::where('username', $credentials['username'])->first();
-    
-    //     if ($user && Hash::check($credentials['password'], $user->password)) {
-    //         // Authentication successful
-    //         return response()->json($user);
-    //     } else {
-    //         // Authentication failed
-    //         return 'invalid';
-    //     }
-     
-    // }
+    public function getUserDetails(){
+        $userId = Auth::user()->id;
+        $userDetail = DB::table('users')
+            ->join('user_details', 'users.id', '=', 'user_details.user_id')
+            ->where('users.id', '=', $userId)
+            ->select('users.username', 'user_details.*')
+            ->first();
+        return $userDetail;
+    }
 
     public function login(Request $request)
     {
@@ -51,8 +53,7 @@ class UserController extends Controller
                 ];
                 if (Auth::attempt($credentials)) {
                     $tokenrequest = Request::create('/oauth/token', 'post', $response);
-                    // return app()->handle($tokenrequest);
-                    return Auth::user();
+                    return app()->handle($tokenrequest);
                 }
             } else {
                 return response()->json(

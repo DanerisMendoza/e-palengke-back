@@ -101,6 +101,9 @@ return [
             'expire' => 60,
             'throttle' => 60,
         ],
+        'personal_access_token' => [
+            'lifetime' => 60 * 24 * 365, // 1 year in minutes
+        ],
     ],
 
     /*
