@@ -9,6 +9,9 @@ use Database\Seeders\UserRole;
 use Database\Seeders\StoreTypeDetail;
 use Database\Seeders\CustomerLocation;
 use Database\Seeders\UserDetail;
+use Database\Seeders\Access;
+use Database\Seeders\UserRoleDetail;
+use Database\Seeders\SideNav;
 
 class DatabaseSeeder extends Seeder
 {
@@ -25,6 +28,9 @@ class DatabaseSeeder extends Seeder
             StoreTypeDetail::class,
             CustomerLocation::class,
             UserDetail::class,
+            Access::class,
+            SideNav::class,
+            UserRoleDetail::class,
         ]);
 
         // \App\Models\User::factory(10)->create();

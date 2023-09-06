@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\UserDetail;
+use App\Models\UserRole;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
@@ -13,14 +14,57 @@ use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
+    public function authenticate(Request $request){
+        $user = $request->user();
+        $result = DB::table('users')
+        ->join('user_roles', 'user_roles.user_id', 'users.id')
+        ->join('user_role_details', 'user_role_details.id', 'user_roles.user_role_details_id')
+        ->join('accesses', 'accesses.user_role_details_id', 'user_roles.id')
+        ->join('side_navs', 'side_navs.id', 'accesses.side_nav_id')
+        ->where('user_roles.user_id', $user->id)
+        ->select('side_navs.*')
+        ->get();
+        return $result;
+    }
 
-    public function logout(Request $request){
+    public function GetSideNav(Request $request){
+        $user = $request->user();
+        $result = DB::table('users')
+        ->join('user_roles', 'user_roles.user_id', 'users.id')
+        ->join('user_role_details', 'user_role_details.id', 'user_roles.user_role_details_id')
+        ->join('accesses', 'accesses.user_role_details_id', 'user_roles.id')
+        ->join('side_navs', 'side_navs.id', 'accesses.side_nav_id')
+        ->where('user_roles.user_id', $user->id)
+        ->select('side_navs.*')
+        ->get();
+        return $result;
+    }
+
+    public function Register(Request $request){
+        \Log::info($request);
+        $User = new User();
+        $User->username = $request->input('username');
+        $User->password = bcrypt($request->input('password'));
+        $User->save();
+        $UserDetail = new UserDetail();
+        $UserDetail->user_id = $User->id;
+        $UserDetail->name = $request->input('name');
+        $UserDetail->gender = $request->input('gender');
+        $UserDetail->age = $request->input('age');
+        $UserDetail->phone_number = $request->input('phone_number');
+        $UserDetail->address = $request->input('address');
+        $UserDetail->email = $request->input('email');
+        $UserDetail->save();
+        return 'success';
+    }
+
+    public function Logout(Request $request){
         $user = $request->user();
         $user->token()->revoke();
         return 'success';
     }
 
-    public function getUserDetails(){
+    public function GetUserDetails(){
         $userId = Auth::user()->id;
         $userDetail = DB::table('users')
             ->join('user_details', 'users.id', '=', 'user_details.user_id')
@@ -30,7 +74,7 @@ class UserController extends Controller
         return $userDetail;
     }
 
-    public function login(Request $request)
+    public function Login(Request $request)
     {
         $credentials = $request->validate([
             'username'    => 'required',
@@ -52,15 +96,22 @@ class UserController extends Controller
                     'scope'         => '*',
                 ];
                 if (Auth::attempt($credentials)) {
-                    $tokenrequest = Request::create('/oauth/token', 'post', $response);
-                    return app()->handle($tokenrequest);
+                    $tokenRequest = Request::create('/oauth/token', 'post', $response);
+                    $response = app()->handle($tokenRequest);
+                    $data = json_decode($response->getContent());
+                    $token = $data->access_token;
+                    $responseContent = [
+                        'message' => 'success',
+                        'token' => $token,
+                    ];
+                    return response()->json($responseContent, 200);
                 }
-            } else {
+            } 
+            else {
                 return response()->json(
                     [
                         'message' => 'Incorrect Password.'
                     ],
-                    Response::HTTP_NOT_ACCEPTABLE
                 );
             }
         } else {
@@ -68,7 +119,6 @@ class UserController extends Controller
                 [
                     'message' => 'The username were incorrect'
                 ],
-                Response::HTTP_NOT_ACCEPTABLE
             );
         }
     }

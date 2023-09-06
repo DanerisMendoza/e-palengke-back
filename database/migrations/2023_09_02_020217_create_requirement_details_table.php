@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('requirement_details', function (Blueprint $table) {
             $table->id();
-            $table->integer('requirement_id');
             $table->string('name');
             $table->timestamps();
             $table->softDeletes();

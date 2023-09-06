@@ -11,11 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('applicant_credentials', function (Blueprint $table) {
+        Schema::create('side_navs', function (Blueprint $table) {
             $table->id();
-            $table->integer('requirement_details_id');
-            $table->integer('user_role_details_id');
-            $table->string('picture_path');
+            $table->string('name');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -26,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('applicant_credentials');
+        Schema::dropIfExists('side_navs');
     }
 };

@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('requirements', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->integer('user_role_details_id');
+            $table->integer('requirement_details_id');
             $table->timestamps();
             $table->softDeletes();
         });

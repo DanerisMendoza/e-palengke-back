@@ -20,13 +20,16 @@ use App\Http\Controllers\ApplicantCredentialController;
 |
 */
 
-Route::post('/login', [UserController::class, 'login']);
+Route::post('/Login', [UserController::class, 'Login']);
+Route::post('/Register', [UserController::class, 'Register']);
 
 Route::middleware('auth:api')->group(function () {
     //user api
-    Route::resource('users', UserController::class);
-    Route::post('/logout', [UserController::class, 'logout']);
-    Route::get('/getUserDetails', [UserController::class, 'getUserDetails']);
+    Route::resource('User', UserController::class);
+    Route::get('/Logout', [UserController::class, 'Logout']);
+    Route::get('/GetUserDetails', [UserController::class, 'GetUserDetails']);
+    Route::get('/GetSideNav', [UserController::class, 'GetSideNav']);
+    Route::get('/authenticate', [UserController::class, 'authenticate']);
     //requirement api
     Route::resource('requirements', RequirementController::class);
     Route::resource('RequirementDetail', RequirementDetailController::class);
