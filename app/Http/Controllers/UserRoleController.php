@@ -12,11 +12,7 @@ use Illuminate\Support\Facades\DB;
 class UserRoleController extends Controller
 {
 
-  
 
-    /**
-     * Display a listing of the resource.
-     */
     
     public function index()
     {
@@ -29,9 +25,10 @@ class UserRoleController extends Controller
             $RequirementDetails = Requirement::getQuery()
             ->join('requirement_details', 'requirement_details.id', 'requirements.requirement_details_id')
             ->where('requirements.user_role_details_id', $item->id)
+            ->whereNull('requirements.deleted_at') 
             ->select(
-                'requirements.id as requirement_id',
                 'requirement_details.name as requirement_detailsName',
+                'requirement_details.id as requirement_details_id',
             )
             ->get();
             $item->RequirementDetails = $RequirementDetails; 
@@ -39,6 +36,7 @@ class UserRoleController extends Controller
             $Accesses = Access::getQuery()
             ->join('side_navs', 'side_navs.id', 'accesses.side_nav_id')
             ->where('accesses.user_role_details_id', $item->id)
+            ->whereNull('accesses.deleted_at') 
             ->select(
                 'side_navs.id as sidenav_id',
                 'side_navs.name as side_nav_name',
@@ -102,27 +100,21 @@ class UserRoleController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        // Validate the incoming request data
-        $request->validate([
-            'name' => 'required|string|max:255',
-            // Add more validation rules as needed
-        ]);
-
-        // Retrieve the user role by ID from the database
-        $userRole = UserRole::find($id);
-
-        if (!$userRole) {
-            // Return a response if the user role was not found
-            return response()->json(['message' => 'User role not found'], 404);
+        Access::where('user_role_details_id', $id)->delete();
+        Requirement::where('user_role_details_id', $id)->delete();
+        for($i=0; $i<sizeof($request['selected_sidenav']); $i++){
+            $access = new Access();
+            $access->user_role_details_id = $id;
+            $access->side_nav_id = $request['selected_sidenav'][$i];
+            $access->save();
         }
-
-        // Update the fields of the user role instance
-        $userRole->name = $request->input('name');
-        // Map other request data to your model fields
-        $userRole->save();
-
-        // Return a success response
-        return response()->json(['message' => 'User role updated successfully']);
+        for($i=0; $i<sizeof($request['selected_requirement']); $i++){
+            $requirement = new Requirement();
+            $requirement->user_role_details_id = $id;
+            $requirement->requirement_details_id = $request['selected_requirement'][$i];
+            $requirement->save();
+        }
+        return 'success';
     }
 
     /**

@@ -38,6 +38,7 @@ Route::middleware('auth:api')->group(function () {
     Route::resource('StoreTypeDetail', StoreTypeDetailController::class);
     //user role api
     Route::resource('UserRole', UserRoleController::class);
+    Route::resource('updateUserRole', UserRoleController::class);
     //applicant credential api
     Route::resource('ApplicantCrendential', ApplicantCredentialController::class);
     Route::post('/SubmitApplicantCrendential', [ApplicantCredentialController::class, 'SubmitApplicantCrendential']);
