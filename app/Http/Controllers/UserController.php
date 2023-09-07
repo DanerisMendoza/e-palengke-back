@@ -19,8 +19,8 @@ class UserController extends Controller
         $result = DB::table('users')
         ->join('user_roles', 'user_roles.user_id', 'users.id')
         ->join('user_role_details', 'user_role_details.id', 'user_roles.user_role_details_id')
-        ->join('accesses', 'accesses.user_role_details_id', 'user_roles.id')
-        ->join('side_navs', 'side_navs.id', 'accesses.side_nav_id')
+        ->join('accesses', 'accesses.user_role_details_id', 'user_role_details.id')
+        ->rightJoin('side_navs', 'side_navs.id', 'accesses.side_nav_id')
         ->where('user_roles.user_id', $user->id)
         ->select('side_navs.*')
         ->get();
@@ -32,10 +32,11 @@ class UserController extends Controller
         $result = DB::table('users')
         ->join('user_roles', 'user_roles.user_id', 'users.id')
         ->join('user_role_details', 'user_role_details.id', 'user_roles.user_role_details_id')
-        ->join('accesses', 'accesses.user_role_details_id', 'user_roles.id')
-        ->join('side_navs', 'side_navs.id', 'accesses.side_nav_id')
+        ->join('accesses', 'accesses.user_role_details_id', 'user_role_details.id')
+        ->rightJoin('side_navs', 'side_navs.id', 'accesses.side_nav_id')
         ->where('user_roles.user_id', $user->id)
         ->select('side_navs.*')
+        ->distinct('side_navs.name') 
         ->get();
         return $result;
     }

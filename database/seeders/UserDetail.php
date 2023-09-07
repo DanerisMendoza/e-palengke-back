@@ -20,7 +20,7 @@ class UserDetail extends Seeder
         $UserDetail->age = 20;
         $UserDetail->phone_number = "00000000000";
         $UserDetail->address = "admin_address";
-        $UserDetail->email = "emailSample@gmail.com";
+        $UserDetail->email = "admin_emailSample@gmail.com";
         $UserDetail->save();
 
         $UserDetail = new UserDetailModel();
@@ -30,7 +30,7 @@ class UserDetail extends Seeder
         $UserDetail->age = 20;
         $UserDetail->phone_number = "00000000000";
         $UserDetail->address = "seller_address1";
-        $UserDetail->email = "emailSample@gmail.com";
+        $UserDetail->email = "seller_emailSample@gmail.com";
         $UserDetail->save();
  
         $UserDetail = new UserDetailModel();
@@ -40,7 +40,7 @@ class UserDetail extends Seeder
         $UserDetail->age = 20;
         $UserDetail->phone_number = "00000000000";
         $UserDetail->address = "delivery_address1";
-        $UserDetail->email = "emailSample@gmail.com";
+        $UserDetail->email = "delivery_emailSample@gmail.com";
         $UserDetail->save();
  
         $UserDetail = new UserDetailModel();
@@ -50,7 +50,17 @@ class UserDetail extends Seeder
         $UserDetail->age = 20;
         $UserDetail->phone_number = "00000000000";
         $UserDetail->address = "customer_address1";
-        $UserDetail->email = "emailSample@gmail.com";
+        $UserDetail->email = "customer_emailSample@gmail.com";
+        $UserDetail->save();
+    
+        $UserDetail = new UserDetailModel();
+        $UserDetail->user_id = 5;
+        $UserDetail->name = "DEVELOPMENT NAME";
+        $UserDetail->gender = "m";
+        $UserDetail->age = 20;
+        $UserDetail->phone_number = "00000000000";
+        $UserDetail->address = "DEVELOPMENT_address1";
+        $UserDetail->email = "DEVELOPMENTemailSample@gmail.com";
         $UserDetail->save();
     }
 }
