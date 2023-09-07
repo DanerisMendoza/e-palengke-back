@@ -12,11 +12,8 @@ class RequirementDetailController extends Controller
      */
     public function index()
     {
-        // Retrieve all RequirementDetails
         $requirementDetails = RequirementDetail::all();
-        
-        // Return JSON response
-        return response()->json($requirementDetails);
+        return $requirementDetails;
     }
 
     /**

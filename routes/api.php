@@ -29,6 +29,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/Logout', [UserController::class, 'Logout']);
     Route::get('/GetUserDetails', [UserController::class, 'GetUserDetails']);
     Route::get('/GetSideNav', [UserController::class, 'GetSideNav']);
+    Route::get('/GetAllSideNav', [UserController::class, 'GetAllSideNav']);
     Route::get('/authenticate', [UserController::class, 'authenticate']);
     //requirement api
     Route::resource('requirements', RequirementController::class);

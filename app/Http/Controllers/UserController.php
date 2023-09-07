@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\UserDetail;
 use App\Models\UserRole;
+use App\Models\SideNav;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
@@ -39,6 +40,11 @@ class UserController extends Controller
         ->distinct('side_navs.name') 
         ->get();
         return $result;
+    }
+
+    public function GetAllSideNav(Request $request){
+        $SideNav = SideNav::all();
+        return $SideNav;
     }
 
     public function Register(Request $request){

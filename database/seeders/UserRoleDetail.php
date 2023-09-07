@@ -14,22 +14,22 @@ class UserRoleDetail extends Seeder
     public function run(): void
     {
         $UserRoleDetail = new UserRoleDetailModel();
-        $UserRoleDetail->name = "admin";
+        $UserRoleDetail->name = "ADMIN";
         $UserRoleDetail->status = "active";
         $UserRoleDetail->save();
         
         $UserRoleDetail = new UserRoleDetailModel();
-        $UserRoleDetail->name = "customer";
+        $UserRoleDetail->name = "CUSTOMER";
         $UserRoleDetail->status = "active";
         $UserRoleDetail->save();
         
         $UserRoleDetail = new UserRoleDetailModel();
-        $UserRoleDetail->name = "seller";
+        $UserRoleDetail->name = "SELLER";
         $UserRoleDetail->status = "active";
         $UserRoleDetail->save();
         
         $UserRoleDetail = new UserRoleDetailModel();
-        $UserRoleDetail->name = "delivery";
+        $UserRoleDetail->name = "DELIVERY";
         $UserRoleDetail->status = "active";
         $UserRoleDetail->save();
         
