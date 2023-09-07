@@ -23,6 +23,7 @@ class UserController extends Controller
         ->join('accesses', 'accesses.user_role_details_id', 'user_role_details.id')
         ->rightJoin('side_navs', 'side_navs.id', 'accesses.side_nav_id')
         ->where('user_roles.user_id', $user->id)
+        ->whereNull('accesses.deleted_at') 
         ->select('side_navs.*')
         ->get();
         return $result;
@@ -36,6 +37,7 @@ class UserController extends Controller
         ->join('accesses', 'accesses.user_role_details_id', 'user_role_details.id')
         ->rightJoin('side_navs', 'side_navs.id', 'accesses.side_nav_id')
         ->where('user_roles.user_id', $user->id)
+        ->whereNull('accesses.deleted_at') 
         ->select('side_navs.*')
         ->distinct('side_navs.name') 
         ->get();
