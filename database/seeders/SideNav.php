@@ -13,30 +13,31 @@ class SideNav extends Seeder
      */
     public function run(): void
     {
+        //1
         $SideNav = new SideNavModel();
         $SideNav->name = 'Admin';
         $SideNav->save();
-
+        //2
         $SideNav = new SideNavModel();
         $SideNav->name = 'Application';
         $SideNav->save();
-
+        //3
         $SideNav = new SideNavModel();
         $SideNav->name = 'EndUser';
         $SideNav->save();
-
+        //4
         $SideNav = new SideNavModel();
         $SideNav->name = 'Login';
         $SideNav->save();
-
+        //5
         $SideNav = new SideNavModel();
         $SideNav->name = 'Registration';
         $SideNav->save();
-    
+        //6
         $SideNav = new SideNavModel();
         $SideNav->name = 'Requirement';
         $SideNav->save();
-
+        //7
         $SideNav = new SideNavModel();
         $SideNav->name = 'Store';
         $SideNav->save();
