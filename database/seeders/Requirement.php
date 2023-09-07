@@ -17,21 +17,26 @@ class Requirement extends Seeder
         $requirement = new RequirementModel();
         $requirement->user_role_details_id = 3;
         $requirement->requirement_details_id = 1;
+        $requirement->save();
 
         $requirement = new RequirementModel();
         $requirement->user_role_details_id = 3;
         $requirement->requirement_details_id = 2;
+        $requirement->save();
 
         $requirement = new RequirementModel();
         $requirement->user_role_details_id = 4;
         $requirement->requirement_details_id = 1;
+        $requirement->save();
 
         $requirement = new RequirementModel();
         $requirement->user_role_details_id = 4;
         $requirement->requirement_details_id = 2;
-   
+        $requirement->save();
+
         $requirement = new RequirementModel();
         $requirement->user_role_details_id = 4;
         $requirement->requirement_details_id = 3;
+        $requirement->save();
     }
 }

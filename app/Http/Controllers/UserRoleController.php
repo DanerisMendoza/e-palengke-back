@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\UserRole;
-
+use App\Models\RequirementDetail;
+use App\Models\Requirement;
+use App\Models\Access;
+use Illuminate\Support\Facades\DB;
 
 class UserRoleController extends Controller
 {
@@ -17,11 +20,34 @@ class UserRoleController extends Controller
     
     public function index()
     {
-        // Retrieve a list of user roles from the database
-        $userRoles = UserRole::all();
-
-        // Return the list of user roles as a JSON response
-        return response()->json($userRoles);
+        $userRoles = DB::table('user_roles')
+        ->join('user_role_details', 'user_role_details.id', 'user_roles.user_role_details_id')
+        ->distinct('user_roles.user_role_details_id') 
+        ->select('user_role_details.name','user_role_details.id')
+        ->get();
+        $userRoles->transform(function ($item) {
+            $RequirementDetails = Requirement::getQuery()
+            ->join('requirement_details', 'requirement_details.id', 'requirements.requirement_details_id')
+            ->where('requirements.user_role_details_id', $item->id)
+            ->select(
+                'requirements.id as requirement_id',
+                'requirement_details.name as requirement_detailsName',
+            )
+            ->get();
+            $item->RequirementDetails = $RequirementDetails; 
+            
+            $Accesses = Access::getQuery()
+            ->join('side_navs', 'side_navs.id', 'accesses.side_nav_id')
+            ->where('accesses.user_role_details_id', $item->id)
+            ->select(
+                'side_navs.id as sidenav_id',
+                'side_navs.name as side_nav_name',
+            )
+            ->get();
+            $item->Accesses = $Accesses; 
+            return $item;
+        });
+        return $userRoles;
     }
 
     /**

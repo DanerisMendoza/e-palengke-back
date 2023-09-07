@@ -9,5 +9,4 @@ use Illuminate\Database\Eloquent\softDeletes;
 class Requirement extends Model
 {
     use HasFactory,softDeletes;
-    protected $fillable = ['name'];
 }

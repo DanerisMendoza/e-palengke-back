@@ -12,6 +12,7 @@ use Database\Seeders\UserDetail;
 use Database\Seeders\Access;
 use Database\Seeders\UserRoleDetail;
 use Database\Seeders\SideNav;
+use Database\Seeders\Requirement;
 
 class DatabaseSeeder extends Seeder
 {
