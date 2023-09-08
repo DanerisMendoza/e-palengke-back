@@ -42,9 +42,9 @@ Route::middleware('auth:api')->group(function () {
     Route::resource('UserRole', UserRoleController::class);
     Route::resource('updateUserRole', UserRoleController::class);
     Route::get('/Get_UserRole_With_Accessess_And_Requirements', [UserRoleController::class, 'Get_UserRole_With_Accessess_And_Requirements']);
+    Route::post('/SubmitApplicantCrendential', [UserRoleController::class, 'SubmitApplicantCrendential']);
     //USER ROLE DETAIL API
     Route::resource('UserRoleDetail', UserRoleDetailController::class);
-    Route::post('/SubmitApplicantCrendential', [UserRoleDetailController::class, 'SubmitApplicantCrendential']);
     //APPLICANT CREDENTIAL API
     Route::resource('ApplicantCrendential', ApplicantCredentialController::class);
 });

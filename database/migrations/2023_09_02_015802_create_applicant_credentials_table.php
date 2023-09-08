@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('applicant_credentials', function (Blueprint $table) {
             $table->id();
             $table->integer('requirement_details_id');
-            $table->integer('user_role_details_id');
+            $table->integer('user_role_id');
             $table->string('picture_path');
             $table->timestamps();
             $table->softDeletes();
