@@ -4,18 +4,17 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\UserRoleDetail;
+use App\Models\UserRole;
 
 class UserRoleDetailController extends Controller
 {
     public function SubmitApplicantCrendential(Request $request){
         \Log::info($request);
         // $applicantCredential = json_decode($request['applicantCredential'], true);
-        // $userRole = new UserRole();
-        // $userRole->user_id  = $request['user_id' ];
-        // $userRole->name = $request['user_role_name'];
-        // $userRole->requirement_id = $request['requirement_id'];
-        // $userRole->status = $request['status'];
-        // $userRole->save();
+        // $UserRole = new UserRole();
+        // $UserRole->user_id  = $request->user()->id;
+        // $UserRole->user_role_details_id  = $request['user_role_deitals_id'];
+        // $UserRole->save();
     
 
         // $requirement_id = null;

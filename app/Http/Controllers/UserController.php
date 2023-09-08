@@ -31,6 +31,7 @@ class UserController extends Controller
 
     public function GetSideNav(Request $request){
         $user = $request->user();
+        \Log::info($user->id);
         $result = DB::table('users')
         ->join('user_roles', 'user_roles.user_id', 'users.id')
         ->join('user_role_details', 'user_role_details.id', 'user_roles.user_role_details_id')

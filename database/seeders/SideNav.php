@@ -27,23 +27,20 @@ class SideNav extends Seeder
         $SideNav->save();
         //4
         $SideNav = new SideNavModel();
-        $SideNav->name = 'Login';
+        $SideNav->name = 'RequirementDetail';
         $SideNav->save();
         //5
         $SideNav = new SideNavModel();
-        $SideNav->name = 'Registration';
+        $SideNav->name = 'Store';
         $SideNav->save();
         //6
         $SideNav = new SideNavModel();
-        $SideNav->name = 'RequirementDetail';
+        $SideNav->name = 'UserRole';
         $SideNav->save();
         //7
         $SideNav = new SideNavModel();
-        $SideNav->name = 'Store';
+        $SideNav->name = 'Delivery';
         $SideNav->save();
-        //8
-        $SideNav = new SideNavModel();
-        $SideNav->name = 'UserRole';
-        $SideNav->save();
+
     }
 }

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->integer('user_id');
             $table->integer('user_role_details_id');
+            $table->string('status');
             $table->timestamps();
             $table->softDeletes();
         });

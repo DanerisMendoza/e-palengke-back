@@ -15,22 +15,18 @@ class UserRoleDetail extends Seeder
     {
         $UserRoleDetail = new UserRoleDetailModel();
         $UserRoleDetail->name = "ADMIN";
-        $UserRoleDetail->status = "active";
         $UserRoleDetail->save();
         
         $UserRoleDetail = new UserRoleDetailModel();
         $UserRoleDetail->name = "CUSTOMER";
-        $UserRoleDetail->status = "active";
         $UserRoleDetail->save();
         
         $UserRoleDetail = new UserRoleDetailModel();
         $UserRoleDetail->name = "SELLER";
-        $UserRoleDetail->status = "active";
         $UserRoleDetail->save();
         
         $UserRoleDetail = new UserRoleDetailModel();
         $UserRoleDetail->name = "DELIVERY";
-        $UserRoleDetail->status = "active";
         $UserRoleDetail->save();
         
     }

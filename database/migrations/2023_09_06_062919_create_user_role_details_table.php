@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('user_role_details', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('status');
             $table->timestamps();
             $table->softDeletes();
         });
