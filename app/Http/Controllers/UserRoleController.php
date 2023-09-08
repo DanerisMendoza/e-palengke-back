@@ -16,6 +16,11 @@ class UserRoleController extends Controller
     
     public function index()
     {
+        $UserRole = UserRole::all();
+        return $UserRole;
+    }
+    public function Get_UserRole_With_Accessess_And_Requirements()
+    {
         $userRoles = DB::table('user_roles')
         ->join('user_role_details', 'user_role_details.id', 'user_roles.user_role_details_id')
         ->distinct('user_roles.user_role_details_id') 

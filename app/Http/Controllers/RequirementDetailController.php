@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\RequirementDetail;
+use App\Models\Requirement;
 
 class RequirementDetailController extends Controller
 {
@@ -50,6 +51,16 @@ class RequirementDetailController extends Controller
         
         // Return JSON response
         return response()->json($requirementDetails);
+    }
+    public function GET_REQUIREMENT_DETAIL_BY_USER_ROLE_DETAILS_ID(String $id)
+    {
+        $Requirement = Requirement::getQuery()
+        ->join('requirement_details', 'requirement_details.id', 'requirements.requirement_details_id')
+        ->where('user_role_details_id', $id)
+        ->whereNull('requirements.deleted_at')
+        ->select('requirement_details.*')
+        ->get();
+        return $Requirement;
     }
 
     /**
