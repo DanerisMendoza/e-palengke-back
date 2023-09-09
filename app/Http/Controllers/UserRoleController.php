@@ -72,6 +72,13 @@ class UserRoleController extends Controller
         }
     }
 
+    public function GetApplicants(){
+        $UserRole = UserRole::where('status', 'pending')
+        ->join('user_details', 'user_details.user_id', 'user_roles.user_id')
+        ->get();
+        return $UserRole;        
+    }
+
     
     public function Get_UserRole_With_Accessess_And_Requirements()
     {
@@ -109,8 +116,8 @@ class UserRoleController extends Controller
     
     public function index()
     {
-        $UserRole = UserRole::all();
-        return $UserRole;
+        $UserRole = UserRole::where('status', '!=', 'active')->get();
+        return $UserRole;        
     }
 
     /**

@@ -43,6 +43,7 @@ Route::middleware('auth:api')->group(function () {
     Route::resource('updateUserRole', UserRoleController::class);
     Route::get('/Get_UserRole_With_Accessess_And_Requirements', [UserRoleController::class, 'Get_UserRole_With_Accessess_And_Requirements']);
     Route::post('/SubmitApplicantCrendential', [UserRoleController::class, 'SubmitApplicantCrendential']);
+    Route::get('/GetApplicants', [UserRoleController::class, 'GetApplicants']);
     //USER ROLE DETAIL API
     Route::resource('UserRoleDetail', UserRoleDetailController::class);
     //APPLICANT CREDENTIAL API
