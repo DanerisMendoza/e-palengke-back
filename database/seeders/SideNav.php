@@ -45,6 +45,9 @@ class SideNav extends Seeder
         $SideNav = new SideNavModel();
         $SideNav->name = 'Applicants';
         $SideNav->save();
-
+        //9
+        $SideNav = new SideNavModel();
+        $SideNav->name = 'Product';
+        $SideNav->save();
     }
 }

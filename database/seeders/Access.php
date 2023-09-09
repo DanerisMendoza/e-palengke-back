@@ -34,6 +34,11 @@ class Access extends Seeder
         $Access->side_nav_id = 8;
         $Access->save();
 
+        $Access = new AccessModel();
+        $Access->user_role_details_id = 1;
+        $Access->side_nav_id = 9;
+        $Access->save();
+
         //customer
         $Access = new AccessModel();
         $Access->user_role_details_id = 2;
@@ -56,5 +61,7 @@ class Access extends Seeder
         $Access->user_role_details_id = 4;
         $Access->side_nav_id = 7;
         $Access->save();
+
+        //
     }
 }

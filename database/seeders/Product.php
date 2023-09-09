@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\StoreTypeDetail as StoreTypeDetailModel;
+use App\Models\Product as ProductModel;
 class StoreTypeDetail extends Seeder
 {
     /**
@@ -12,23 +12,23 @@ class StoreTypeDetail extends Seeder
      */
     public function run(): void
     {
-        $StoreTypeDetail = new StoreTypeDetailModel();
-        $StoreTypeDetail->name = 'raw food';
+        $StoreTypeDetail = new ProductModel();
+        $StoreTypeDetail->name = 'fish';
         $StoreTypeDetail->save();
 
-        $StoreTypeDetail = new StoreTypeDetailModel();
+        $StoreTypeDetail = new ProductModel();
         $StoreTypeDetail->name = 'vegetable';
         $StoreTypeDetail->save();
         
-        $StoreTypeDetail = new StoreTypeDetailModel();
+        $StoreTypeDetail = new ProductModel();
         $StoreTypeDetail->name = 'meat';
         $StoreTypeDetail->save();
      
-        $StoreTypeDetail = new StoreTypeDetailModel();
+        $StoreTypeDetail = new ProductModel();
         $StoreTypeDetail->name = 'school_supplies';
         $StoreTypeDetail->save();
 
-        $StoreTypeDetail = new StoreTypeDetailModel();
+        $StoreTypeDetail = new ProductModel();
         $StoreTypeDetail->name = 'hardware';
         $StoreTypeDetail->save();
     }
