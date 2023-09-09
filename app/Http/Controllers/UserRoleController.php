@@ -15,6 +15,20 @@ use Illuminate\Support\Facades\DB;
 class UserRoleController extends Controller
 {
 
+    public function ApproveUserRole(String $id){
+        DB::table('user_roles')
+        ->where('id', $id)
+        ->update(['status' => 'active']);
+        return 'success';
+    }
+    
+    public function DissaproveUserRole(String $id){
+        DB::table('user_roles')
+        ->where('id', $id)
+        ->update(['status' => 'dissaproved']);
+        return 'success';
+    }
+    
     public function SubmitApplicantCrendential(Request $request){
         \Log::info($request);
         $applicantCredential = json_decode($request['applicantCredential'], true);
@@ -73,8 +87,7 @@ class UserRoleController extends Controller
     }
 
     public function GetApplicants(){
-        $UserRole = UserRole::where('status', 'pending')
-        ->join('user_details', 'user_details.user_id', 'user_roles.user_id')
+        $UserRole = UserRole::join('user_details', 'user_details.user_id', 'user_roles.user_id')
         ->join('user_role_details', 'user_role_details.id', 'user_roles.user_role_details_id')
         ->select('user_roles.id as user_role_id','user_roles.status','user_details.gender','user_details.age','user_details.name as applicant_name','user_role_details.name as user_role_name')
         ->get();
