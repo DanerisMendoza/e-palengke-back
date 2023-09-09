@@ -39,5 +39,10 @@ class User extends Seeder
         $user->password = Hash::make('123');
         $user->save();
 
+        $user = new UserModel();
+        $user->username = 'customer2';
+        $user->password = Hash::make('123');
+        $user->save();
+
     }
 }

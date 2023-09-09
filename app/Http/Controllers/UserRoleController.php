@@ -75,6 +75,8 @@ class UserRoleController extends Controller
     public function GetApplicants(){
         $UserRole = UserRole::where('status', 'pending')
         ->join('user_details', 'user_details.user_id', 'user_roles.user_id')
+        ->join('user_role_details', 'user_role_details.id', 'user_roles.user_role_details_id')
+        ->select('user_roles.id as user_role_id','user_roles.status','user_details.gender','user_details.age','user_details.name as applicant_name','user_role_details.name as user_role_name')
         ->get();
         return $UserRole;        
     }

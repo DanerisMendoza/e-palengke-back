@@ -75,5 +75,12 @@ class UserRole extends Seeder
         $userRole->status = 'active';
         $userRole->save();
 
+        //customer2
+        $userRole = new UserRoleModel();
+        $userRole->user_id = 6;
+        $userRole->user_role_details_id = 2;
+        $userRole->status = 'active';
+        $userRole->save();
+
     }
 }

@@ -16,7 +16,7 @@ class UserDetail extends Seeder
         $UserDetail = new UserDetailModel();
         $UserDetail->user_id = 1;
         $UserDetail->name = "admin_name";
-        $UserDetail->gender = "m";
+        $UserDetail->gender = "Male";
         $UserDetail->age = 20;
         $UserDetail->phone_number = "00000000000";
         $UserDetail->address = "admin_address";
@@ -26,7 +26,7 @@ class UserDetail extends Seeder
         $UserDetail = new UserDetailModel();
         $UserDetail->user_id = 2;
         $UserDetail->name = "customer_name1";
-        $UserDetail->gender = "m";
+        $UserDetail->gender = "Male";
         $UserDetail->age = 20;
         $UserDetail->phone_number = "00000000000";
         $UserDetail->address = "customer_address1";
@@ -36,7 +36,7 @@ class UserDetail extends Seeder
         $UserDetail = new UserDetailModel();
         $UserDetail->user_id = 3;
         $UserDetail->name = "seller_name1";
-        $UserDetail->gender = "f";
+        $UserDetail->gender = "Female";
         $UserDetail->age = 20;
         $UserDetail->phone_number = "00000000000";
         $UserDetail->address = "seller_address1";
@@ -46,7 +46,7 @@ class UserDetail extends Seeder
         $UserDetail = new UserDetailModel();
         $UserDetail->user_id = 4;
         $UserDetail->name = "delivery_name";
-        $UserDetail->gender = "m";
+        $UserDetail->gender = "Male";
         $UserDetail->age = 20;
         $UserDetail->phone_number = "00000000000";
         $UserDetail->address = "delivery_address1";
@@ -56,11 +56,21 @@ class UserDetail extends Seeder
         $UserDetail = new UserDetailModel();
         $UserDetail->user_id = 5;
         $UserDetail->name = "DEVELOPMENT NAME";
-        $UserDetail->gender = "m";
+        $UserDetail->gender = "Male";
         $UserDetail->age = 20;
         $UserDetail->phone_number = "00000000000";
         $UserDetail->address = "DEVELOPMENT_address1";
         $UserDetail->email = "DEVELOPMENTemailSample@gmail.com";
+        $UserDetail->save();
+
+        $UserDetail = new UserDetailModel();
+        $UserDetail->user_id = 6;
+        $UserDetail->name = "CUSTOMER2_NAME";
+        $UserDetail->gender = "Male";
+        $UserDetail->age = 20;
+        $UserDetail->phone_number = "00000000000";
+        $UserDetail->address = "Customer2_address1";
+        $UserDetail->email = "customer2Sample@gmail.com";
         $UserDetail->save();
     }
 }
