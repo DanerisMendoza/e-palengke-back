@@ -37,6 +37,7 @@ class UserController extends Controller
         ->join('accesses', 'accesses.user_role_details_id', 'user_role_details.id')
         ->rightJoin('side_navs', 'side_navs.id', 'accesses.side_nav_id')
         ->where('user_roles.user_id', $user->id)
+        ->where('user_roles.status', 'active')
         ->whereNull('accesses.deleted_at') 
         ->select('side_navs.*')
         ->distinct('side_navs.name') 
@@ -80,6 +81,12 @@ class UserController extends Controller
             ->where('users.id', '=', $userId)
             ->select('users.username', 'user_details.*')
             ->first();
+            $user_role_ids = DB::table('user_roles')
+            ->where('user_roles.user_id', $userId)
+            ->join('user_role_details', 'user_role_details.id', 'user_roles.user_role_details_id')
+            ->select('user_role_details.id','user_roles.status',)
+            ->get();
+            $userDetail->user_role_ids = $user_role_ids;
         return $userDetail;
     }
 
