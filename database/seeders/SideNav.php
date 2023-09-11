@@ -15,39 +15,51 @@ class SideNav extends Seeder
     {
         //1
         $SideNav = new SideNavModel();
-        $SideNav->name = 'Admin';
+        $SideNav->name = 'ADMIN';
         $SideNav->save();
         //2
         $SideNav = new SideNavModel();
-        $SideNav->name = 'Application';
+        $SideNav->name = 'APPLICATION';
         $SideNav->save();
         //3
         $SideNav = new SideNavModel();
-        $SideNav->name = 'EndUser';
+        $SideNav->name = 'HOME';
         $SideNav->save();
         //4
         $SideNav = new SideNavModel();
-        $SideNav->name = 'RequirementDetail';
+        $SideNav->name = 'REQUIREMENT DETAILS';
         $SideNav->save();
         //5
         $SideNav = new SideNavModel();
-        $SideNav->name = 'Store';
+        $SideNav->name = 'STORE';
         $SideNav->save();
         //6
         $SideNav = new SideNavModel();
-        $SideNav->name = 'UserRole';
+        $SideNav->name = 'USER ROLE';
         $SideNav->save();
         //7
         $SideNav = new SideNavModel();
-        $SideNav->name = 'Delivery';
+        $SideNav->name = 'DELIVERY';
         $SideNav->save();
         //8
         $SideNav = new SideNavModel();
-        $SideNav->name = 'Applicants';
+        $SideNav->name = 'APPLICANTS';
         $SideNav->save();
         //9
         $SideNav = new SideNavModel();
-        $SideNav->name = 'Product';
+        $SideNav->name = 'INVENTORY';
+        $SideNav->save();
+        //10
+        $SideNav = new SideNavModel();
+        $SideNav->name = 'PROFILE';
+        $SideNav->save();
+        //11
+        $SideNav = new SideNavModel();
+        $SideNav->name = 'PRODUCT TYPE DETAILS';
+        $SideNav->save();
+        //12
+        $SideNav = new SideNavModel();
+        $SideNav->name = 'STORE TYPE DETAILS';
         $SideNav->save();
     }
 }
