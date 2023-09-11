@@ -36,6 +36,9 @@ Route::middleware('auth:api')->group(function () {
     Route::resource('requirements', RequirementController::class);
     Route::resource('RequirementDetail', RequirementDetailController::class);
     Route::get('/GET_REQUIREMENT_DETAIL_BY_USER_ROLE_DETAILS_ID/{id}', [RequirementDetailController::class, 'GET_REQUIREMENT_DETAIL_BY_USER_ROLE_DETAILS_ID']);
+    // Edit a Requirement Detail
+    Route::put('/RequirementDetail/{id}', [RequirementDetailController::class, 'edit']);    
+    Route::put('/RequirementDetail/{id}', [RequirementDetailController::class, 'store']);
     //STORE API
     Route::resource('StoreTypeDetail', StoreTypeDetailController::class);
     //USER ROLE API

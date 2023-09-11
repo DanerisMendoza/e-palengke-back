@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\RequirementDetail;
 use App\Models\Requirement;
 
+
 class RequirementDetailController extends Controller
 {
     /**
@@ -22,6 +23,7 @@ class RequirementDetailController extends Controller
      */
     public function create()
     {
+           
         // This method typically shows a form for creating a new resource.
     }
 
@@ -30,8 +32,9 @@ class RequirementDetailController extends Controller
      */
     public function store(Request $request)
     {
+        \Log::info($request);
         $requirementDetail = new RequirementDetail();
-        $requirementDetail->requirement_id = $request->input('requirement_id');
+        // $requirementDetail->requirement_details_id= $request->input('requirement_id');
         $requirementDetail->name =$request->input('name');
         $requirementDetail->save();
         return 'success';
@@ -44,7 +47,7 @@ class RequirementDetailController extends Controller
     {
         // Find the RequirementDetail by its ID
         $requirementDetails = RequirementDetail::getQuery()
-            ->where('requirement_id', $id)
+            // ->where('requirement_details.id', $id)
             ->whereNull('deleted_at')
             ->select('requirement_details.name','requirement_details.id')
             ->get();
@@ -68,7 +71,22 @@ class RequirementDetailController extends Controller
      */
     public function edit(string $id)
     {
-        // This method typically shows a form for editing an existing resource.
+        $name = $request->input('name');
+
+        try {
+            // Find the existing RequirementDetail by its ID
+            $requirementDetail = RequirementDetail::findOrFail($id);
+    
+            // Update the RequirementDetail with the validated data
+            $requirementDetail->name = $name;
+            $requirementDetail->save();
+    
+            // Return a success response
+            return response()->json(['message' => 'RequirementDetail updated successfully']);
+        } catch (\Exception $e) {
+            // Handle any errors and return an error response
+            return response()->json(['error' => 'Failed to update RequirementDetail'], 500);
+        }
     }
 
     /**
@@ -76,6 +94,8 @@ class RequirementDetailController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        \Log::info($request);
+        \Log::info($id);
         // Find the RequirementDetail by its ID
         $requirementDetail = RequirementDetail::findOrFail($id);
         // // Update the RequirementDetail with the validated data
