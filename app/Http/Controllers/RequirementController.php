@@ -35,6 +35,8 @@ class RequirementController extends Controller
     // Store a newly created requirement in storage.
     public function store(Request $request)
     {
+        //pumpasok sya dito hahaha
+        // \Log::info('dito');
         $requirement = Requirement::create($request->all());
         return response()->json($requirement, 201);
     }
