@@ -161,16 +161,10 @@ class UserRoleController extends Controller
      */
     public function show(string $id)
     {
-        // Retrieve a specific user role by ID from the database
-        $userRole = UserRole::find($id);
-
-        if (!$userRole) {
-            // Return a response if the user role was not found
-            return response()->json(['message' => 'User role not found'], 404);
-        }
-
-        // Return the user role as a JSON response
-        return response()->json($userRole);
+        $userRole = UserRole::where('user_id', $id)
+        ->join('user_role_details','user_role_details.id','user_roles.user_role_details_id')
+        ->get();
+        return $userRole;
     }
 
     /**

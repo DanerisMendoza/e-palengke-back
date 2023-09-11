@@ -79,7 +79,7 @@ class UserController extends Controller
         $userDetail = DB::table('users')
             ->join('user_details', 'users.id', '=', 'user_details.user_id')
             ->where('users.id', '=', $userId)
-            ->select('users.username', 'user_details.*')
+            ->select('users.username','users.id as user_id', 'user_details.*')
             ->first();
             $user_role_ids = DB::table('user_roles')
             ->where('user_roles.user_id', $userId)
