@@ -65,6 +65,11 @@ class UserController extends Controller
         $UserDetail->address = $request->input('address');
         $UserDetail->email = $request->input('email');
         $UserDetail->save();
+        $userRole = new UserRole();
+        $userRole->user_id = $User->id;
+        $userRole->user_role_details_id = 2;
+        $userRole->status = 'active';
+        $userRole->save();
         return 'success';
     }
 
