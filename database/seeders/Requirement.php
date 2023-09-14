@@ -14,6 +14,13 @@ class Requirement extends Seeder
      */
     public function run(): void
     {
+        //customer
+        $requirement = new RequirementModel();
+        $requirement->user_role_details_id = 2;
+        $requirement->requirement_details_id = 3;
+        $requirement->save();
+        
+        //seller
         $requirement = new RequirementModel();
         $requirement->user_role_details_id = 3;
         $requirement->requirement_details_id = 1;
@@ -24,6 +31,7 @@ class Requirement extends Seeder
         $requirement->requirement_details_id = 2;
         $requirement->save();
 
+        //delivery
         $requirement = new RequirementModel();
         $requirement->user_role_details_id = 4;
         $requirement->requirement_details_id = 1;

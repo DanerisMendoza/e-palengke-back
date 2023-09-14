@@ -23,6 +23,7 @@ class UserController extends Controller
         ->join('accesses', 'accesses.user_role_details_id', 'user_role_details.id')
         ->rightJoin('side_navs', 'side_navs.id', 'accesses.side_nav_id')
         ->where('user_roles.user_id', $user->id)
+        ->where('user_roles.status', 'active')
         ->whereNull('accesses.deleted_at') 
         ->select('side_navs.*')
         ->get();
@@ -51,25 +52,45 @@ class UserController extends Controller
     }
 
     public function Register(Request $request){
-        \Log::info($request);
+        $form = json_decode($request['form'], true);
+        $applicantCredential = json_decode($request['applicantCredential'], true);
         $User = new User();
-        $User->username = $request->input('username');
-        $User->password = bcrypt($request->input('password'));
+        $User->username = $form['username'];
+        $User->password = bcrypt($form['password']);
         $User->save();
         $UserDetail = new UserDetail();
         $UserDetail->user_id = $User->id;
-        $UserDetail->name = $request->input('name');
-        $UserDetail->gender = $request->input('gender');
-        $UserDetail->age = $request->input('age');
-        $UserDetail->phone_number = $request->input('phone_number');
-        $UserDetail->address = $request->input('address');
-        $UserDetail->email = $request->input('email');
+        $UserDetail->name = $form['name'];
+        $UserDetail->gender = $form['gender'];
+        $UserDetail->age = $form['age'];
+        $UserDetail->phone_number = $form['phone_number'];
+        $UserDetail->address = $form['address'];
+        $UserDetail->email = $form['email'];
         $UserDetail->save();
-        $userRole = new UserRole();
-        $userRole->user_id = $User->id;
-        $userRole->user_role_details_id = 2;
-        $userRole->status = 'active';
-        $userRole->save();
+        $UserRole = new UserRole();
+        $UserRole->user_id = $User->id;
+        $UserRole->user_role_details_id = 2;
+        $UserRole->status = 'pending';
+        $UserRole->save();
+        if ($request->hasFile('files')) {
+            $i=0;
+            foreach ($request->file('files') as $file) {
+                $file_name = $file->getClientOriginalName();
+                $ext = $file->getClientOriginalExtension();
+                $name = explode('.', $file_name)[0] . '-' . uniqid() . '.' . $ext;
+                $name = str_replace(' ', '', $name);
+                $file->move(public_path('applicant_credentials'), $name);
+
+                DB::table('applicant_credentials')->insert([
+                    'requirement_details_id' => $applicantCredential[$i]['id'],
+                    'user_role_id' => $UserRole->id,
+                    'picture_path' => '/applicant_credentials/' . $name,
+                    'created_at' => now(), // Set the created_at timestamp to the current date and time
+                ]);
+                
+                $i++;
+            }
+        }
         return 'success';
     }
 
@@ -102,10 +123,15 @@ class UserController extends Controller
             'password' => 'required'
         ]);
         $login = DB::table('users')
-            ->select('password', 'username')
             ->where('username', $request->username)
+            ->join('user_roles', 'user_roles.user_id', 'users.id')
+            ->select('users.password', 'users.username','user_roles.status')
             ->first();
+            
         if ($login) {
+            if($login->status != 'active'){
+                return ['message'=>'not active'];
+            }
             if (Hash::check($request->password, $login->password)) {
                 $passwordGrantClient = Client::where('password_client', 1)->first();
                 $response = [
@@ -135,7 +161,8 @@ class UserController extends Controller
                     ],
                 );
             }
-        } else {
+        }
+        else {
             return response()->json(
                 [
                     'message' => 'The username were incorrect'

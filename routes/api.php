@@ -23,6 +23,7 @@ use App\Http\Controllers\ApplicantCredentialController;
 
 Route::post('/Login', [UserController::class, 'Login']);
 Route::post('/Register', [UserController::class, 'Register']);
+Route::get('/GET_REQUIREMENT_DETAIL_BY_USER_ROLE_DETAILS_ID/{id}', [RequirementDetailController::class, 'GET_REQUIREMENT_DETAIL_BY_USER_ROLE_DETAILS_ID']);
 
 Route::middleware('auth:api')->group(function () {
     //USER API
@@ -35,7 +36,6 @@ Route::middleware('auth:api')->group(function () {
     //REQUIREMENT API
     Route::resource('requirements', RequirementController::class);
     Route::resource('RequirementDetail', RequirementDetailController::class);
-    Route::get('/GET_REQUIREMENT_DETAIL_BY_USER_ROLE_DETAILS_ID/{id}', [RequirementDetailController::class, 'GET_REQUIREMENT_DETAIL_BY_USER_ROLE_DETAILS_ID']);
     // Edit a Requirement Detail
     Route::put('/RequirementDetail/{id}', [RequirementDetailController::class, 'edit']);    
     Route::put('/RequirementDetail/{id}', [RequirementDetailController::class, 'store']);
