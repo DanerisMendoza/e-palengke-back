@@ -14,7 +14,7 @@ class StoreTypeDetailController extends Controller
     {
         // Retrieve a list of StoreTypeDetails from the database and return it as JSON
         $storeTypeDetails = StoreTypeDetail::all();
-        return response()->json($storeTypeDetails);
+        return $storeTypeDetails;
     }
 
     /**
@@ -107,18 +107,19 @@ class StoreTypeDetailController extends Controller
      */
     public function destroy(string $id)
     {
+        \Log::info($id);
         // Retrieve the StoreTypeDetail by ID from the database
-        $storeTypeDetail = StoreTypeDetail::find($id);
+        // $storeTypeDetail = StoreTypeDetail::find($id);
+        
+        // if (!$storeTypeDetail) {
+        //     // Return a response if the resource was not found
+        //     return response()->json(['message' => 'StoreTypeDetail not found'], 404);
+        // }
 
-        if (!$storeTypeDetail) {
-            // Return a response if the resource was not found
-            return response()->json(['message' => 'StoreTypeDetail not found'], 404);
-        }
+        // // Delete the StoreTypeDetail
+        // $storeTypeDetail->delete();
 
-        // Delete the StoreTypeDetail
-        $storeTypeDetail->delete();
-
-        // Return a response, e.g., a success message or a redirect
-        return response()->json(['message' => 'StoreTypeDetail deleted successfully']);
+        // // Return a response, e.g., a success message or a redirect
+        // return response()->json(['message' => 'StoreTypeDetail deleted successfully']);
     }
 }
