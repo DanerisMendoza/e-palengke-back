@@ -13,15 +13,15 @@ class StoreTypeDetail extends Seeder
     public function run(): void
     {
         $StoreTypeDetail = new StoreTypeDetailModel();
-        $StoreTypeDetail->name = 'raw food';
+        $StoreTypeDetail->name = 'vegetable';
         $StoreTypeDetail->save();
 
         $StoreTypeDetail = new StoreTypeDetailModel();
-        $StoreTypeDetail->name = 'vegetable';
+        $StoreTypeDetail->name = 'Tea';
         $StoreTypeDetail->save();
         
         $StoreTypeDetail = new StoreTypeDetailModel();
-        $StoreTypeDetail->name = 'meat';
+        $StoreTypeDetail->name = 'Meat';
         $StoreTypeDetail->save();
      
         $StoreTypeDetail = new StoreTypeDetailModel();
@@ -30,6 +30,10 @@ class StoreTypeDetail extends Seeder
 
         $StoreTypeDetail = new StoreTypeDetailModel();
         $StoreTypeDetail->name = 'hardware';
+        $StoreTypeDetail->save();
+      
+        $StoreTypeDetail = new StoreTypeDetailModel();
+        $StoreTypeDetail->name = 'others';
         $StoreTypeDetail->save();
     }
 }

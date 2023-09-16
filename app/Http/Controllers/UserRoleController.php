@@ -34,7 +34,7 @@ class UserRoleController extends Controller
         $applicantCredential = json_decode($request['applicantCredential'], true);
         $UserRole = new UserRole();
         $UserRole->user_id  = $request->user()->id;
-        $UserRole->user_role_details_id  = $request['user_role_deitals_id'];
+        $UserRole->user_role_details_id  = $request['user_role_details_id'];
         $UserRole->status  = 'pending';
         $UserRole->save();
     
@@ -61,10 +61,11 @@ class UserRoleController extends Controller
 
 
         // //seller
-        if($request['user_role_deitals_id'] == 3){
+        if($request['user_role_details_id'] == 3){
             $store = new Store();
-            $store->user_role_id = $UserRole->user_id;
+            $store->user_role_id = $UserRole->id;
             $store->name = $request['storeName'];
+            $store->status = $request['pending'];
             $store->latitude = $request['latitude'];
             $store->longitude = $request['longitude'];
             $store->save();
@@ -77,7 +78,7 @@ class UserRoleController extends Controller
             }
         }
         // delivery
-        else if($request['user_role_deitals_id'] == 4){
+        else if($request['user_role_details_id'] == 4){
             $DeliveryLocation = new DeliveryLocation();
             $DeliveryLocation->user_role_id = $UserRole->user_id;
             $DeliveryLocation->latitude = $request['latitude'];
@@ -164,6 +165,7 @@ class UserRoleController extends Controller
         $userRole = UserRole::where('user_id', $id)
         ->join('user_role_details','user_role_details.id','user_roles.user_role_details_id')
         ->get();
+        \Log::info($userRole);
         return $userRole;
     }
 

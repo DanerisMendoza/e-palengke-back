@@ -28,6 +28,8 @@ class UserDetail extends Seeder
         $UserDetail->name = "customer_name1";
         $UserDetail->gender = "Male";
         $UserDetail->age = 20;
+        $UserDetail->latitude = 14.654112;
+        $UserDetail->longitude = 120.965480;
         $UserDetail->phone_number = "00000000000";
         $UserDetail->address = "customer_address1";
         $UserDetail->email = "customer_emailSample@gmail.com";
@@ -68,6 +70,8 @@ class UserDetail extends Seeder
         $UserDetail->name = "CUSTOMER2_NAME";
         $UserDetail->gender = "Male";
         $UserDetail->age = 20;
+        $UserDetail->latitude = 14.654112;
+        $UserDetail->longitude = 120.965480;
         $UserDetail->phone_number = "00000000000";
         $UserDetail->address = "Customer2_address1";
         $UserDetail->email = "customer2Sample@gmail.com";
