@@ -13,6 +13,7 @@ use Database\Seeders\Access;
 use Database\Seeders\UserRoleDetail;
 use Database\Seeders\SideNav;
 use Database\Seeders\Requirement;
+use Database\Seeders\ProductTypeDetail;
 
 class DatabaseSeeder extends Seeder
 {
@@ -32,6 +33,7 @@ class DatabaseSeeder extends Seeder
             Access::class,
             SideNav::class,
             UserRoleDetail::class,
+            ProductTypeDetail::class
         ]);
 
         // \App\Models\User::factory(10)->create();
