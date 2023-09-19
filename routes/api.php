@@ -11,6 +11,7 @@ use App\Http\Controllers\UserRoleDetailController;
 use App\Http\Controllers\ApplicantCredentialController;
 use App\Http\Controllers\ProductTypeDetailController;
 use App\Http\Controllers\StoreController;
+use App\Http\Controllers\ProductController;
 
 /*
 |--------------------------------------------------------------------------
@@ -46,6 +47,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/GetActiveStore', [StoreController::class, 'GetActiveStore']);
     //PRODUCT API 
     Route::resource('ProductTypeDetail', ProductTypeDetailController::class);
+    Route::resource('Product', ProductController::class);
     //USER ROLE API
     Route::resource('UserRole', UserRoleController::class);
     Route::resource('updateUserRole', UserRoleController::class);

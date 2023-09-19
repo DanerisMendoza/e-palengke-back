@@ -13,23 +13,19 @@ class ProductTypeDetail extends Seeder
     public function run(): void
     {
         $ProductTypeDetail = new ProductTypeDetailModel();
-        $ProductTypeDetail->name = 'raw food';
-        $ProductTypeDetail->save();
-
-        $ProductTypeDetail = new ProductTypeDetailModel();
-        $ProductTypeDetail->name = 'vegetable';
+        $ProductTypeDetail->name = 'Vegetable';
         $ProductTypeDetail->save();
         
         $ProductTypeDetail = new ProductTypeDetailModel();
-        $ProductTypeDetail->name = 'meat';
-        $ProductTypeDetail->save();
-     
-        $ProductTypeDetail = new ProductTypeDetailModel();
-        $ProductTypeDetail->name = 'school_supplies';
+        $ProductTypeDetail->name = 'Meat';
         $ProductTypeDetail->save();
 
         $ProductTypeDetail = new ProductTypeDetailModel();
-        $ProductTypeDetail->name = 'hardware';
+        $ProductTypeDetail->name = 'Tea';
+        $ProductTypeDetail->save();
+        
+        $ProductTypeDetail = new ProductTypeDetailModel();
+        $ProductTypeDetail->name = 'Grilled Foods';
         $ProductTypeDetail->save();
     }
 }
