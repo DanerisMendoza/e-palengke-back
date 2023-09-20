@@ -25,6 +25,14 @@ class StoreTypeDetail extends Seeder
         $StoreTypeDetail->save();
      
         $StoreTypeDetail = new StoreTypeDetailModel();
+        $StoreTypeDetail->name = 'fish';
+        $StoreTypeDetail->save();
+     
+        $StoreTypeDetail = new StoreTypeDetailModel();
+        $StoreTypeDetail->name = 'grilled';
+        $StoreTypeDetail->save();
+     
+        $StoreTypeDetail = new StoreTypeDetailModel();
         $StoreTypeDetail->name = 'school_supplies';
         $StoreTypeDetail->save();
 

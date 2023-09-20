@@ -10,7 +10,19 @@ class ProductController extends Controller
 {
     public function index()
     {
-   
+        $Product = DB::table('products')
+        ->get()
+        ->each(function ($q){
+            $image_type = substr($q->picture_path, -3);
+            $image_format = '';
+            if ($image_type == 'png' || $image_type == 'jpg') {
+                $image_format = $image_type;
+            }
+            $base64str = '';
+            $base64str = base64_encode(file_get_contents(public_path($q->picture_path)));
+            $q->base64img = 'data:image/' . $image_format . ';base64,' . $base64str;
+        });
+        return $Product;
     }
 
     public function store(Request $request)
@@ -35,7 +47,20 @@ class ProductController extends Controller
 
     public function show(string $id)
     {
-        return;
+        $Product = DB::table('products')
+        ->where('store_id',$id)
+        ->get()
+        ->each(function ($q){
+            $image_type = substr($q->picture_path, -3);
+            $image_format = '';
+            if ($image_type == 'png' || $image_type == 'jpg') {
+                $image_format = $image_type;
+            }
+            $base64str = '';
+            $base64str = base64_encode(file_get_contents(public_path($q->picture_path)));
+            $q->base64img = 'data:image/' . $image_format . ';base64,' . $base64str;
+        });
+        return $Product;
     }
 
     public function update(Request $request, string $id)
@@ -45,6 +70,8 @@ class ProductController extends Controller
 
     public function destroy(string $id)
     {
-   
+        $Product = Product::findOrFail($id);
+        $Product->delete();
+        return 'success';
     }
 }
