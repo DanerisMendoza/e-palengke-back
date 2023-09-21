@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('email');
             $table->string('otp')->nullable();
             $table->string('forget_password_otp')->nullable();
-            $table->string('balance')->nullable();
+            $table->integer('balance')->nullable();
             $table->string('latitude')->nullable();
             $table->string('longitude')->nullable();
             $table->timestamps();

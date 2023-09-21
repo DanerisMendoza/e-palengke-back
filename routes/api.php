@@ -36,6 +36,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/GetSideNav', [UserController::class, 'GetSideNav']);
     Route::get('/GetAllSideNav', [UserController::class, 'GetAllSideNav']);
     Route::get('/authenticate', [UserController::class, 'authenticate']);
+    Route::post('/UpdateUserBalance', [UserController::class, 'UpdateUserBalance']);
     //REQUIREMENT API
     Route::resource('requirements', RequirementController::class);
     Route::resource('RequirementDetail', RequirementDetailController::class);

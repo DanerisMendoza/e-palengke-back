@@ -117,6 +117,19 @@ class UserController extends Controller
         return $userDetail;
     }
 
+    public function UpdateUserBalance(Request $request){
+        $userId = Auth::user()->id;
+        $userDetail = DB::table('users')
+            ->join('user_details', 'users.id', 'user_details.user_id')
+            ->where('users.id', $userId)
+            ->select('users.username','users.id as user_id', 'user_details.*')
+            ->first();
+        DB::table('user_details')
+            ->where('user_id', $userId)
+            ->update(['balance' => $userDetail->balance + $request['topupAmount']]);
+        return 'success';    
+    }
+
     public function Login(Request $request)
     {
         $credentials = $request->validate([
