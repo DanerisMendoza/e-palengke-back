@@ -66,6 +66,9 @@ class UserController extends Controller
         $UserDetail->phone_number = $form['phone_number'];
         $UserDetail->address = $form['address'];
         $UserDetail->email = $form['email'];
+        $UserDetail->latitude = $form['latitude'];
+        $UserDetail->longitude = $form['longitude'];
+        $UserDetail->balance = 0;
         $UserDetail->save();
         $UserRole = new UserRole();
         $UserRole->user_id = $User->id;
