@@ -80,7 +80,7 @@ class UserRoleController extends Controller
         // delivery
         else if($request['user_role_details_id'] == 4){
             $DeliveryLocation = new DeliveryLocation();
-            $DeliveryLocation->user_role_id = $UserRole->user_id;
+            $DeliveryLocation->user_role_id = $UserRole->id;
             $DeliveryLocation->latitude = $request['latitude'];
             $DeliveryLocation->longitude = $request['longitude'];
             $DeliveryLocation->save();
