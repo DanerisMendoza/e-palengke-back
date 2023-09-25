@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\UserDetail;
 use App\Models\UserRole;
 use App\Models\SideNav;
+use App\Models\CustomerLocation;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
@@ -54,10 +55,12 @@ class UserController extends Controller
     public function Register(Request $request){
         $form = json_decode($request['form'], true);
         $applicantCredential = json_decode($request['applicantCredential'], true);
+
         $User = new User();
         $User->username = $form['username'];
         $User->password = bcrypt($form['password']);
         $User->save();
+
         $UserDetail = new UserDetail();
         $UserDetail->user_id = $User->id;
         $UserDetail->name = $form['name'];
@@ -66,15 +69,22 @@ class UserController extends Controller
         $UserDetail->phone_number = $form['phone_number'];
         $UserDetail->address = $form['address'];
         $UserDetail->email = $form['email'];
-        $UserDetail->latitude = $form['latitude'];
-        $UserDetail->longitude = $form['longitude'];
         $UserDetail->balance = 0;
         $UserDetail->save();
+        
         $UserRole = new UserRole();
         $UserRole->user_id = $User->id;
         $UserRole->user_role_details_id = 2;
         $UserRole->status = 'pending';
         $UserRole->save();
+
+        $CustomerLocation = new CustomerLocation();
+        $CustomerLocation->user_role_id = $UserRole->id;
+        $CustomerLocation->latitude = $form['latitude'];
+        $CustomerLocation->longitude = $form['longitude'];
+        $CustomerLocation->address = $form['address'];
+        $CustomerLocation->save();
+        
         if ($request->hasFile('files')) {
             $i=0;
             foreach ($request->file('files') as $file) {
@@ -94,6 +104,7 @@ class UserController extends Controller
                 $i++;
             }
         }
+        
         return 'success';
     }
 
@@ -110,6 +121,7 @@ class UserController extends Controller
             ->where('users.id', '=', $userId)
             ->select('users.username','users.id as user_id', 'user_details.*')
             ->first();
+
             $user_role_ids = DB::table('user_roles')
             ->where('user_roles.user_id', $userId)
             ->leftJoin('stores', 'stores.user_role_id', 'user_roles.id')
@@ -117,6 +129,17 @@ class UserController extends Controller
             ->select('user_role_details.id','user_roles.status','stores.id as store_id')
             ->get();
             $userDetail->user_role_ids = $user_role_ids;
+         
+            $customer_locations = DB::table('customer_locations')
+            ->join('user_roles','user_roles.id','customer_locations.user_role_id')
+            ->where('user_roles.user_id', $userId)
+            ->select('customer_locations.latitude','customer_locations.longitude')
+            ->first();
+            if($customer_locations != null){
+                $userDetail->latitude = $customer_locations->latitude;
+                $userDetail->longitude = $customer_locations->longitude;
+            }
+
         return $userDetail;
     }
 
