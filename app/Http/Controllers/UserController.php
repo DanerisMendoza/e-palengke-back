@@ -136,8 +136,7 @@ class UserController extends Controller
             ->select('customer_locations.latitude','customer_locations.longitude')
             ->first();
             if($customer_locations != null){
-                $userDetail->latitude = $customer_locations->latitude;
-                $userDetail->longitude = $customer_locations->longitude;
+                $userDetail->customer_locations = $customer_locations;
             }
 
         return $userDetail;
