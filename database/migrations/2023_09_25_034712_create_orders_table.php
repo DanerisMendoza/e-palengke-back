@@ -16,6 +16,11 @@ return new class extends Migration
             $table->integer('store_id');
             $table->integer('user_id');
             $table->integer('delivery_id');
+            $table->integer('or_number');
+            $table->string('status');
+            $table->integer('payment');
+            $table->integer('change');
+            $table->integer('total');
             $table->timestamps();
             $table->softDeletes();
         });

@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Product;
+use App\Models\Cart;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
@@ -47,10 +49,12 @@ class ProductController extends Controller
 
     public function show(string $id)
     {
+        $userId = Auth::user()->id;
         $Product = DB::table('products')
         ->where('store_id',$id)
+        ->whereNull('products.deleted_at')
         ->get()
-        ->each(function ($q){
+        ->each(function ($q) use ($userId){
             $image_type = substr($q->picture_path, -3);
             $image_format = '';
             if ($image_type == 'png' || $image_type == 'jpg') {
@@ -59,6 +63,14 @@ class ProductController extends Controller
             $base64str = '';
             $base64str = base64_encode(file_get_contents(public_path($q->picture_path)));
             $q->base64img = 'data:image/' . $image_format . ';base64,' . $base64str;
+            // Check if the product exists in cartItems by product_id
+            $cartItem = Cart::where('product_id', $q->id)
+            ->where('user_id',$userId)
+            ->first();
+            // If a matching product is found in cartItems, subtract cart item's quantity from stock
+            if ($cartItem) {
+                $q->stock -= $cartItem->quantity;
+            }
         });
         return $Product;
     }

@@ -22,7 +22,6 @@ class StoreController extends Controller
                 ->get();
                 $q->store_type_details = $StoreType;
             });
-        \Log::info($stores);
         return $stores;
     }
 }

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->integer('product_id');
             $table->integer('store_id');
             $table->integer('user_id');
+            $table->integer('quantity');
             $table->timestamps();
             $table->softDeletes();
         });

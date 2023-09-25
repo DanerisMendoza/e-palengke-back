@@ -12,6 +12,7 @@ use App\Http\Controllers\ApplicantCredentialController;
 use App\Http\Controllers\ProductTypeDetailController;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\CartController;
 
 /*
 |--------------------------------------------------------------------------
@@ -61,4 +62,10 @@ Route::middleware('auth:api')->group(function () {
     Route::resource('UserRoleDetail', UserRoleDetailController::class);
     //APPLICANT CREDENTIAL API
     Route::resource('ApplicantCrendential', ApplicantCredentialController::class);
+    //CART API
+    Route::post('/AddCartProduct', [CartController::class, 'AddCartProduct']);
+    Route::post('/IncreaseCartProduct', [CartController::class, 'IncreaseCartProduct']);
+    Route::post('/DecreaseCartProduct', [CartController::class, 'DecreaseCartProduct']);
+    Route::delete('/RemoveCartProduct', [CartController::class, 'RemoveCartProduct']);
+    Route::get('/GetCart', [CartController::class, 'GetCart']);
 });
