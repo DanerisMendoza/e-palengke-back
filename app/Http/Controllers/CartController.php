@@ -90,18 +90,9 @@ class CartController extends Controller
             ->select('products.price','products.name','products.id', 'products.id as product_id', 'products.stock', 'carts.quantity')
             ->get();
     
-        $updatedCartItems = [];
-    
         foreach ($cartItems as $item) {
             $remainingStock = $item->stock - $item->quantity;
-            if ($remainingStock >= 0) {
-                // If there is enough stock, subtract the cart quantity from the product stock
-                $item->stock = $remainingStock;
-                $updatedCartItems[] = $item;
-            } else {
-                // Handle the case where there is not enough stock (optional)
-                // You can remove the item from the cart or handle it as needed
-            }
+            $item->stock = $remainingStock;
         }
     
         return $cartItems;

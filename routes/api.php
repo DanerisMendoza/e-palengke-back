@@ -13,6 +13,7 @@ use App\Http\Controllers\ProductTypeDetailController;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\OrderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -68,4 +69,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/DecreaseCartProduct', [CartController::class, 'DecreaseCartProduct']);
     Route::delete('/RemoveCartProduct', [CartController::class, 'RemoveCartProduct']);
     Route::get('/GetCart', [CartController::class, 'GetCart']);
+    //ORDER API
+    Route::post('/Order', [OrderController::class, 'Order']);
+    // Route::post('/GetOrders', [OrderController::class, 'GetOrders']);
 });
