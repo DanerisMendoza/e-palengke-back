@@ -19,24 +19,30 @@ class OrderController extends Controller
         $length = count($data);
         $userId = Auth::user()->id;
 
-        //validation through server side not yet implemented
-        // $userDetail = DB::table('users')
-        //     ->join('user_details', 'users.id', '=', 'user_details.user_id')
-        //     ->where('users.id', '=', $userId)
-        //     ->select('users.username','users.id as user_id', 'user_details.*')
-        //     ->first();
 
         $cartItems = Cart::where('carts.user_id', $userId)
             ->join('products', 'products.id', 'carts.product_id')
             ->select('products.price', 'products.name', 'products.id', 'products.id as product_id', 'products.stock', 'carts.quantity')
             ->get();
 
+        $total = 0;
         foreach ($cartItems as $item) {
             $remainingStock = $item->stock - $item->quantity;
             $item->stock = $remainingStock;
             if ($remainingStock < 0) {
                 return 'invalid';
             }
+            $total += ($item['price'] * $item['quantity']);
+        }
+
+        $userDetail = DB::table('users')
+            ->join('user_details', 'users.id', '=', 'user_details.user_id')
+            ->where('users.id', '=', $userId)
+            ->select('users.username','users.id as user_id', 'user_details.*')
+            ->first();
+        
+        if($userDetail->balance < $total){
+            return 'insufficient balance';
         }
 
         $Order = new Order();
@@ -55,7 +61,7 @@ class OrderController extends Controller
             $OrderDetail->save();
         }
         foreach ($orderDetailsArr as $order_details) {
-            $Product = Product::where('id',$order_details['product_id'])->first();
+            $Product = Product::where('id', $order_details['product_id'])->first();
             $Product->stock -= $order_details['quantity'];
             $Product->save();
         }
