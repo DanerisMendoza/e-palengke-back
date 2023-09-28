@@ -71,5 +71,5 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/GetCart', [CartController::class, 'GetCart']);
     //ORDER API
     Route::post('/Order', [OrderController::class, 'Order']);
-    // Route::post('/GetOrders', [OrderController::class, 'GetOrders']);
+    Route::get('/GetOrdersByStoreId/{id}', [OrderController::class, 'GetOrdersByStoreId']);
 });

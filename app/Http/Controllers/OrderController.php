@@ -19,7 +19,6 @@ class OrderController extends Controller
         $length = count($data);
         $userId = Auth::user()->id;
 
-
         $cartItems = Cart::where('carts.user_id', $userId)
             ->join('products', 'products.id', 'carts.product_id')
             ->select('products.price', 'products.name', 'products.id', 'products.id as product_id', 'products.stock', 'carts.quantity')
@@ -38,10 +37,10 @@ class OrderController extends Controller
         $userDetail = DB::table('users')
             ->join('user_details', 'users.id', '=', 'user_details.user_id')
             ->where('users.id', '=', $userId)
-            ->select('users.username','users.id as user_id', 'user_details.*')
+            ->select('users.username', 'users.id as user_id', 'user_details.*')
             ->first();
-        
-        if($userDetail->balance < $total){
+
+        if ($userDetail->balance < $total) {
             return 'insufficient balance';
         }
 
@@ -73,7 +72,27 @@ class OrderController extends Controller
         $UserDetail->save();
         return 'success';
     }
-    // public function GetOrders(Request $request){
-    //     \Log::info($request);
-    // }
+
+    public function GetOrdersByStoreId(String $id)
+    {
+        $Order = Order::join('order_details', 'order_details.order_id', 'orders.id')
+            ->where('order_details.store_id', $id)
+            ->distinct('orders.id')
+            ->join('user_details', 'user_details.user_id', 'orders.user_id')
+            ->select('user_details.name as customer_name', 'orders.id', 'orders.status', 'orders.created_at')
+            ->get()
+            ->each(function ($q) use ($id) {
+                $q->order_details = OrderDetail::where('order_id', $q->id)
+                    ->where('order_details.store_id', $id)
+                    ->join('products', 'products.id', 'order_details.product_id')
+                    ->select('order_details.quantity', 'products.name', 'products.price')
+                    ->get();
+                $total = 0;
+                foreach ($q->order_details as $item) {
+                    $total += ($item->price * $item->quantity);
+                }
+                $q->total = $total;
+            });
+        return $Order;
+    }
 }

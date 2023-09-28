@@ -65,5 +65,9 @@ class SideNav extends Seeder
         $SideNav = new SideNavModel();
         $SideNav->name = 'TOPUP';
         $SideNav->save();
+        //14
+        $SideNav = new SideNavModel();
+        $SideNav->name = 'ORDERS';
+        $SideNav->save();
     }
 }
