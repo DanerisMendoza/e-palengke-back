@@ -72,4 +72,5 @@ Route::middleware('auth:api')->group(function () {
     //ORDER API
     Route::post('/Order', [OrderController::class, 'Order']);
     Route::get('/GetOrdersByStoreId/{id}', [OrderController::class, 'GetOrdersByStoreId']);
+    Route::get('/GetOrdersByUserId', [OrderController::class, 'GetOrdersByUserId']);
 });

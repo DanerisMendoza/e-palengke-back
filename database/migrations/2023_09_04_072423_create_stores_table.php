@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->integer('user_role_id');
             $table->string('name');
+            $table->string('address');
             $table->string('status')->nullable();
             $table->string('latitude');
             $table->string('longitude');

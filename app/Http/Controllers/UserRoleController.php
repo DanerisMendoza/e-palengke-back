@@ -30,7 +30,6 @@ class UserRoleController extends Controller
     }
     
     public function SubmitApplicantCrendential(Request $request){
-        \Log::info($request);
         $applicantCredential = json_decode($request['applicantCredential'], true);
         $UserRole = new UserRole();
         $UserRole->user_id  = $request->user()->id;
@@ -52,7 +51,7 @@ class UserRoleController extends Controller
                     'requirement_details_id' => $applicantCredential[$i]['id'],
                     'user_role_id' => $UserRole->id,
                     'picture_path' => '/applicant_credentials/' . $name,
-                    'created_at' => now(), // Set the created_at timestamp to the current date and time
+                    'created_at' => now(), 
                 ]);
                 
                 $i++;
@@ -65,6 +64,7 @@ class UserRoleController extends Controller
             $store = new Store();
             $store->user_role_id = $UserRole->id;
             $store->name = $request['storeName'];
+            $store->address = $request['storeAddress'];
             $store->status = $request['pending'];
             $store->latitude = $request['latitude'];
             $store->longitude = $request['longitude'];
@@ -165,7 +165,6 @@ class UserRoleController extends Controller
         $userRole = UserRole::where('user_id', $id)
         ->join('user_role_details','user_role_details.id','user_roles.user_role_details_id')
         ->get();
-        \Log::info($userRole);
         return $userRole;
     }
 

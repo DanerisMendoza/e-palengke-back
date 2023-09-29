@@ -95,4 +95,18 @@ class OrderController extends Controller
             });
         return $Order;
     }
+
+    public function GetOrdersByUserId(){
+        $userId = Auth::user()->id;
+        $Order = Order::where('user_id',$userId)
+        ->get()
+        ->each(function ($q){
+            $q->order_details = OrderDetail::where('order_id', $q->id) 
+            ->join('products', 'products.id', 'order_details.product_id')
+            ->join('stores', 'stores.id', 'order_details.store_id')
+            ->select('stores.address','stores.name as store_name','order_details.quantity', 'products.name', 'products.price')
+            ->get();
+        });
+        return $Order;
+    }
 }
