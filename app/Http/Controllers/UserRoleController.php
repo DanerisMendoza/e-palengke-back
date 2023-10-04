@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\UserRole;
-use App\Models\RequirementDetail;
 use App\Models\Requirement;
 use App\Models\Access;
 use App\Models\Store;
@@ -59,7 +58,7 @@ class UserRoleController extends Controller
         }
 
 
-        // //seller
+        //seller
         if($request['user_role_details_id'] == 3){
             $store = new Store();
             $store->user_role_id = $UserRole->id;
@@ -136,18 +135,7 @@ class UserRoleController extends Controller
         return $UserRole;        
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        // This method is typically used to display a form for creating a new user role.
-        // You can return a view here to render the form.
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
+  
     public function store(Request $request)
     {
         $userRole = new UserRole([
@@ -157,9 +145,7 @@ class UserRoleController extends Controller
         return 'success';
     }
 
-    /**
-     * Display the specified resource.
-     */
+
     public function show(string $id)
     {
         $userRole = UserRole::where('user_id', $id)
@@ -168,18 +154,6 @@ class UserRoleController extends Controller
         return $userRole;
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        // This method is typically used to display a form for editing an existing user role.
-        // You can return a view here to render the edit form.
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
         Access::where('user_role_details_id', $id)->delete();
@@ -199,23 +173,17 @@ class UserRoleController extends Controller
         return 'success';
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+   
     public function destroy(string $id)
     {
-        // Retrieve the user role by ID from the database
         $userRole = UserRole::find($id);
 
         if (!$userRole) {
-            // Return a response if the user role was not found
             return response()->json(['message' => 'User role not found'], 404);
         }
 
-        // Delete the user role
         $userRole->delete();
 
-        // Return a success response
         return response()->json(['message' => 'User role deleted successfully']);
     }
 }

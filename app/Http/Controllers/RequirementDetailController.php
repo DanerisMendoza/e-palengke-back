@@ -9,30 +9,14 @@ use App\Models\Requirement;
 
 class RequirementDetailController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $requirementDetails = RequirementDetail::all();
         return $requirementDetails;
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-           
-        // This method typically shows a form for creating a new resource.
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        \Log::info($request);
         $requirementDetail = new RequirementDetail();
         // $requirementDetail->requirement_details_id= $request->input('requirement_id');
         $requirementDetail->name =$request->input('name');
@@ -40,9 +24,6 @@ class RequirementDetailController extends Controller
         return 'success';
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         // Find the RequirementDetail by its ID
