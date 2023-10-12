@@ -148,6 +148,7 @@ class UserRoleController extends Controller
     {
         $userRole = UserRole::where('user_id', $id)
         ->join('user_role_details','user_role_details.id','user_roles.user_role_details_id')
+        ->select('user_roles.id','user_roles.status','user_role_details.name')
         ->get();
         return $userRole;
     }
