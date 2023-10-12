@@ -97,9 +97,7 @@ class UserRoleController extends Controller
     
     public function Get_UserRole_With_Accessess_And_Requirements()
     {
-        $userRoles = DB::table('user_roles')
-        ->join('user_role_details', 'user_role_details.id', 'user_roles.user_role_details_id')
-        ->distinct('user_roles.user_role_details_id') 
+        $userRoles = DB::table('user_role_details')
         ->select('user_role_details.name','user_role_details.id')
         ->get();
         $userRoles->transform(function ($item) {
