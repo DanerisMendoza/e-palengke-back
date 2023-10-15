@@ -41,9 +41,24 @@ class UserController extends Controller
         ->where('user_roles.user_id', $user->id)
         ->where('user_roles.status', 'active')
         ->whereNull('accesses.deleted_at') 
-        ->select('side_navs.*')
+        ->select('side_navs.name','side_navs.id')
         ->distinct('side_navs.name') 
-        ->get();
+        ->get()
+        ->each(function ($q) use ($user){
+            $childrenAccess = DB::table('users')
+            ->join('user_roles', 'user_roles.user_id', 'users.id')
+            ->join('user_role_details', 'user_role_details.id', 'user_roles.user_role_details_id')
+            ->join('side_nav_child_accesses', 'side_nav_child_accesses.user_role_details_id', 'user_role_details.id')
+            ->join('side_nav_children', 'side_nav_children.id', 'side_nav_child_accesses.side_nav_children_id')
+            ->where('user_roles.user_id', $user->id)
+            ->pluck('side_nav_children.id') 
+            ->toArray(); 
+            $q->side_nav_children = DB::table('side_nav_children')
+            ->where('side_nav_children.parent_side_nav_id',$q->id)
+            ->whereIn('side_nav_children.id',$childrenAccess)
+            ->select('side_nav_children.name')
+            ->get();
+        });
         return $result;
     }
 
