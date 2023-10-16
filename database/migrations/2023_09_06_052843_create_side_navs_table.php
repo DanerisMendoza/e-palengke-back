@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('side_navs', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('mdi_icon')->nullable();
+            $table->string('pic_icon')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

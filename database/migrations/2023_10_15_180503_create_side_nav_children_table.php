@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->integer('parent_side_nav_id');
             $table->string('name');
+            $table->string('mdi_icon')->nullable();
+            $table->string('pic_icon')->nullable();
             $table->timestamps();
         });
     }

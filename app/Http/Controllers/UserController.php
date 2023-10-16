@@ -51,7 +51,7 @@ class UserController extends Controller
         ->where('user_roles.user_id', $user->id)
         ->where('user_roles.status', 'active')
         ->whereNull('accesses.deleted_at') 
-        ->select('side_navs.name','side_navs.id')
+        ->select('side_navs.name','side_navs.id','side_navs.mdi_icon','side_navs.pic_icon')
         ->distinct('side_navs.name') 
         ->get()
         ->each(function ($q) use ($user){
@@ -66,7 +66,7 @@ class UserController extends Controller
             $q->side_nav_children = DB::table('side_nav_children')
             ->where('side_nav_children.parent_side_nav_id',$q->id)
             ->whereIn('side_nav_children.id',$childrenAccess)
-            ->select('side_nav_children.name','side_nav_children.id')
+            ->select('side_nav_children.name','side_nav_children.id','side_nav_children.mdi_icon','side_nav_children.pic_icon')
             ->get();
         });
         return $result;
