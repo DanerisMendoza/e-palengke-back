@@ -67,9 +67,9 @@ class OrderController extends Controller
         $cartItems = Cart::where('carts.user_id', $userId);
         $cartItems->delete();
 
-        $UserDetail = UserDetail::where('user_id', $userId)->first();
-        $UserDetail->balance = $UserDetail->balance - $Order->total;
-        $UserDetail->save();
+        // $UserDetail = UserDetail::where('user_id', $userId)->first();
+        // $UserDetail->balance = $UserDetail->balance - $Order->total;
+        // $UserDetail->save();
         return 'success';
     }
 
