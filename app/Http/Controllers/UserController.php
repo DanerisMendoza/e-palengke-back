@@ -151,7 +151,7 @@ class UserController extends Controller
             ->where('user_roles.user_id', $userId)
             ->leftJoin('stores', 'stores.user_role_id', 'user_roles.id')
             ->join('user_role_details', 'user_role_details.id', 'user_roles.user_role_details_id')
-            ->select('user_role_details.id','user_roles.status','stores.id as store_id')
+            ->select('user_role_details.name','user_role_details.id','user_roles.status','stores.id as store_id')
             ->get();
             $userDetail->user_role_ids = $user_role_ids;
          
