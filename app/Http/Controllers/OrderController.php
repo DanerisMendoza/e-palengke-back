@@ -96,17 +96,29 @@ class OrderController extends Controller
         return $Order;
     }
 
-    public function GetOrdersByUserId(){
+    public function GetOrdersByUserId(Request $request)
+    {
         $userId = Auth::user()->id;
-        $Order = Order::where('user_id',$userId)
-        ->get()
-        ->each(function ($q){
-            $q->order_details = OrderDetail::where('order_id', $q->id) 
-            ->join('products', 'products.id', 'order_details.product_id')
-            ->join('stores', 'stores.id', 'order_details.store_id')
-            ->select('stores.address','stores.name as store_name','order_details.quantity', 'products.name', 'products.price')
-            ->get();
-        });
+        $Order = Order::when(!!$request->mode, function ($q) use ($userId, $request) {
+            if ($request->mode == 'customer') {
+                return $q->where('user_id', $userId);
+            } 
+            else if ($request->mode == 'delivery') {
+                return $q
+                    ->where('orders.status', 'pending')
+                    ->where('orders.user_id', '!=', $userId)
+                    ->join('user_details', 'user_details.user_id', 'orders.user_id')
+                    ->select('user_details.name as customer_name', 'orders.id', 'orders.status', 'orders.total', 'orders.created_at');
+            }
+        })
+            ->get()
+            ->each(function ($q) {
+                $q->order_details = OrderDetail::where('order_id', $q->id)
+                    ->join('products', 'products.id', 'order_details.product_id')
+                    ->join('stores', 'stores.id', 'order_details.store_id')
+                    ->select('stores.address', 'stores.name as store_name', 'order_details.quantity', 'products.name', 'products.price')
+                    ->get();
+            });
         return $Order;
     }
 }
