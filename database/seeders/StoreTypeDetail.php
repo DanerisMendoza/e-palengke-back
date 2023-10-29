@@ -13,31 +13,39 @@ class StoreTypeDetail extends Seeder
     public function run(): void
     {
         $StoreTypeDetail = new StoreTypeDetailModel();
-        $StoreTypeDetail->name = 'Vegetable';
+        $StoreTypeDetail->name = 'Grocery Store';
         $StoreTypeDetail->save();
 
         $StoreTypeDetail = new StoreTypeDetailModel();
-        $StoreTypeDetail->name = 'Tea';
+        $StoreTypeDetail->name = 'Clothing Store';
         $StoreTypeDetail->save();
         
         $StoreTypeDetail = new StoreTypeDetailModel();
-        $StoreTypeDetail->name = 'Meat';
+        $StoreTypeDetail->name = 'Electronics Store';
         $StoreTypeDetail->save();
      
         $StoreTypeDetail = new StoreTypeDetailModel();
-        $StoreTypeDetail->name = 'Fish';
+        $StoreTypeDetail->name = 'Bookstore';
         $StoreTypeDetail->save();
      
         $StoreTypeDetail = new StoreTypeDetailModel();
-        $StoreTypeDetail->name = 'Grilled';
+        $StoreTypeDetail->name = 'Hardware Store:';
         $StoreTypeDetail->save();
      
         $StoreTypeDetail = new StoreTypeDetailModel();
-        $StoreTypeDetail->name = 'School Supplies';
+        $StoreTypeDetail->name = 'Pharmacy';
         $StoreTypeDetail->save();
 
         $StoreTypeDetail = new StoreTypeDetailModel();
-        $StoreTypeDetail->name = 'Hardware';
+        $StoreTypeDetail->name = 'Department Store';
+        $StoreTypeDetail->save();
+
+        $StoreTypeDetail = new StoreTypeDetailModel();
+        $StoreTypeDetail->name = 'Street Food Store';
+        $StoreTypeDetail->save();
+
+        $StoreTypeDetail = new StoreTypeDetailModel();
+        $StoreTypeDetail->name = 'Milk Tea Store';
         $StoreTypeDetail->save();
       
         $StoreTypeDetail = new StoreTypeDetailModel();
