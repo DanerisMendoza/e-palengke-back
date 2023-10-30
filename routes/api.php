@@ -14,6 +14,7 @@ use App\Http\Controllers\StoreController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\QueueController;
 
 /*
 |--------------------------------------------------------------------------
@@ -73,4 +74,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/Order', [OrderController::class, 'Order']);
     Route::get('/GetOrdersByStoreId/{id}', [OrderController::class, 'GetOrdersByStoreId']);
     Route::get('/GetOrdersByUserId', [OrderController::class, 'GetOrdersByUserId']);
+    //QUEUE API
+    Route::post('/MarkOnline', [QueueController::class, 'MarkOnline']);
+    Route::post('/MarkOffline', [QueueController::class, 'MarkOffline']);
 });
