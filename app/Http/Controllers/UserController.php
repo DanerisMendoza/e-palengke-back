@@ -63,6 +63,7 @@ class UserController extends Controller
                     ->join('side_nav_child_accesses', 'side_nav_child_accesses.user_role_details_id', 'user_role_details.id')
                     ->join('side_nav_children', 'side_nav_children.id', 'side_nav_child_accesses.side_nav_children_id')
                     ->where('user_roles.user_id', $user->id)
+                    ->where('user_roles.status', 'active')
                     ->pluck('side_nav_children.id')
                     ->toArray();
                 $q->side_nav_children = DB::table('side_nav_children')
@@ -174,8 +175,6 @@ class UserController extends Controller
                 }
             });
         $userDetail->user_role_details = $user_role_details;
-
-        \Log::info(json_encode($user_role_details));
 
         $customer_locations = DB::table('customer_locations')
             ->join('user_roles', 'user_roles.id', 'customer_locations.user_role_id')

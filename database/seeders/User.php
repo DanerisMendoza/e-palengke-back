@@ -29,11 +29,7 @@ class User extends Seeder
         // $user->password = Hash::make('123');
         // $user->save();
      
-        // $user = new UserModel();
-        // $user->username = 'delivery1';
-        // $user->password = Hash::make('123');
-        // $user->save();
-    
+        
         // $user = new UserModel();
         // $user->username = 'dev';
         // $user->password = Hash::make('123');
@@ -43,11 +39,15 @@ class User extends Seeder
         $user->username = 'customer2';
         $user->password = Hash::make('123');
         $user->save();
-    
+        
         $user = new UserModel();
         $user->username = 'naruto';
         $user->password = Hash::make('123');
         $user->save();
-
+        
+        $user = new UserModel();
+        $user->username = 'delivery1';
+        $user->password = Hash::make('123');
+        $user->save();
     }
 }
