@@ -105,6 +105,7 @@ class UserRoleController extends Controller
             ->join('requirement_details', 'requirement_details.id', 'requirements.requirement_details_id')
             ->where('requirements.user_role_details_id', $item->id)
             ->whereNull('requirements.deleted_at') 
+            ->whereNull('requirement_details.deleted_at') 
             ->select(
                 'requirement_details.name as requirement_detailsName',
                 'requirement_details.id as requirement_details_id',

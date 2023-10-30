@@ -1,24 +1,10 @@
 <?php
 
 namespace App\Http\Controllers;
-
-use Illuminate\Http\Request;
-use App\Models\ApplicantCredential;
 use Illuminate\Support\Facades\DB;
 
 class ApplicantCredentialController extends Controller
 {
-  
-    public function index()
-    {
-   
-    }
-
-    public function store(Request $request)
-    {
-   
-    }
-
     public function show(string $id)
     {
         $ApplicantCredential = DB::table('applicant_credentials')
@@ -36,15 +22,5 @@ class ApplicantCredentialController extends Controller
             $q->base64img = 'data:image/' . $image_format . ';base64,' . $base64str;
         });
         return $ApplicantCredential;
-    }
-
-    public function update(Request $request, string $id)
-    {
-   
-    }
-
-    public function destroy(string $id)
-    {
-   
     }
 }

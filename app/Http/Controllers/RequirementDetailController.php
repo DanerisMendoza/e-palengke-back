@@ -33,13 +33,14 @@ class RequirementDetailController extends Controller
         ->get();
         return $Requirement;
     }
-    
+
     public function GET_REQUIREMENT_DETAIL_BY_USER_ROLE_DETAILS_ID(String $id)
     {
         $Requirement = Requirement::getQuery()
         ->join('requirement_details', 'requirement_details.id', 'requirements.requirement_details_id')
         ->where('user_role_details_id', $id)
         ->whereNull('requirements.deleted_at')
+        ->whereNull('requirement_details.deleted_at')
         ->select('requirement_details.*')
         ->get();
         return $Requirement;
