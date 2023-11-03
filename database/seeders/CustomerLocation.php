@@ -21,14 +21,14 @@ class CustomerLocation extends Seeder
         $CustomerLocation->save();
     
         $CustomerLocation = new CustomerLocationModel();
-        $CustomerLocation->user_role_id = 3;
+        $CustomerLocation->user_role_id = 4;
         $CustomerLocation->address = "Caloocan City";
         $CustomerLocation->latitude = "14.653740";
         $CustomerLocation->longitude = "120.966773";
         $CustomerLocation->save();
  
         $CustomerLocation = new CustomerLocationModel();
-        $CustomerLocation->user_role_id = 4;
+        $CustomerLocation->user_role_id = 6;
         $CustomerLocation->address = "Caloocan City";
         $CustomerLocation->latitude = "14.653740";
         $CustomerLocation->longitude = "120.966773";

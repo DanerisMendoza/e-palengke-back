@@ -24,24 +24,13 @@ class User extends Seeder
         $user->password = Hash::make('123');
         $user->save();
         
-        // $user = new UserModel();
-        // $user->username = 'seller1';
-        // $user->password = Hash::make('123');
-        // $user->save();
-     
-        
-        // $user = new UserModel();
-        // $user->username = 'dev';
-        // $user->password = Hash::make('123');
-        // $user->save();
-
         $user = new UserModel();
         $user->username = 'customer2';
         $user->password = Hash::make('123');
         $user->save();
         
         $user = new UserModel();
-        $user->username = 'naruto';
+        $user->username = 'patrick';
         $user->password = Hash::make('123');
         $user->save();
         

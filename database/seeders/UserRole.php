@@ -20,63 +20,33 @@ class UserRole extends Seeder
         $userRole->user_role_details_id = 1;
         $userRole->status = 'active';
         $userRole->save();
-        //customer1
+        //customer1 & seller
         $userRole = new UserRoleModel();
         $userRole->user_id = 2;
         $userRole->user_role_details_id = 2;
         $userRole->status = 'active';
-        $userRole->save();
-        //seller1
-        // $userRole = new UserRoleModel();
-        // $userRole->user_id = 3;
-        // $userRole->user_role_details_id = 2;
-        // $userRole->status = 'active';
-        // $userRole->save();
 
-        // $userRole = new UserRoleModel();
-        // $userRole->user_id = 3;
-        // $userRole->user_role_details_id = 3;
-        // $userRole->status = 'active';
-        // $userRole->save();
-        
-        // $userRole = new UserRoleModel();
-        // $userRole->user_id = 4;
-        // $userRole->user_role_details_id = 4;
-        // $userRole->status = 'active';
-        // $userRole->save();
-        // //dev user for devlopment purpose
-        // $userRole = new UserRoleModel();
-        // $userRole->user_id = 5;
-        // $userRole->user_role_details_id = 1;
-        // $userRole->status = 'active';
-        // $userRole->save();
-        
-        // $userRole = new UserRoleModel();
-        // $userRole->user_id = 5;
-        // $userRole->user_role_details_id = 2;
-        // $userRole->status = 'active';
-        // $userRole->save();
-        
-        // $userRole = new UserRoleModel();
-        // $userRole->user_id = 5;
-        // $userRole->user_role_details_id = 3;
-        // $userRole->status = 'active';
-        // $userRole->save();
-        
-        // $userRole = new UserRoleModel();
-        // $userRole->user_id = 5;
-        // $userRole->user_role_details_id = 4;
-        // $userRole->status = 'active';
-        // $userRole->save();
-        
-        //customer2
+        $userRole->save();
+        $userRole = new UserRoleModel();
+        $userRole->user_id = 2;
+        $userRole->user_role_details_id = 3;
+        $userRole->status = 'active';
+        $userRole->save();
+   
+        //customer2 & seller
         $userRole = new UserRoleModel();
         $userRole->user_id = 3;
         $userRole->user_role_details_id = 2;
         $userRole->status = 'active';
         $userRole->save();
+        $userRole = new UserRoleModel();
+
+        $userRole->user_id = 3;
+        $userRole->user_role_details_id = 3;
+        $userRole->status = 'active';
+        $userRole->save();
         
-        //naruto
+        //patrick
         $userRole = new UserRoleModel();
         $userRole->user_id = 4;
         $userRole->user_role_details_id = 2;

@@ -57,6 +57,7 @@ class OrderController extends Controller
             $OrderDetail->product_id = $order_details['product_id'];
             $OrderDetail->store_id = $order_details['store_id'];
             $OrderDetail->quantity = $order_details['quantity'];
+            $OrderDetail->status = 'pending';
             $OrderDetail->save();
         }
         foreach ($orderDetailsArr as $order_details) {
@@ -67,9 +68,6 @@ class OrderController extends Controller
         $cartItems = Cart::where('carts.user_id', $userId);
         $cartItems->delete();
 
-        // $UserDetail = UserDetail::where('user_id', $userId)->first();
-        // $UserDetail->balance = $UserDetail->balance - $Order->total;
-        // $UserDetail->save();
         return 'success';
     }
 
@@ -85,7 +83,7 @@ class OrderController extends Controller
                 $q->order_details = OrderDetail::where('order_id', $q->id)
                     ->where('order_details.store_id', $id)
                     ->join('products', 'products.id', 'order_details.product_id')
-                    ->select('order_details.quantity', 'products.name', 'products.price')
+                    ->select('order_details.quantity','order_details.status', 'products.name', 'products.price')
                     ->get();
                 $total = 0;
                 foreach ($q->order_details as $item) {
@@ -96,8 +94,12 @@ class OrderController extends Controller
         return $Order;
     }
 
-    public function AcceptOrder()
+    public function AcceptOrder(Request $request)
     {
+
+        // $UserDetail = UserDetail::where('user_id', $userId)->first();
+        // $UserDetail->balance = $UserDetail->balance - $Order->total;
+        // $UserDetail->save();
     }
 
     public function GetOrdersByUserId(Request $request)
@@ -112,17 +114,18 @@ class OrderController extends Controller
                         'orders.status',
                         'orders.id',
                         'order_details.store_id',
+                        'orders.created_at',
                         'stores.name',
                     )
                     ->where('orders.user_id', $userId)
-                    ->groupBy('order_details.store_id', 'orders.status', 'orders.id', 'stores.name')
+                    ->groupBy('orders.created_at','order_details.store_id', 'orders.status', 'orders.id', 'stores.name')
                     ->get()
                     ->each(function ($q) {
                         $q->order_details = OrderDetail::where('order_id', $q->id)
                             ->join('products', 'products.id', 'order_details.product_id')
                             ->join('stores', 'stores.id', 'order_details.store_id')
                             ->where('stores.id', $q->store_id)
-                            ->select('stores.address', 'stores.name as store_name', 'order_details.quantity', 'products.name', 'products.price')
+                            ->select('stores.address', 'stores.name as store_name', 'order_details.quantity', 'order_details.status', 'products.name', 'products.price')
                             ->get();
                         $total = 0;
                         foreach ($q->order_details as $item) {

@@ -6,6 +6,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Database\Seeders\User;
 use Database\Seeders\UserRole;
+use Database\Seeders\StoreSeeder;
 use Database\Seeders\StoreTypeDetail;
 use Database\Seeders\CustomerLocation;
 use Database\Seeders\UserDetail;
@@ -16,6 +17,7 @@ use Database\Seeders\Requirement;
 use Database\Seeders\ProductTypeDetail;
 use Database\Seeders\SideNavChild;
 use Database\Seeders\SideNavChildAccess;
+use Database\Seeders\StoreTypeSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -38,6 +40,8 @@ class DatabaseSeeder extends Seeder
             ProductTypeDetail::class,
             SideNavChild::class,
             SideNavChildAccess::class,
+            StoreSeeder::class,
+            StoreTypeSeeder::class,
         ]);
 
         // \App\Models\User::factory(10)->create();
