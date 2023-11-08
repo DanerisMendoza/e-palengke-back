@@ -87,7 +87,8 @@ class CartController extends Controller
         $userId = Auth::user()->id;
         $cartItems = Cart::where('carts.user_id', $userId)
             ->join('products', 'products.id', 'carts.product_id')
-            ->select('products.price','products.name','products.id', 'products.id as product_id', 'products.stock', 'carts.quantity', 'carts.store_id')
+            ->join('stores', 'stores.id', 'carts.store_id')
+            ->select('stores.id','stores.name as store_name','products.price','products.name','products.id', 'products.id as product_id', 'products.stock', 'carts.quantity', 'carts.store_id')
             ->get();
     
         foreach ($cartItems as $item) {
