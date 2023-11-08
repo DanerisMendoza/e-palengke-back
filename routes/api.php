@@ -70,9 +70,12 @@ Route::middleware('auth:api')->group(function () {
     Route::delete('/RemoveCartProduct', [CartController::class, 'RemoveCartProduct']);
     Route::get('/GetCart', [CartController::class, 'GetCart']);
     //ORDER API
-    Route::post('/Order', [OrderController::class, 'Order']);
-    Route::get('/GetOrdersByStoreId/{id}', [OrderController::class, 'GetOrdersByStoreId']);
-    Route::get('/GetOrdersByUserId', [OrderController::class, 'GetOrdersByUserId']);
+    Route::post('/ORDER', [OrderController::class, 'ORDER']);
+    Route::get('/GET_ORDERS_BY_STORE_ID/{id}', [OrderController::class, 'GET_ORDERS_BY_STORE_ID']);
+    Route::get('/GET_ORDERS_BY_USER_ID', [OrderController::class, 'GET_ORDERS_BY_USER_ID']);
+    Route::get('/GET_ORDER_DETAILS', [OrderController::class, 'GET_ORDER_DETAILS']);
+    Route::post('/CANCEL_ORDER', [OrderController::class, 'CANCEL_ORDER']);
+    Route::post('/CANCEL_ORDER_DETAIL', [OrderController::class, 'CANCEL_ORDER_DETAIL']);
     //QUEUE API
     Route::post('/MarkOnline', [QueueController::class, 'MarkOnline']);
     Route::post('/MarkOffline', [QueueController::class, 'MarkOffline']);
