@@ -8,6 +8,7 @@ use App\Models\OrderDetail;
 use App\Models\Transaction;
 use App\Models\Product;
 use App\Models\Cart;
+use App\Models\UserDetail;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
@@ -47,12 +48,18 @@ class OrderController extends Controller
 
         $groupedCart = collect($request['cart'])->groupBy('store_id')->toArray();
         foreach ($groupedCart as $storeOrders) {
+            $total = 0;
+            foreach ($storeOrders as $OrderDetailInput) {
+                $total += $OrderDetailInput['price'];
+            }
             $Order = new Order();
             $Order->user_id = $userId;
             $Order->transaction_id = $Transaction->id;
-            $Order->status = 'pending';
             $Order->store_id = $storeOrders[0]['store_id'];
+            $Order->total = $total;
+            $Order->status = 'pending';
             $Order->save();
+
             foreach ($storeOrders as $OrderDetailInput) {
                 $OrderDetail = new OrderDetail();
                 $OrderDetail->order_id = $Order->id;
@@ -99,6 +106,7 @@ class OrderController extends Controller
                         ->where('order_details.store_id', $store_id)
                         ->distinct('orders.id')
                         ->select(
+                            'user_details.id as customer_id',
                             'user_details.name as customer_name',
                             'orders.id as order_id',
                             'orders.status',
@@ -127,10 +135,16 @@ class OrderController extends Controller
 
     public function ACCEPT_ORDER(Request $request)
     {
-        \Log::info($request);
-        // $UserDetail = UserDetail::where('user_id', $userId)->first();
-        // $UserDetail->balance = $UserDetail->balance - $Order->total;
-        // $UserDetail->save();
+        $Order = Order::find($request['order_id']);
+        if ($Order) {
+            $Order->update(['status' => 'preparing']);
+        }
+        $UserDetail = UserDetail::where('user_id', $request['customer_id'])->first();
+        $UserDetail->balance = $UserDetail->balance - $Order->total;
+        $UserDetail->save();
+        if ($Order && $UserDetail) {
+            return 'success';
+        }
     }
 
     public function CANCEL_ORDER(Request $request)
@@ -139,11 +153,10 @@ class OrderController extends Controller
             ->where('id', $request['order_id'])
             ->where('status', 'pending')
             ->delete();
-        $order_details = DB::table('order_details')
-            ->where('order_id', $request['order_id'])
-            ->where('status', 'pending')
-            ->delete();
-        if ($order && $order_details) {
+        if ($order) {
+            DB::table('order_details')
+                ->where('order_id', $request['order_id'])
+                ->delete();
             return 'success';
         } else {
             return 'fail';
