@@ -51,6 +51,9 @@ Route::middleware('auth:api')->group(function () {
     //PRODUCT API 
     Route::resource('ProductTypeDetail', ProductTypeDetailController::class);
     Route::resource('Product', ProductController::class);
+    // Edit a Product Detail
+    Route::put('/ProductTypeDetail/{id}', [ProductTypeDetailController::class, 'edit']);    
+    Route::put('/ProductTypeDetail/{id}', [ProductTypeDetailController::class, 'store']);
     //USER ROLE API
     Route::resource('UserRole', UserRoleController::class);
     Route::resource('updateUserRole', UserRoleController::class);
