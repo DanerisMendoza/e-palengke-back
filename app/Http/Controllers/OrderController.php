@@ -57,7 +57,7 @@ class OrderController extends Controller
             $Order->transaction_id = $Transaction->id;
             $Order->store_id = $storeOrders[0]['store_id'];
             $Order->total = $total;
-            $Order->status = 'pending';
+            $Order->status = 'Pending';
             $Order->save();
 
             foreach ($storeOrders as $OrderDetailInput) {
@@ -66,7 +66,7 @@ class OrderController extends Controller
                 $OrderDetail->product_id = $OrderDetailInput['product_id'];
                 $OrderDetail->store_id = $OrderDetailInput['store_id'];
                 $OrderDetail->quantity = $OrderDetailInput['quantity'];
-                $OrderDetail->status = 'pending';
+                $OrderDetail->status = 'Pending';
                 $OrderDetail->save();
 
                 $Product = Product::where('id', $OrderDetailInput['product_id'])->first();
@@ -137,7 +137,7 @@ class OrderController extends Controller
     {
         $Order = Order::find($request['order_id']);
         if ($Order) {
-            $Order->update(['status' => 'preparing']);
+            $Order->update(['status' => 'Preparing']);
         }
         $UserDetail = UserDetail::where('user_id', $request['customer_id'])->first();
         $UserDetail->balance = $UserDetail->balance - $Order->total;
@@ -147,11 +147,22 @@ class OrderController extends Controller
         }
     }
 
+    public function ORDER_TO_SHIP(Request $request)
+    {
+        $Order = Order::find($request['order_id']);
+        if ($Order) {
+            $Order = $Order->update(['status' => 'To Ship']);
+            if ($Order) {
+                return 'success';
+            }
+        }
+    }
+
     public function CANCEL_ORDER(Request $request)
     {
         $order = DB::table('orders')
             ->where('id', $request['order_id'])
-            ->where('status', 'pending')
+            ->where('status', 'Pending')
             ->delete();
         if ($order) {
             DB::table('order_details')
@@ -167,7 +178,7 @@ class OrderController extends Controller
     {
         $order_details = DB::table('order_details')
             ->where('id', $request['item']['order_detail_id'])
-            ->where('status', 'pending')
+            ->where('status', 'Pending')
             ->delete();
         if ($order_details) {
             return 'success';
