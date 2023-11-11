@@ -40,6 +40,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/GetAllSideNav', [UserController::class, 'GetAllSideNav']);
     Route::get('/authenticate', [UserController::class, 'authenticate']);
     Route::post('/UpdateUserBalance', [UserController::class, 'UpdateUserBalance']);
+    Route::post('/FIND_USER_WITHIN_RADIUS', [UserController::class, 'FIND_USER_WITHIN_RADIUS']);
     //REQUIREMENT API
     Route::resource('RequirementDetail', RequirementDetailController::class);
     // Edit a Requirement Detail
@@ -78,6 +79,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/ACCEPT_ORDER', [OrderController::class, 'ACCEPT_ORDER']);
     Route::post('/DECLINE_ORDER', [OrderController::class, 'DECLINE_ORDER']);
     Route::post('/ORDER_TO_SHIP', [OrderController::class, 'ORDER_TO_SHIP']);
+    Route::post('/FIND_ORDER', [OrderController::class, 'FIND_ORDER']);
     //QUEUE API
     Route::post('/MarkOnline', [QueueController::class, 'MarkOnline']);
     Route::post('/MarkOffline', [QueueController::class, 'MarkOffline']);

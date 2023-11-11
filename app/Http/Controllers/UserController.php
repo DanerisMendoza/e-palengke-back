@@ -262,29 +262,29 @@ class UserController extends Controller
     }
 
 
-
-
-
-    /**
-     * Display a listing of the resource.
-     */
+    public function FIND_USER_WITHIN_RADIUS(Request $request){
+        $latitude = $request['latitude'];
+        $longitude = $request['longitude'];
+        $radiusInMeters = $request['radius'];
+    
+        // Convert the radius from meters to kilometers
+        $radiusInKm = ($radiusInMeters+1) / 1000;
+    
+        $orders = DB::table('customer_locations')
+            ->select('*')
+            ->selectRaw('( 6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+            ->having('distance', '<', $radiusInKm)
+            ->get();
+    
+        return $orders;
+    }
+    
     public function index()
     {
         $users = User::all();
         return $users;
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create(Request $request)
-    {
-        // You can optionally implement this if needed.
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -304,9 +304,6 @@ class UserController extends Controller
         return 'success';
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         $user = User::find($id);
@@ -316,17 +313,6 @@ class UserController extends Controller
         return $user;
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        // You can optionally implement this if needed.
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(string $id, Request $request)
     {
         $user = User::where('id', $id)->first();
@@ -336,9 +322,6 @@ class UserController extends Controller
         return 'success';
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         $user = User::find($id);

@@ -224,7 +224,24 @@ class OrderController extends Controller
         }
     }
 
+    public function FIND_ORDER_WITHIN_RADIUS(Request $request){
+        $latitude = $request['latitude'];
+        $longitude = $request['longitude'];
+        $radiusInMeters = $request['radius'];
 
+        // Convert the radius from meters to kilometers
+        $radiusInKm = ($radiusInMeters + 1) / 1000;
+
+        $orders = DB::table('transactions')
+            ->join('user_roles','user_roles.user_id','transactions.user_id')
+            ->join('customer_locations','customer_locations.user_role_id','user_roles.user_id')
+            ->select('customer_locations.latitude','customer_locations.longitude')
+            ->selectRaw('( 6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+            ->having('distance', '<', $radiusInKm)
+            ->get();
+
+        return $orders;
+    }
 
     public function GET_ORDER_DETAILS(Request $request)
     {
