@@ -48,6 +48,9 @@ Route::middleware('auth:api')->group(function () {
     //STORE API
     Route::resource('StoreTypeDetail', StoreTypeDetailController::class);
     Route::get('/GetActiveStore', [StoreController::class, 'GetActiveStore']);
+     // Edit a Store Detail
+     Route::put('/StoreTypeDetail/{id}', [StoreTypeDetailController::class, 'edit']);    
+     Route::put('/StoreTypeDetail/{id}', [StoreTypeDetailController::class, 'store']);
     //PRODUCT API 
     Route::resource('ProductTypeDetail', ProductTypeDetailController::class);
     Route::resource('Product', ProductController::class);

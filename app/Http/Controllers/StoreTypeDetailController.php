@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\StoreTypeDetail;
+use App\Models\StoreType;
 
 class StoreTypeDetailController extends Controller
 {
@@ -45,7 +46,8 @@ class StoreTypeDetailController extends Controller
         $storeTypeDetail->save();
 
         // Return a response, e.g., a success message or a redirect
-        return response()->json(['message' => 'StoreTypeDetail created successfully']);
+        // return response()->json(['message' => 'StoreTypeDetail created successfully']);
+        return 'success';
     }
 
     /**
@@ -99,7 +101,8 @@ class StoreTypeDetailController extends Controller
         $storeTypeDetail->save();
 
         // Return a response, e.g., a success message or a redirect
-        return response()->json(['message' => 'StoreTypeDetail updated successfully']);
+        // return response()->json(['message' => 'StoreTypeDetail updated successfully']);
+        return 'success';
     }
 
     /**
@@ -109,17 +112,18 @@ class StoreTypeDetailController extends Controller
     {
         \Log::info($id);
         // Retrieve the StoreTypeDetail by ID from the database
-        // $storeTypeDetail = StoreTypeDetail::find($id);
+        $storeTypeDetail = StoreTypeDetail::find($id);
         
-        // if (!$storeTypeDetail) {
-        //     // Return a response if the resource was not found
-        //     return response()->json(['message' => 'StoreTypeDetail not found'], 404);
-        // }
+        if (!$storeTypeDetail) {
+            // Return a response if the resource was not found
+            return response()->json(['message' => 'StoreTypeDetail not found'], 404);
+        }
 
         // // Delete the StoreTypeDetail
-        // $storeTypeDetail->delete();
+        $storeTypeDetail->delete();
 
         // // Return a response, e.g., a success message or a redirect
         // return response()->json(['message' => 'StoreTypeDetail deleted successfully']);
+        return 'success';
     }
 }
