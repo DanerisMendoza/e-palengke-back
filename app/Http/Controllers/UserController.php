@@ -173,6 +173,12 @@ class UserController extends Controller
                             ->get();
                         });
                 }
+                if ($q->id == 4) {
+                    $q->delivery_details = DB::table('delivery_locations')
+                        ->where('user_role_id', $q->user_role_id)
+                        ->select('id as delivery_id', 'latitude', 'longitude')
+                        ->get();
+                }
             });
         $userDetail->user_role_details = $user_role_details;
 

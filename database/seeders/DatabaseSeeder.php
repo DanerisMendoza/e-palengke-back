@@ -18,6 +18,7 @@ use Database\Seeders\ProductTypeDetail;
 use Database\Seeders\SideNavChild;
 use Database\Seeders\SideNavChildAccess;
 use Database\Seeders\StoreTypeSeeder;
+use Database\Seeders\DeliveryLocationSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -42,6 +43,7 @@ class DatabaseSeeder extends Seeder
             SideNavChildAccess::class,
             StoreSeeder::class,
             StoreTypeSeeder::class,
+            DeliveryLocationSeeder::class,
         ]);
 
         // \App\Models\User::factory(10)->create();
