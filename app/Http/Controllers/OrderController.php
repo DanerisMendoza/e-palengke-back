@@ -224,24 +224,46 @@ class OrderController extends Controller
         }
     }
 
-    public function FIND_ORDER_WITHIN_RADIUS(Request $request){
+    public function FIND_ORDER_WITHIN_RADIUS(Request $request)
+    {
         $latitude = $request['latitude'];
         $longitude = $request['longitude'];
         $radiusInMeters = $request['radius'];
-
+    
         // Convert the radius from meters to kilometers
         $radiusInKm = ($radiusInMeters + 1) / 1000;
-
-        $orders = DB::table('transactions')
-            ->join('user_roles','user_roles.user_id','transactions.user_id')
-            ->join('customer_locations','customer_locations.user_role_id','user_roles.user_id')
-            ->select('customer_locations.latitude','customer_locations.longitude')
-            ->selectRaw('( 6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+    
+        $result = DB::table('transactions')
+            ->join('user_roles', 'user_roles.user_id', 'transactions.user_id')
+            ->join('customer_locations', 'customer_locations.user_role_id', 'user_roles.id')
+            ->select('transactions.id as transaction_id', 'customer_locations.latitude', 'customer_locations.longitude')
+            ->selectRaw('(6371 * acos(cos(radians(?)) * cos(radians(customer_locations.latitude)) * cos(radians(customer_locations.longitude) - radians(?)) + sin(radians(?)) * sin(radians(customer_locations.latitude)))) AS distance', [$latitude, $longitude, $latitude])
             ->having('distance', '<', $radiusInKm)
-            ->get();
-
-        return $orders;
+            ->get()
+            ->each(function ($q) {
+                $q->orders = DB::table('orders')
+                    ->where('orders.transaction_id', $q->transaction_id)
+                    ->get()
+                    ->each(function ($q2) {
+                        $q2->order_details = DB::table('order_details')
+                            ->where('order_details.order_id', $q2->id)
+                            ->get();
+                    });
+            })
+            ->reject(function ($transaction) {
+                // Reject transactions where any order has a status other than 'Preparing'
+                return $transaction->orders->contains('status', '!=', 'To Ship');
+            });
+    
+        return $result;
     }
+    
+    
+
+    
+    
+    
+    
 
     public function GET_ORDER_DETAILS(Request $request)
     {
