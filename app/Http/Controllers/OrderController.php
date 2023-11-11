@@ -60,6 +60,10 @@ class OrderController extends Controller
             $Order->status = 'Pending';
             $Order->save();
 
+            $UserDetail = UserDetail::where('user_id', $userId)->first();
+            $UserDetail->balance = $UserDetail->balance - $Order->total;
+            $UserDetail->save();
+
             foreach ($storeOrders as $OrderDetailInput) {
                 $OrderDetail = new OrderDetail();
                 $OrderDetail->order_id = $Order->id;
@@ -74,6 +78,7 @@ class OrderController extends Controller
                 $Product->save();
             }
         }
+
 
         $cartItems = Cart::where('carts.user_id', $userId);
         $cartItems->delete();
@@ -139,12 +144,8 @@ class OrderController extends Controller
         if ($Order) {
             $Order->update(['status' => 'Preparing']);
         }
-        $UserDetail = UserDetail::where('user_id', $request['customer_id'])->first();
-        $UserDetail->balance = $UserDetail->balance - $Order->total;
-        $UserDetail->save();
-        if ($Order && $UserDetail) {
-            return 'success';
-        }
+
+        return 'success';
     }
 
     public function ORDER_TO_SHIP(Request $request)
@@ -160,6 +161,38 @@ class OrderController extends Controller
 
     public function CANCEL_ORDER(Request $request)
     {
+        $userId = Auth::user()->id;
+        $Order = DB::table('orders')
+            ->where('id', $request['order_id'])
+            ->where('status', 'Pending')
+            ->first();
+        $UserDetail = UserDetail::where('user_id', $userId)->first();
+        $UserDetail->balance = $UserDetail->balance + $Order->total;
+        $UserDetail->save();
+        $order = DB::table('orders')
+            ->where('id', $request['order_id'])
+            ->where('status', 'Pending')
+            ->delete();
+        if ($order) {
+            DB::table('order_details')
+                ->where('order_id', $request['order_id'])
+                ->delete();
+            return 'success';
+        } else {
+            return 'fail';
+        }
+    }
+
+    public function DECLINE_ORDER(Request $request)
+    {
+        $userId = $request['customer_id'];
+        $Order = DB::table('orders')
+            ->where('id', $request['order_id'])
+            ->where('status', 'Pending')
+            ->first();
+        $UserDetail = UserDetail::where('user_id', $userId)->first();
+        $UserDetail->balance = $UserDetail->balance + $Order->total;
+        $UserDetail->save();
         $order = DB::table('orders')
             ->where('id', $request['order_id'])
             ->where('status', 'Pending')
@@ -176,6 +209,10 @@ class OrderController extends Controller
 
     public function CANCEL_ORDER_DETAIL(Request $request)
     {
+        $userId = Auth::user()->id;
+        $UserDetail = UserDetail::where('user_id', $userId)->first();
+        $UserDetail->balance = $UserDetail->balance + $request['item']['price'];
+        $UserDetail->save();
         $order_details = DB::table('order_details')
             ->where('id', $request['item']['order_detail_id'])
             ->where('status', 'Pending')
@@ -186,6 +223,8 @@ class OrderController extends Controller
             return 'fail';
         }
     }
+
+
 
     public function GET_ORDER_DETAILS(Request $request)
     {

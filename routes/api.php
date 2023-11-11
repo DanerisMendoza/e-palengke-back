@@ -76,6 +76,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/CANCEL_ORDER', [OrderController::class, 'CANCEL_ORDER']);
     Route::post('/CANCEL_ORDER_DETAIL', [OrderController::class, 'CANCEL_ORDER_DETAIL']);
     Route::post('/ACCEPT_ORDER', [OrderController::class, 'ACCEPT_ORDER']);
+    Route::post('/DECLINE_ORDER', [OrderController::class, 'DECLINE_ORDER']);
     Route::post('/ORDER_TO_SHIP', [OrderController::class, 'ORDER_TO_SHIP']);
     //QUEUE API
     Route::post('/MarkOnline', [QueueController::class, 'MarkOnline']);
