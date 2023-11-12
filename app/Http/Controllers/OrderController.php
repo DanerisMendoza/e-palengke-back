@@ -226,16 +226,26 @@ class OrderController extends Controller
 
     public function FIND_ORDER_WITHIN_RADIUS(Request $request)
     {
+        \Log::info($request);
+        $user_id = $request['user_id'];
         $latitude = $request['latitude'];
         $longitude = $request['longitude'];
         $radiusInMeters = $request['radius'];
         $declinedTransactions = $request['declinedTransactions'];
         $radiusInKm = ($radiusInMeters + 1) / 1000;
+
+        if (count($declinedTransactions) != 0) {
+            $transactions = DB::table('transactions')->where('id', $declinedTransactions[count($declinedTransactions) - 1]);
+            if ($transactions) {
+                $transactions->update(['delivery_id' => null]);
+            }
+        }
+
         $result = DB::table('transactions')
             ->join('user_roles', 'user_roles.user_id', 'transactions.user_id')
             ->join('customer_locations', 'customer_locations.user_role_id', 'user_roles.id')
             ->join('user_details', 'user_details.user_id', 'user_roles.user_id')
-            ->select('user_details.name as customer_name','user_details.address as customer_address','transactions.id as transaction_id', 'customer_locations.latitude', 'customer_locations.longitude')
+            ->select('user_details.name as customer_name', 'user_details.address as customer_address', 'transactions.id as transaction_id', 'customer_locations.latitude', 'customer_locations.longitude')
             ->selectRaw('(6371 * acos(cos(radians(?)) * cos(radians(customer_locations.latitude)) * cos(radians(customer_locations.longitude) - radians(?)) + sin(radians(?)) * sin(radians(customer_locations.latitude)))) AS distance', [$latitude, $longitude, $latitude])
             ->having('distance', '<', $radiusInKm)
             ->whereNull('transactions.delivery_id')
@@ -262,6 +272,15 @@ class OrderController extends Controller
                 // Reject transactions where any order has a status other than 'To Ship'
                 return $transaction->orders->contains('status', '!=', 'To Ship');
             });
+
+        if ($result->isNotEmpty()) {
+            $firstResult = $result[0];
+            $transactions = DB::table('transactions')->where('id', $firstResult->transaction_id);
+            if ($transactions) {
+                $transactions->update(['delivery_id' => $user_id]);
+            }
+        }
+        \Log::info($result);
         return $result;
     }
 
