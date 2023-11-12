@@ -229,37 +229,32 @@ class OrderController extends Controller
         $latitude = $request['latitude'];
         $longitude = $request['longitude'];
         $radiusInMeters = $request['radius'];
-
-        // Convert the radius from meters to kilometers
+        $declinedTransactions = $request['declinedTransactions'];
         $radiusInKm = ($radiusInMeters + 1) / 1000;
-
         $result = DB::table('transactions')
             ->join('user_roles', 'user_roles.user_id', 'transactions.user_id')
             ->join('customer_locations', 'customer_locations.user_role_id', 'user_roles.id')
-            ->select('transactions.id as transaction_id', 'customer_locations.latitude', 'customer_locations.longitude')
+            ->join('user_details', 'user_details.user_id', 'user_roles.user_id')
+            ->select('user_details.name as customer_name','user_details.address as customer_address','transactions.id as transaction_id', 'customer_locations.latitude', 'customer_locations.longitude')
             ->selectRaw('(6371 * acos(cos(radians(?)) * cos(radians(customer_locations.latitude)) * cos(radians(customer_locations.longitude) - radians(?)) + sin(radians(?)) * sin(radians(customer_locations.latitude)))) AS distance', [$latitude, $longitude, $latitude])
             ->having('distance', '<', $radiusInKm)
             ->whereNull('transactions.delivery_id')
-            ->where('transactions.id', function ($query) use ($latitude, $longitude, $radiusInKm) {
-                $query->select(DB::raw('MIN(transactions.id)'))
-                    ->from('transactions')
-                    ->join('user_roles', 'user_roles.user_id', 'transactions.user_id')
-                    ->join('customer_locations', 'customer_locations.user_role_id', 'user_roles.id')
-                    ->whereRaw('(6371 * acos(cos(radians(?)) * cos(radians(customer_locations.latitude)) * cos(radians(customer_locations.longitude) - radians(?)) + sin(radians(?)) * sin(radians(customer_locations.latitude)))) < ?', [$latitude, $longitude, $latitude, $radiusInKm])
-                    ->whereNull('transactions.delivery_id');
+            ->orderBy('transactions.id', 'asc')
+            ->when(count($declinedTransactions) != 0, function ($q) use ($declinedTransactions) {
+                $q->whereNotIn('transactions.id', $declinedTransactions);
             })
             ->get()
             ->each(function ($q) {
                 $q->orders = DB::table('orders')
                     ->join('stores', 'stores.id', 'orders.store_id')
-                    ->select('orders.status', 'orders.transaction_id', 'orders.id as order_id', 'stores.name', 'stores.latitude', 'stores.longitude')
+                    ->select('orders.status', 'orders.transaction_id', 'orders.id as order_id', 'stores.name', 'stores.latitude', 'stores.longitude', 'stores.address')
                     ->where('orders.transaction_id', $q->transaction_id)
                     ->get()
                     ->each(function ($q2) {
                         $q2->order_details = DB::table('order_details')
                             ->join('products', 'products.id', 'order_details.product_id')
                             ->where('order_details.order_id', $q2->order_id)
-                            ->select('products.name','products.price','order_details.quantity')
+                            ->select('products.name', 'products.price', 'order_details.quantity')
                             ->get();
                     });
             })
@@ -267,7 +262,6 @@ class OrderController extends Controller
                 // Reject transactions where any order has a status other than 'To Ship'
                 return $transaction->orders->contains('status', '!=', 'To Ship');
             });
-
         return $result;
     }
 
