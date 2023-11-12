@@ -80,6 +80,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/DECLINE_ORDER', [OrderController::class, 'DECLINE_ORDER']);
     Route::post('/ORDER_TO_SHIP', [OrderController::class, 'ORDER_TO_SHIP']);
     Route::post('/FIND_ORDER_WITHIN_RADIUS', [OrderController::class, 'FIND_ORDER_WITHIN_RADIUS']);
+    Route::post('/REMOVE_TRANSACTION_DELIVERY_ID', [OrderController::class, 'REMOVE_TRANSACTION_DELIVERY_ID']);
     //QUEUE API
     Route::post('/MarkOnline', [QueueController::class, 'MarkOnline']);
     Route::post('/MarkOffline', [QueueController::class, 'MarkOffline']);

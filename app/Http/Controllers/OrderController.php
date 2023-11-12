@@ -282,13 +282,14 @@ class OrderController extends Controller
         return $result;
     }
 
-
-
-
-
-
-
-
+    public function REMOVE_TRANSACTION_DELIVERY_ID(Request $request){
+        $transactions = DB::table('transactions')
+        ->where('id', $request['transaction_id'])
+        ->where('delivery_id', $request['user_id']);
+        if ($transactions) {
+            $transactions->update(['delivery_id' => null]);
+        }
+    }
 
     public function GET_ORDER_DETAILS(Request $request)
     {
