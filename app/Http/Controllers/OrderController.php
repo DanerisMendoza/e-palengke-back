@@ -226,7 +226,6 @@ class OrderController extends Controller
 
     public function FIND_ORDER_WITHIN_RADIUS(Request $request)
     {
-        \Log::info($request);
         $user_id = $request['user_id'];
         $latitude = $request['latitude'];
         $longitude = $request['longitude'];
@@ -280,7 +279,6 @@ class OrderController extends Controller
                 $transactions->update(['delivery_id' => $user_id]);
             }
         }
-        \Log::info($result);
         return $result;
     }
 
