@@ -44,6 +44,7 @@ class OrderController extends Controller
 
         $Transaction = new Transaction();
         $Transaction->user_id = $userId;
+        $Transaction->status = 'pending';
         $Transaction->save();
 
         $groupedCart = collect($request['cart'])->groupBy('store_id')->toArray();
@@ -282,12 +283,69 @@ class OrderController extends Controller
         return $result;
     }
 
-    public function REMOVE_TRANSACTION_DELIVERY_ID(Request $request){
-        $transactions = DB::table('transactions')
-        ->where('id', $request['transaction_id'])
-        ->where('delivery_id', $request['user_id']);
-        if ($transactions) {
-            $transactions->update(['delivery_id' => null]);
+    public function GET_IN_PROGRESS_TRANSACTION(Request $request)
+    {
+        $result = DB::table('transactions')
+            ->join('user_roles', 'user_roles.user_id', 'transactions.user_id')
+            ->join('customer_locations', 'customer_locations.user_role_id', 'user_roles.id')
+            ->join('user_details', 'user_details.user_id', 'user_roles.user_id')
+            ->where('transactions.delivery_id', $request['user_id'])
+            ->where(function ($query) {
+                $query->where('transactions.status', 'To Pickup')
+                    ->orWhere('transactions.status', 'To Deliver');
+            })
+            ->select('user_details.name as customer_name', 'user_details.address as customer_address','transactions.status', 'transactions.id as transaction_id', 'customer_locations.latitude', 'customer_locations.longitude')
+            ->get()
+            ->each(function ($q) {
+                $q->orders = DB::table('orders')
+                    ->join('stores', 'stores.id', 'orders.store_id')
+                    ->select('orders.status', 'orders.transaction_id', 'orders.id as order_id', 'stores.name', 'stores.latitude', 'stores.longitude', 'stores.address')
+                    ->where('orders.transaction_id', $q->transaction_id)
+                    ->get()
+                    ->each(function ($q2) {
+                        $q2->order_details = DB::table('order_details')
+                            ->join('products', 'products.id', 'order_details.product_id')
+                            ->where('order_details.order_id', $q2->order_id)
+                            ->select('products.name', 'products.price', 'order_details.quantity')
+                            ->get();
+                    });
+            });
+        if ($result) {
+            return $result;
+        }
+    }
+
+    public function PICKUP_ORDERS(Request $request)
+    {
+        $result = DB::table('transactions')
+            ->where('id', $request['transaction_id'])
+            ->where('transactions.status', 'To Pickup');
+        if ($result) {
+            $result->update(['status' => 'To Deliver']);
+            $result = DB::table('orders')
+                ->where('transaction_id', $request['transaction_id'])
+                ->update(['status' => 'To Recieve']);
+            return 'success';
+        }
+    }
+
+    public function ACCEPT_TRANSACTION(Request $request)
+    {
+        $result = DB::table('transactions')
+            ->where('id', $request['transaction_id'])
+            ->where('delivery_id', $request['user_id']);
+        if ($result) {
+            $result->update(['delivery_id' =>  $request['user_id'], 'status' => 'To Pickup']);
+        }
+    }
+
+    public function REMOVE_TRANSACTION_DELIVERY_ID(Request $request)
+    {
+        $result = DB::table('transactions')
+            ->where('id', $request['transaction_id'])
+            ->where('delivery_id', $request['user_id']);
+        if ($result) {
+            $result->update(['delivery_id' => null]);
         }
     }
 
