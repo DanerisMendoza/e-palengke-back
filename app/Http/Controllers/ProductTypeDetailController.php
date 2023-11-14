@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\ProductTypeDetail;
+use App\Models\ProductType;
 
 class ProductTypeDetailController extends Controller
 {
@@ -47,7 +48,8 @@ class ProductTypeDetailController extends Controller
         $ProductTypeDetail->save();
 
         // Return a response, e.g., a success message or a redirect
-        return response()->json(['message' => 'ProductTypeDetail created successfully']);
+        // return response()->json(['message' => 'ProductTypeDetail created successfully']);
+        return 'success';
     }
 
     /**
@@ -101,7 +103,8 @@ class ProductTypeDetailController extends Controller
         $ProductTypeDetail->save();
 
         // Return a response, e.g., a success message or a redirect
-        return response()->json(['message' => 'ProductTypeDetail updated successfully']);
+        // return response()->json(['message' => 'ProductTypeDetail updated successfully']);
+        return 'success';
     }
 
     /**
@@ -111,17 +114,18 @@ class ProductTypeDetailController extends Controller
     {
         \Log::info($id);
         // Retrieve the ProductTypeDetail by ID from the database
-        // $ProductTypeDetail = ProductTypeDetail::find($id);
+        $ProductTypeDetail = ProductTypeDetail::find($id);
         
-        // if (!$ProductTypeDetail) {
+        if (!$ProductTypeDetail) {
         //     // Return a response if the resource was not found
-        //     return response()->json(['message' => 'ProductTypeDetail not found'], 404);
-        // }
+            return response()->json(['message' => 'ProductTypeDetail not found'], 404);
+        }
 
         // // Delete the ProductTypeDetail
-        // $ProductTypeDetail->delete();
+        $ProductTypeDetail->delete();
 
         // // Return a response, e.g., a success message or a redirect
         // return response()->json(['message' => 'ProductTypeDetail deleted successfully']);
+        return 'success';
     }
 }
