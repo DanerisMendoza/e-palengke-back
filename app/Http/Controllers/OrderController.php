@@ -44,7 +44,7 @@ class OrderController extends Controller
 
         $Transaction = new Transaction();
         $Transaction->user_id = $userId;
-        $Transaction->status = 'pending';
+        $Transaction->status = 'Pending';
         $Transaction->save();
 
         $groupedCart = collect($request['cart'])->groupBy('store_id')->toArray();
@@ -93,6 +93,7 @@ class OrderController extends Controller
         if (!!$request->input('mode')) {
             $order = DB::table('orders')
                 ->join('order_details', 'order_details.order_id', 'orders.id')
+                ->join('transactions', 'transactions.id', 'orders.transaction_id')
                 //customer
                 ->when($request->input('mode') == 'customer', function ($q) use ($userId) {
                     $q->join('stores', 'stores.id', 'order_details.store_id')
@@ -102,6 +103,7 @@ class OrderController extends Controller
                             'order_details.store_id',
                             'orders.created_at',
                             'stores.name',
+                            'transactions.id as transaction_id',
                         )
                         ->where('orders.user_id', $userId)
                         ->groupBy('orders.created_at', 'order_details.store_id', 'orders.status', 'orders.id', 'stores.name');
@@ -245,7 +247,7 @@ class OrderController extends Controller
             ->join('user_roles', 'user_roles.user_id', 'transactions.user_id')
             ->join('customer_locations', 'customer_locations.user_role_id', 'user_roles.id')
             ->join('user_details', 'user_details.user_id', 'user_roles.user_id')
-            ->select('user_details.name as customer_name', 'user_details.address as customer_address', 'transactions.id as transaction_id', 'customer_locations.latitude', 'customer_locations.longitude')
+            ->select('user_details.name as customer_name','user_details.phone_number', 'transactions.status', 'user_details.address as customer_address', 'transactions.id as transaction_id', 'customer_locations.latitude', 'customer_locations.longitude')
             ->selectRaw('(6371 * acos(cos(radians(?)) * cos(radians(customer_locations.latitude)) * cos(radians(customer_locations.longitude) - radians(?)) + sin(radians(?)) * sin(radians(customer_locations.latitude)))) AS distance', [$latitude, $longitude, $latitude])
             ->having('distance', '<', $radiusInKm)
             ->whereNull('transactions.delivery_id')
@@ -270,7 +272,7 @@ class OrderController extends Controller
             })
             ->reject(function ($transaction) {
                 // Reject transactions where any order has a status other than 'To Ship'
-                return $transaction->orders->contains('status', '!=', 'To Ship');
+                return $transaction->orders->isEmpty() || $transaction->orders->contains('status', '!=', 'To Ship');
             });
 
         if ($result->isNotEmpty()) {
@@ -292,9 +294,9 @@ class OrderController extends Controller
             ->where('transactions.delivery_id', $request['user_id'])
             ->where(function ($query) {
                 $query->where('transactions.status', 'To Pickup')
-                    ->orWhere('transactions.status', 'To Deliver');
+                    ->orWhere('transactions.status', 'Picked up');
             })
-            ->select('user_details.name as customer_name', 'user_details.address as customer_address','transactions.status', 'transactions.id as transaction_id', 'customer_locations.latitude', 'customer_locations.longitude')
+            ->select('user_details.name as customer_name','user_details.phone_number', 'user_details.address as customer_address', 'transactions.status', 'transactions.id as transaction_id', 'customer_locations.latitude', 'customer_locations.longitude')
             ->get()
             ->each(function ($q) {
                 $q->orders = DB::table('orders')
@@ -315,16 +317,38 @@ class OrderController extends Controller
         }
     }
 
+    public function GET_TRANSACTION_BY_ID(Request $request)
+    {
+        $result = DB::table('transactions')
+            ->join('user_details', 'user_details.user_id', 'transactions.delivery_id')
+            ->where('transactions.id', $request['transaction_id'])
+            ->select('user_details.name as delivery_name', 'user_details.phone_number','transactions.status', 'transactions.id as transaction_id')
+            ->first();
+        if ($result) {
+            return $result;
+        }
+    }
+
+    public function DROP_OFF(Request $request)
+    {
+        $result = DB::table('transactions')
+            ->where('id', $request['transaction_id']);
+        if ($result) {
+            $result->update(['status' => 'Dropped off']);
+            return 'success';
+        }
+    }
+    
     public function PICKUP_ORDERS(Request $request)
     {
         $result = DB::table('transactions')
             ->where('id', $request['transaction_id'])
             ->where('transactions.status', 'To Pickup');
         if ($result) {
-            $result->update(['status' => 'To Deliver']);
+            $result->update(['status' => 'Picked up']);
             $result = DB::table('orders')
                 ->where('transaction_id', $request['transaction_id'])
-                ->update(['status' => 'To Recieve']);
+                ->update(['status' => 'To Receive']);
             return 'success';
         }
     }
@@ -343,7 +367,8 @@ class OrderController extends Controller
     {
         $result = DB::table('transactions')
             ->where('id', $request['transaction_id'])
-            ->where('delivery_id', $request['user_id']);
+            ->where('delivery_id', $request['user_id'])
+            ->where('status', 'Pending');
         if ($result) {
             $result->update(['delivery_id' => null]);
         }
