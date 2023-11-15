@@ -156,14 +156,14 @@ class UserRoleController extends Controller
 
     public function update(Request $request, string $id)
     {
-        Access::where('user_role_details_id', $id)->delete();
+        // Access::where('user_role_details_id', $id)->delete();
         Requirement::where('user_role_details_id', $id)->delete();
-        for($i=0; $i<sizeof($request['selected_sidenav']); $i++){
-            $access = new Access();
-            $access->user_role_details_id = $id;
-            $access->side_nav_id = $request['selected_sidenav'][$i];
-            $access->save();
-        }
+        // for($i=0; $i<sizeof($request['selected_sidenav']); $i++){
+        //     $access = new Access();
+        //     $access->user_role_details_id = $id;
+        //     $access->side_nav_id = $request['selected_sidenav'][$i];
+        //     $access->save();
+        // }
         for($i=0; $i<sizeof($request['selected_requirement']); $i++){
             $requirement = new Requirement();
             $requirement->user_role_details_id = $id;
