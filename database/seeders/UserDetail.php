@@ -86,6 +86,7 @@ class UserDetail extends Seeder
         $UserDetail->name = "delivery_name";
         $UserDetail->gender = "Male";
         $UserDetail->age = 20;
+        $UserDetail->balance = 0;
         $UserDetail->phone_number = "00000000000";
         $UserDetail->address = "delivery_address1";
         $UserDetail->email = "delivery_emailSample@gmail.com";

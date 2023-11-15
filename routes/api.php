@@ -91,6 +91,8 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/GET_IN_PROGRESS_TRANSACTION', [OrderController::class, 'GET_IN_PROGRESS_TRANSACTION']);
     Route::get('/GET_TRANSACTION_BY_ID', [OrderController::class, 'GET_TRANSACTION_BY_ID']);
     Route::post('/PICKUP_ORDERS', [OrderController::class, 'PICKUP_ORDERS']);
+    Route::post('/DROP_OFF', [OrderController::class, 'DROP_OFF']);
+    Route::get('/GET_TRANSACTION_BY_ID', [OrderController::class, 'GET_TRANSACTION_BY_ID']);
     //QUEUE API
     Route::post('/MarkOnline', [QueueController::class, 'MarkOnline']);
     Route::post('/MarkOffline', [QueueController::class, 'MarkOffline']);
