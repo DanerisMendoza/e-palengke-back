@@ -75,14 +75,43 @@ class ProductController extends Controller
         return $Product;
     }
 
+    // public function update(Request $request, string $id)
+    // {
+   
+    // }
+
     public function update(Request $request, string $id)
     {
-   
+    // Validate the request data
+    $this->validate($request, [
+        'name' => 'required|string',
+        'price' => 'required|numeric',
+        'stock' => 'required|integer',
+        // Add any other validation rules for your fields
+    ]);
+
+    // Find the product by ID
+    $Product = Product::findOrFail($id);
+
+    // Update the Product with the new data
+    $Product->name = $request->input('name');
+    $Product->price = $request->input('price');
+    $Product->stock = $request->input('stock');
+
+    // Save the changes
+    $Product->save();
+
+    return 'success';
     }
 
     public function destroy(string $id)
     {
+        \Log::info($id);
         $Product = Product::findOrFail($id);
+        if (!$Product) {
+            //     // Return a response if the resource was not found
+                return response()->json(['message' => 'Product not found'], 404);
+            }
         $Product->delete();
         return 'success';
     }
