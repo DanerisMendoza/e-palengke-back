@@ -121,6 +121,7 @@ class OrderController extends Controller
                             'orders.created_at',
                             'order_details.store_id',
                             'transactions.id as transaction_id',
+                            'transactions.status as transactions_status'
                         );
                 })
                 ->get()

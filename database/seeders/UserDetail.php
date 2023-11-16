@@ -91,5 +91,16 @@ class UserDetail extends Seeder
         $UserDetail->address = "delivery_address1";
         $UserDetail->email = "delivery_emailSample@gmail.com";
         $UserDetail->save();
+
+        $UserDetail = new UserDetailModel();
+        $UserDetail->user_id = 6;
+        $UserDetail->name = "john";
+        $UserDetail->gender = "Male";
+        $UserDetail->age = 20;
+        $UserDetail->balance = 0;
+        $UserDetail->phone_number = "09121212";
+        $UserDetail->address = "caloocan";
+        $UserDetail->email = "john@gmail.com";
+        $UserDetail->save();
     }
 }
