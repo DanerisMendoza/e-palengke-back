@@ -106,7 +106,7 @@ class OrderController extends Controller
                             'transactions.id as transaction_id',
                         )
                         ->where('orders.user_id', $userId)
-                        ->groupBy('orders.created_at', 'order_details.store_id', 'orders.status', 'orders.id', 'stores.name');
+                        ->groupBy('orders.created_at', 'order_details.store_id', 'orders.status', 'orders.id', 'stores.name','transactions.id');
                 })
                 //store
                 ->when($request->input('mode') == 'store', function ($q) use ($store_id) {
@@ -130,7 +130,7 @@ class OrderController extends Controller
                         ->join('products', 'products.id', 'order_details.product_id')
                         ->join('stores', 'stores.id', 'order_details.store_id')
                         ->where('stores.id', $q->store_id)
-                        ->select('stores.address', 'stores.name as store_name', 'order_details.id as order_detail_id', 'order_details.quantity', 'order_details.status', 'products.name', 'products.price')
+                        ->select('transaction_id','transactions_status','stores.address', 'stores.name as store_name', 'order_details.id as order_detail_id', 'order_details.quantity', 'order_details.status', 'products.name', 'products.price')
                         ->get();
                     $total = 0;
                     foreach ($q->order_details as $item) {
