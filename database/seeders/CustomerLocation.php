@@ -41,5 +41,12 @@ class CustomerLocation extends Seeder
         $CustomerLocation->longitude = "120.966773";
         $CustomerLocation->save();
 
+        $CustomerLocation = new CustomerLocationModel();
+        $CustomerLocation->user_role_id = 9;
+        $CustomerLocation->address = "Caloocan City";
+        $CustomerLocation->latitude = "14.655360956488366";
+        $CustomerLocation->longitude = "120.96416115760805";
+        $CustomerLocation->save();
+
     }
 }
