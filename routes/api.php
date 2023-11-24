@@ -15,6 +15,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\QueueController;
+use App\Http\Controllers\AnalysisController;
 
 /*
 |--------------------------------------------------------------------------
@@ -99,4 +100,8 @@ Route::middleware('auth:api')->group(function () {
     //QUEUE API
     Route::post('/MarkOnline', [QueueController::class, 'MarkOnline']);
     Route::post('/MarkOffline', [QueueController::class, 'MarkOffline']);
+    // ANALYSIS API
+    Route::get('/GET_USER_ROLES_ANALYSIS', [AnalysisController::class, 'GET_USER_ROLES_ANALYSIS']);
+    Route::get('/GET_USER_ROLES_STATUS_ANALYSIS', [AnalysisController::class, 'GET_USER_ROLES_STATUS_ANALYSIS']);
+    
 });
