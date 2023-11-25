@@ -103,5 +103,6 @@ Route::middleware('auth:api')->group(function () {
     // ANALYSIS API
     Route::get('/GET_USER_ROLES_ANALYSIS', [AnalysisController::class, 'GET_USER_ROLES_ANALYSIS']);
     Route::get('/GET_USER_ROLES_STATUS_ANALYSIS', [AnalysisController::class, 'GET_USER_ROLES_STATUS_ANALYSIS']);
+    Route::get('/GET_ORDERS_ANALYSIS', [AnalysisController::class, 'GET_ORDERS_ANALYSIS']);
     
 });
