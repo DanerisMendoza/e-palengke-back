@@ -115,7 +115,7 @@ class OrderController extends Controller
                         ->distinct('orders.id')
                         ->select(
                             'user_details.id as customer_id',
-                            'user_details.name as customer_name',
+                            DB::raw("CONCAT_WS(' ', user_details.first_name, user_details.middle_name, user_details.last_name) as customer_name"),
                             'orders.id as order_id',
                             'orders.status',
                             'orders.created_at',
@@ -249,7 +249,8 @@ class OrderController extends Controller
             ->join('user_roles', 'user_roles.user_id', 'transactions.user_id')
             ->join('customer_locations', 'customer_locations.user_role_id', 'user_roles.id')
             ->join('user_details', 'user_details.user_id', 'user_roles.user_id')
-            ->select('user_details.name as customer_name','user_details.phone_number', 'transactions.status', 'user_details.address as customer_address', 'transactions.id as transaction_id', 'customer_locations.latitude', 'customer_locations.longitude')
+            ->select( DB::raw("CONCAT_WS(' ', user_details.first_name, user_details.middle_name, user_details.last_name) as customer_name"),
+            'user_details.phone_number', 'transactions.status', 'user_details.address as customer_address', 'transactions.id as transaction_id', 'customer_locations.latitude', 'customer_locations.longitude')
             ->selectRaw('(6371 * acos(cos(radians(?)) * cos(radians(customer_locations.latitude)) * cos(radians(customer_locations.longitude) - radians(?)) + sin(radians(?)) * sin(radians(customer_locations.latitude)))) AS distance', [$latitude, $longitude, $latitude])
             ->having('distance', '<', $radiusInKm)
             ->whereNull('transactions.delivery_id')
@@ -298,7 +299,8 @@ class OrderController extends Controller
                 $query->where('transactions.status', 'To Pickup')
                     ->orWhere('transactions.status', 'Picked up');
             })
-            ->select('user_details.name as customer_name','user_details.phone_number', 'user_details.address as customer_address', 'transactions.status', 'transactions.id as transaction_id', 'customer_locations.latitude', 'customer_locations.longitude')
+            ->select(DB::raw("CONCAT_WS(' ', user_details.first_name, user_details.middle_name, user_details.last_name) as customer_name"),
+            'user_details.phone_number', 'user_details.address as customer_address', 'transactions.status', 'transactions.id as transaction_id', 'customer_locations.latitude', 'customer_locations.longitude')
             ->get()
             ->each(function ($q) {
                 $q->orders = DB::table('orders')
@@ -324,7 +326,8 @@ class OrderController extends Controller
         $result = DB::table('transactions')
             ->join('user_details', 'user_details.user_id', 'transactions.delivery_id')
             ->where('transactions.id', $request['transaction_id'])
-            ->select('user_details.name as delivery_name', 'user_details.phone_number','transactions.status', 'transactions.id as transaction_id')
+            ->select(DB::raw("CONCAT_WS(' ', user_details.first_name, user_details.middle_name, user_details.last_name) as delivery_name"),
+            'user_details.phone_number','transactions.status', 'transactions.id as transaction_id')
             ->first();
         if ($result) {
             return $result;

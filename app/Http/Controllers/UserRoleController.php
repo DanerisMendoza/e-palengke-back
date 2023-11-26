@@ -89,7 +89,7 @@ class UserRoleController extends Controller
     public function GetApplicants(){
         $UserRole = UserRole::join('user_details', 'user_details.user_id', 'user_roles.user_id')
         ->join('user_role_details', 'user_role_details.id', 'user_roles.user_role_details_id')
-        ->select('user_roles.id as user_role_id','user_roles.status','user_details.gender','user_details.age','user_details.name as applicant_name','user_role_details.name as user_role_name')
+        ->select('user_roles.id as user_role_id','user_roles.status','user_details.gender','user_details.age', 'user_role_details.name as user_role_name', DB::raw("CONCAT_WS(' ', user_details.first_name, user_details.middle_name, user_details.last_name) as applicant_name"))
         ->get();
         return $UserRole;        
     }

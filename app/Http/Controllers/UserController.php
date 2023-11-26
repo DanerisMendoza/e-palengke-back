@@ -93,9 +93,11 @@ class UserController extends Controller
 
         $UserDetail = new UserDetail();
         $UserDetail->user_id = $User->id;
-        $UserDetail->name = $form['name'];
+        $UserDetail->first_name = $form['first_name'];
+        $UserDetail->middle_name = $form['middle_name'];
+        $UserDetail->last_name = $form['last_name'];
         $UserDetail->gender = $form['gender'];
-        $UserDetail->age = $form['age'];
+        // $UserDetail->age = $form['age'];
         $UserDetail->phone_number = $form['phone_number'];
         $UserDetail->address = $form['address'];
         $UserDetail->email = $form['email'];
@@ -151,7 +153,8 @@ class UserController extends Controller
         $userDetail = DB::table('users')
             ->join('user_details', 'users.id', '=', 'user_details.user_id')
             ->where('users.id', '=', $userId)
-            ->select('users.username', 'users.id as user_id', 'user_details.*')
+            ->select('users.username', 'users.id as user_id', 'user_details.*', DB::raw("CONCAT_WS(' ', user_details.first_name, user_details.middle_name, user_details.last_name) as name")
+            )
             ->first();
 
         $user_role_details = DB::table('user_roles')
@@ -167,10 +170,10 @@ class UserController extends Controller
                         ->get()
                         ->each(function ($q2) {
                             $q2->store_type_details = DB::table('store_types')
-                            ->where('store_types.store_id',$q2->store_id)
-                            ->join('store_type_details', 'store_type_details.id', 'store_types.store_type_details_id')
-                            ->select('store_type_details.name')
-                            ->get();
+                                ->where('store_types.store_id', $q2->store_id)
+                                ->join('store_type_details', 'store_type_details.id', 'store_types.store_type_details_id')
+                                ->select('store_type_details.name')
+                                ->get();
                         });
                 }
                 if ($q->id == 4) {
@@ -262,23 +265,24 @@ class UserController extends Controller
     }
 
 
-    public function FIND_USER_WITHIN_RADIUS(Request $request){
+    public function FIND_USER_WITHIN_RADIUS(Request $request)
+    {
         $latitude = $request['latitude'];
         $longitude = $request['longitude'];
         $radiusInMeters = $request['radius'];
-    
+
         // Convert the radius from meters to kilometers
-        $radiusInKm = ($radiusInMeters+1) / 1000;
-    
+        $radiusInKm = ($radiusInMeters + 1) / 1000;
+
         $result = DB::table('customer_locations')
             ->select('*')
             ->selectRaw('( 6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
             ->having('distance', '<', $radiusInKm)
             ->get();
-    
+
         return $result;
     }
-    
+
     public function index()
     {
         $users = User::all();

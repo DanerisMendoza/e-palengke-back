@@ -15,7 +15,8 @@ class UserDetail extends Seeder
     {
         $UserDetail = new UserDetailModel();
         $UserDetail->user_id = 1;
-        $UserDetail->name = "admin_name";
+        $UserDetail->first_name = "admin_name";
+        $UserDetail->last_name = "";
         $UserDetail->gender = "Male";
         $UserDetail->age = 20;
         $UserDetail->balance = 0;
@@ -26,7 +27,8 @@ class UserDetail extends Seeder
 
         $UserDetail = new UserDetailModel();
         $UserDetail->user_id = 2;
-        $UserDetail->name = "customer_name1";
+        $UserDetail->first_name = "customer_name1";
+        $UserDetail->last_name = "";
         $UserDetail->gender = "Male";
         $UserDetail->age = 20;
         $UserDetail->balance = 0;
@@ -59,7 +61,8 @@ class UserDetail extends Seeder
 
         $UserDetail = new UserDetailModel();
         $UserDetail->user_id = 3;
-        $UserDetail->name = "CUSTOMER2_NAME";
+        $UserDetail->first_name = "CUSTOMER2_NAME";
+        $UserDetail->last_name = "";
         $UserDetail->gender = "Male";
         $UserDetail->age = 20;
         $UserDetail->balance = 0;
@@ -72,7 +75,8 @@ class UserDetail extends Seeder
 
         $UserDetail = new UserDetailModel();
         $UserDetail->user_id = 4;
-        $UserDetail->name = "patrick";
+        $UserDetail->first_name = "patrick";
+        $UserDetail->last_name = "";
         $UserDetail->gender = "Male";
         $UserDetail->age = 20;
         $UserDetail->balance = 0;
@@ -83,7 +87,8 @@ class UserDetail extends Seeder
 
         $UserDetail = new UserDetailModel();
         $UserDetail->user_id = 5;
-        $UserDetail->name = "delivery_name";
+        $UserDetail->first_name = "delivery_name";
+        $UserDetail->last_name = "";
         $UserDetail->gender = "Male";
         $UserDetail->age = 20;
         $UserDetail->balance = 0;
@@ -94,7 +99,8 @@ class UserDetail extends Seeder
 
         $UserDetail = new UserDetailModel();
         $UserDetail->user_id = 6;
-        $UserDetail->name = "john";
+        $UserDetail->first_name = "john";
+        $UserDetail->last_name = "";
         $UserDetail->gender = "Male";
         $UserDetail->age = 20;
         $UserDetail->balance = 0;
