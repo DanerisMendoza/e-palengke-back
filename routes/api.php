@@ -70,6 +70,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/GetApplicants', [UserRoleController::class, 'GetApplicants']);
     Route::patch('/ApproveUserRole/{id}', [UserRoleController::class, 'ApproveUserRole']);
     Route::patch('/DissaproveUserRole/{id}', [UserRoleController::class, 'DissaproveUserRole']);
+    Route::post('/UpdateUserByUserID', [UserController::class, 'UpdateUserByUserID']);
     //USER ROLE DETAIL API
     Route::resource('UserRoleDetail', UserRoleDetailController::class);
     //APPLICANT CREDENTIAL API

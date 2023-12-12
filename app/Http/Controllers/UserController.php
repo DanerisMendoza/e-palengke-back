@@ -153,9 +153,24 @@ class UserController extends Controller
         $userDetail = DB::table('users')
             ->join('user_details', 'users.id', '=', 'user_details.user_id')
             ->where('users.id', '=', $userId)
-            ->select('users.username', 'users.id as user_id', 'user_details.*', DB::raw("CONCAT_WS(' ', user_details.first_name, user_details.middle_name, user_details.last_name) as name")
+            ->select(
+                'users.username',
+                'users.id as user_id',
+                'user_details.*',
+                DB::raw("CONCAT_WS(' ', user_details.first_name, user_details.middle_name, user_details.last_name) as name")
             )
             ->first();
+
+        if ($userDetail->profile_pic_path != null) {
+            $image_type = substr($userDetail->profile_pic_path, -3);
+            $image_format = '';
+            if ($image_type == 'png' || $image_type == 'jpg') {
+                $image_format = $image_type;
+            }
+            $base64str = '';
+            $base64str = base64_encode(file_get_contents(public_path($userDetail->profile_pic_path)));
+            $userDetail->base64img = 'data:image/' . $image_format . ';base64,' . $base64str;
+        }
 
         $user_role_details = DB::table('user_roles')
             ->where('user_roles.user_id', $userId)
@@ -208,6 +223,47 @@ class UserController extends Controller
         DB::table('user_details')
             ->where('user_id', $userId)
             ->update(['balance' => $userDetail->balance + $request['topupAmount']]);
+        return 'success';
+    }
+
+    public function UpdateUserByUserID(Request $request)
+    {
+        $form = json_decode($request['data'], true);
+        $file = $request->file('file');
+
+        $validator = Validator::make($form, [
+            'username' => 'required|unique:users,username,' . $form['user_id'],
+            'first_name' => 'required',
+            'middle_name' => 'nullable',
+            'last_name' => 'required',
+            'email' => 'required|unique:user_details,email,' . $form['user_id'],
+            'gender' => 'required',
+            'address' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            $validationError = $validator->errors()->first();
+            return $validationError;
+        }
+
+        $UserDetail = UserDetail::find($form['user_id']);
+        $UserDetail->first_name = $form['first_name'];
+        $UserDetail->middle_name = $form['middle_name'];
+        $UserDetail->last_name = $form['last_name'];
+        $UserDetail->email = $form['email'];
+        $UserDetail->address = $form['address'];
+
+        if ($file != null) {
+            $file_name = $file->getClientOriginalName();
+            $ext = $file->getClientOriginalExtension();
+            $name = explode('.', $file_name)[0] . '-' . uniqid() . '.' . $ext;
+            $name = str_replace(' ', '', $name);
+            $file->move(public_path('ProfilePic'), $name);
+            $UserDetail->profile_pic_path = '/ProfilePic/' . $name;
+        }
+
+        $UserDetail->save();
+
         return 'success';
     }
 

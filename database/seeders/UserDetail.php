@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\UserDetail as UserDetailModel;
+use Faker\Factory as Faker;
 
 class UserDetail extends Seeder
 {
@@ -13,6 +14,8 @@ class UserDetail extends Seeder
      */
     public function run(): void
     {
+        $faker = Faker::create();
+
         $UserDetail = new UserDetailModel();
         $UserDetail->user_id = 1;
         $UserDetail->first_name = "admin_name";
@@ -20,93 +23,75 @@ class UserDetail extends Seeder
         $UserDetail->gender = "Male";
         $UserDetail->age = 20;
         $UserDetail->balance = 0;
-        $UserDetail->phone_number = "00000000000";
+        $UserDetail->phone_number = "94152604387";
         $UserDetail->address = "admin_address";
         $UserDetail->email = "admin_emailSample@gmail.com";
+        $UserDetail->profile_pic_path = '/ProfilePic/avatar' . $faker->randomElement(['1', '2', '3', '4']) . '.PNG';
         $UserDetail->save();
 
         $UserDetail = new UserDetailModel();
         $UserDetail->user_id = 2;
-        $UserDetail->first_name = "customer_name1";
-        $UserDetail->last_name = "";
+        $UserDetail->first_name = "Thomas";
+        $UserDetail->last_name = "Barclay";
         $UserDetail->gender = "Male";
         $UserDetail->age = 20;
         $UserDetail->balance = 0;
-        // $UserDetail->latitude = 14.654112;
-        // $UserDetail->longitude = 120.965480;
-        $UserDetail->phone_number = "00000000000";
-        $UserDetail->address = "customer_address1";
-        $UserDetail->email = "customer_emailSample@gmail.com";
+        $UserDetail->phone_number = "94374207476";
+        $UserDetail->address = "Caloocan";
+        $UserDetail->email = "Thomas@gmail.com";
+        $UserDetail->profile_pic_path = '/ProfilePic/avatar' . $faker->randomElement(['1', '2', '3', '4']) . '.PNG';
         $UserDetail->save();
-
-        // $UserDetail = new UserDetailModel();
-        // $UserDetail->user_id = 3;
-        // $UserDetail->name = "seller_name1";
-        // $UserDetail->gender = "Female";
-        // $UserDetail->age = 20;
-        // $UserDetail->phone_number = "00000000000";
-        // $UserDetail->address = "seller_address1";
-        // $UserDetail->email = "seller_emailSample@gmail.com";
-        // $UserDetail->save();
-
-        // $UserDetail = new UserDetailModel();
-        // $UserDetail->user_id = 5;
-        // $UserDetail->name = "DEVELOPMENT NAME";
-        // $UserDetail->gender = "Male";
-        // $UserDetail->age = 20;
-        // $UserDetail->phone_number = "00000000000";
-        // $UserDetail->address = "DEVELOPMENT_address1";
-        // $UserDetail->email = "DEVELOPMENTemailSample@gmail.com";
-        // $UserDetail->save();
 
         $UserDetail = new UserDetailModel();
         $UserDetail->user_id = 3;
-        $UserDetail->first_name = "CUSTOMER2_NAME";
-        $UserDetail->last_name = "";
+        $UserDetail->first_name = "Stephanie ";
+        $UserDetail->last_name = "Duley";
         $UserDetail->gender = "Male";
         $UserDetail->age = 20;
         $UserDetail->balance = 0;
-        // $UserDetail->latitude = 14.654112;
-        // $UserDetail->longitude = 120.965480;
-        $UserDetail->phone_number = "00000000000";
-        $UserDetail->address = "Customer2_address1";
-        $UserDetail->email = "customer2Sample@gmail.com";
+        $UserDetail->phone_number = "91629221258";
+        $UserDetail->address = "Caloocan";
+        $UserDetail->email = "Stephanie@gmail.com";
+        $UserDetail->profile_pic_path = '/ProfilePic/avatar' . $faker->randomElement(['1', '2', '3', '4']) . '.PNG';
         $UserDetail->save();
 
         $UserDetail = new UserDetailModel();
         $UserDetail->user_id = 4;
         $UserDetail->first_name = "patrick";
-        $UserDetail->last_name = "";
+        $UserDetail->last_name = "Victor";
         $UserDetail->gender = "Male";
         $UserDetail->age = 20;
         $UserDetail->balance = 0;
-        $UserDetail->phone_number = "00000000000";
-        $UserDetail->address = "caloocan";
+        $UserDetail->phone_number = "95128441426";
+        $UserDetail->address = "Caloocan";
         $UserDetail->email = "patrick@gmail.com";
+        $UserDetail->profile_pic_path = '/ProfilePic/avatar' . $faker->randomElement(['1', '2', '3', '4']) . '.PNG';
         $UserDetail->save();
 
         $UserDetail = new UserDetailModel();
         $UserDetail->user_id = 5;
-        $UserDetail->first_name = "delivery_name";
-        $UserDetail->last_name = "";
+        $UserDetail->first_name = "Antonio";
+        $UserDetail->last_name = "Austria";
         $UserDetail->gender = "Male";
         $UserDetail->age = 20;
         $UserDetail->balance = 0;
-        $UserDetail->phone_number = "00000000000";
-        $UserDetail->address = "delivery_address1";
-        $UserDetail->email = "delivery_emailSample@gmail.com";
+        $UserDetail->phone_number = "97179268918";
+        $UserDetail->address = "Caloocan";
+        $UserDetail->email = "Antonio@gmail.com";
+        $UserDetail->profile_pic_path = '/ProfilePic/avatar' . $faker->randomElement(['1', '2', '3', '4']) . '.PNG';
         $UserDetail->save();
 
         $UserDetail = new UserDetailModel();
         $UserDetail->user_id = 6;
         $UserDetail->first_name = "john";
-        $UserDetail->last_name = "";
+        $UserDetail->last_name = "Coleman";
         $UserDetail->gender = "Male";
         $UserDetail->age = 20;
         $UserDetail->balance = 0;
         $UserDetail->phone_number = "09121212";
-        $UserDetail->address = "caloocan";
+        $UserDetail->address = "Caloocan";
         $UserDetail->email = "john@gmail.com";
+        $UserDetail->profile_pic_path = '/ProfilePic/avatar' . $faker->randomElement(['1', '2', '3', '4']) . '.PNG';
         $UserDetail->save();
     }
 }
