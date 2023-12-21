@@ -16,21 +16,21 @@ class SideNavChild extends Seeder
     {
         $SideNavChildModel = new SideNavChildModel();
         $SideNavChildModel->parent_side_nav_id = 14;
-        $SideNavChildModel->name = 'Customer Orders';
+        $SideNavChildModel->name = 'CUSTOMER ORDERS';
         $SideNavChildModel->mdi_icon = 'mdi-cart';
         $SideNavChildModel->pic_icon = '';
         $SideNavChildModel->save();
         
         $SideNavChildModel = new SideNavChildModel();
         $SideNavChildModel->parent_side_nav_id = 14;
-        $SideNavChildModel->name = 'Store Orders';
+        $SideNavChildModel->name = 'STORE ORDERS';
         $SideNavChildModel->mdi_icon = 'mdi-cart';
         $SideNavChildModel->pic_icon = '';
         $SideNavChildModel->save();
         
         $SideNavChildModel = new SideNavChildModel();
         $SideNavChildModel->parent_side_nav_id = 14;
-        $SideNavChildModel->name = 'Delivery Orders';
+        $SideNavChildModel->name = 'DELIVERY ORDERS';
         $SideNavChildModel->mdi_icon = 'mdi-cart';
         $SideNavChildModel->pic_icon = '';
         $SideNavChildModel->save();
