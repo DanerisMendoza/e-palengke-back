@@ -86,6 +86,16 @@ class UserController extends Controller
         $form = json_decode($request['form'], true);
         $applicantCredential = json_decode($request['applicantCredential'], true);
 
+        $validator = Validator::make($form, [
+            'username' => 'required|unique:users',
+            'email' => 'required|email|unique:user_details',
+        ]);
+
+        if ($validator->fails()) {
+            $validationError = $validator->errors()->first();
+            return $validationError;
+        }
+
         $User = new User();
         $User->username = $form['username'];
         $User->password = bcrypt($form['password']);
