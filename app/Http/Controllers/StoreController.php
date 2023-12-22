@@ -14,7 +14,7 @@ class StoreController extends Controller
         $stores = Store::join('user_roles', 'user_roles.id', 'stores.user_role_id')
             ->where('user_roles.status', 'active')
             ->where('user_roles.user_role_details_id',3)
-            ->select('stores.id', 'stores.name', 'stores.address','stores.latitude', 'stores.longitude','user_roles.status','user_roles.user_role_details_id','user_roles.user_id')
+            ->select('stores.*','user_roles.status','user_roles.user_role_details_id','user_roles.user_id')
             ->get()
             ->each(function ($q){
                 $StoreType = StoreType::where('store_types.store_id',$q->id)
