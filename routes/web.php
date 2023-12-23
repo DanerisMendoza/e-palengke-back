@@ -1,7 +1,10 @@
 <?php
 
+use App\Events\something; 
+use App\Events\user_tb_data; 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Broadcast;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,6 +29,14 @@ Route::get('/clear-cache', function() {
 
     return 'Cache, config, route cache, and optimization completed';
 });
+
+Route::get('/broadcast', function () {
+    broadcast(new something());
+});
+
+// Broadcast::channel('private-channel.{user_id}', function ($user, $user_id) {
+//     return $user->id == $user_id;
+// });
 
 // Route::get('/migrate', function() {
 //     // Run migrations
