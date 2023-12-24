@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\OrderEvent;
 use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\OrderDetail;
@@ -77,9 +78,14 @@ class OrderController extends Controller
                 $Product = Product::where('id', $OrderDetailInput['product_id'])->first();
                 $Product->stock -= $OrderDetailInput['quantity'];
                 $Product->save();
+                $product = Product::find($OrderDetailInput['product_id']);
+                //alert store owner that there is new order
+                $ownerDetails = $product->ownerDetails()->first();
+                broadcast(new OrderEvent($ownerDetails->user_id));
             }
         }
-
+        //alert also the customer
+        broadcast(new OrderEvent($userId));
 
         $cartItems = Cart::where('carts.user_id', $userId);
         $cartItems->delete();
@@ -106,7 +112,7 @@ class OrderController extends Controller
                             'transactions.id as transaction_id',
                         )
                         ->where('orders.user_id', $userId)
-                        ->groupBy('orders.created_at', 'order_details.store_id', 'orders.status', 'orders.id', 'stores.name','transactions.id');
+                        ->groupBy('orders.created_at', 'order_details.store_id', 'orders.status', 'orders.id', 'stores.name', 'transactions.id');
                 })
                 //store
                 ->when($request->input('mode') == 'store', function ($q) use ($store_id) {
@@ -148,19 +154,18 @@ class OrderController extends Controller
         $Order = Order::find($request['order_id']);
         if ($Order) {
             $Order->update(['status' => 'Preparing']);
+            broadcast(new OrderEvent($Order->user_id));
+            return 'success';
         }
-
-        return 'success';
     }
 
     public function ORDER_TO_SHIP(Request $request)
     {
         $Order = Order::find($request['order_id']);
         if ($Order) {
-            $Order = $Order->update(['status' => 'To Ship']);
-            if ($Order) {
-                return 'success';
-            }
+            $Order->update(['status' => 'To Ship']);
+            broadcast(new OrderEvent($Order->user_id));
+            return 'success';
         }
     }
 
@@ -206,6 +211,7 @@ class OrderController extends Controller
             DB::table('order_details')
                 ->where('order_id', $request['order_id'])
                 ->delete();
+            broadcast(new OrderEvent($Order->user_id));
             return 'success';
         } else {
             return 'fail';
@@ -249,8 +255,15 @@ class OrderController extends Controller
             ->join('user_roles', 'user_roles.user_id', 'transactions.user_id')
             ->join('customer_locations', 'customer_locations.user_role_id', 'user_roles.id')
             ->join('user_details', 'user_details.user_id', 'user_roles.user_id')
-            ->select( DB::raw("CONCAT_WS(' ', user_details.first_name, user_details.middle_name, user_details.last_name) as customer_name"),
-            'user_details.phone_number', 'transactions.status', 'user_details.address as customer_address', 'transactions.id as transaction_id', 'customer_locations.latitude', 'customer_locations.longitude')
+            ->select(
+                DB::raw("CONCAT_WS(' ', user_details.first_name, user_details.middle_name, user_details.last_name) as customer_name"),
+                'user_details.phone_number',
+                'transactions.status',
+                'user_details.address as customer_address',
+                'transactions.id as transaction_id',
+                'customer_locations.latitude',
+                'customer_locations.longitude'
+            )
             ->selectRaw('(6371 * acos(cos(radians(?)) * cos(radians(customer_locations.latitude)) * cos(radians(customer_locations.longitude) - radians(?)) + sin(radians(?)) * sin(radians(customer_locations.latitude)))) AS distance', [$latitude, $longitude, $latitude])
             ->having('distance', '<', $radiusInKm)
             ->whereNull('transactions.delivery_id')
@@ -299,8 +312,15 @@ class OrderController extends Controller
                 $query->where('transactions.status', 'To Pickup')
                     ->orWhere('transactions.status', 'Picked up');
             })
-            ->select(DB::raw("CONCAT_WS(' ', user_details.first_name, user_details.middle_name, user_details.last_name) as customer_name"),
-            'user_details.phone_number', 'user_details.address as customer_address', 'transactions.status', 'transactions.id as transaction_id', 'customer_locations.latitude', 'customer_locations.longitude')
+            ->select(
+                DB::raw("CONCAT_WS(' ', user_details.first_name, user_details.middle_name, user_details.last_name) as customer_name"),
+                'user_details.phone_number',
+                'user_details.address as customer_address',
+                'transactions.status',
+                'transactions.id as transaction_id',
+                'customer_locations.latitude',
+                'customer_locations.longitude'
+            )
             ->get()
             ->each(function ($q) {
                 $q->orders = DB::table('orders')
@@ -326,8 +346,12 @@ class OrderController extends Controller
         $result = DB::table('transactions')
             ->join('user_details', 'user_details.user_id', 'transactions.delivery_id')
             ->where('transactions.id', $request['transaction_id'])
-            ->select(DB::raw("CONCAT_WS(' ', user_details.first_name, user_details.middle_name, user_details.last_name) as delivery_name"),
-            'user_details.phone_number','transactions.status', 'transactions.id as transaction_id')
+            ->select(
+                DB::raw("CONCAT_WS(' ', user_details.first_name, user_details.middle_name, user_details.last_name) as delivery_name"),
+                'user_details.phone_number',
+                'transactions.status',
+                'transactions.id as transaction_id'
+            )
             ->first();
         if ($result) {
             return $result;
@@ -343,7 +367,7 @@ class OrderController extends Controller
             return 'success';
         }
     }
-    
+
     public function PICKUP_ORDERS(Request $request)
     {
         $result = DB::table('transactions')

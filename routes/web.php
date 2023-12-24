@@ -1,7 +1,8 @@
 <?php
 
 use App\Events\something; 
-use App\Events\user_tb_data; 
+use App\Events\PrivateEvent; 
+use App\Events\OrderEvent; 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Broadcast;
@@ -32,6 +33,10 @@ Route::get('/clear-cache', function() {
 
 Route::get('/broadcast', function () {
     broadcast(new something());
+});
+Route::get('/pingme', function () {
+    broadcast(new OrderEvent(4));
+    // broadcast(new something());
 });
 
 // Broadcast::channel('private-channel.{user_id}', function ($user, $user_id) {

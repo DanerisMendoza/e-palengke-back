@@ -9,10 +9,9 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Http;
 
-
-
-class PrivateEvent implements ShouldBroadcast
+class OrderEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
     private $userId;
@@ -23,9 +22,10 @@ class PrivateEvent implements ShouldBroadcast
     {
         $this->userId = $userId;
     }
-
-    public function broadcastWith(){
-        return['result' => "user {$this->userId} is ping"];
+    
+    public function broadcastWith()
+    {
+        return ['result' => true];
     }
 
     /**
@@ -36,8 +36,7 @@ class PrivateEvent implements ShouldBroadcast
     public function broadcastOn(): array
     {
         return [
-            // new Channel('channel-PrivateEvent4'),
-            new Channel('channel-PrivateEvent' . $this->userId),
+            new Channel('channel-OrderEvent' . $this->userId),
         ];
     }
 }
