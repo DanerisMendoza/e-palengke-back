@@ -8,7 +8,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class OrderEvent implements ShouldBroadcast
+class OrderDetailsEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
     private $userId;
@@ -33,7 +33,7 @@ class OrderEvent implements ShouldBroadcast
     public function broadcastOn(): array
     {
         return [
-            new Channel('channel-OrderEvent' . $this->userId),
+            new Channel('channel-OrderDetailsEvent' . $this->userId),
         ];
     }
 }

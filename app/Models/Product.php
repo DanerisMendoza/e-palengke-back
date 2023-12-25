@@ -20,7 +20,7 @@ class Product extends Model
         return $this->storeDetails->hasOne(UserRole::class, 'id', 'user_role_id');
     }
 
-    public function ownerDetails()
+    public function sellerDetails()
     {
         return $this->userRoleDetails->hasOne(UserDetail::class, 'id', 'user_id');
     }

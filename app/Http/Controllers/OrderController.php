@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\OrderEvent;
+use App\Events\OrderDetailsEvent;
 use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\OrderDetail;
@@ -79,9 +80,9 @@ class OrderController extends Controller
                 $Product->stock -= $OrderDetailInput['quantity'];
                 $Product->save();
                 $product = Product::find($OrderDetailInput['product_id']);
-                //alert store owner that there is new order
-                $ownerDetails = $product->ownerDetails()->first();
-                broadcast(new OrderEvent($ownerDetails->user_id));
+                //alert seller that there is new order
+                $sellerDetails = $product->sellerDetails()->first();
+                broadcast(new OrderEvent($sellerDetails->user_id));
             }
         }
         //alert also the customer
@@ -172,21 +173,21 @@ class OrderController extends Controller
     public function CANCEL_ORDER(Request $request)
     {
         $userId = Auth::user()->id;
-        $Order = DB::table('orders')
-            ->where('id', $request['order_id'])
+        $Order = Order::where('id', $request['order_id'])
             ->where('status', 'Pending')
             ->first();
         $UserDetail = UserDetail::where('user_id', $userId)->first();
         $UserDetail->balance = $UserDetail->balance + $Order->total;
         $UserDetail->save();
-        $order = DB::table('orders')
-            ->where('id', $request['order_id'])
-            ->where('status', 'Pending')
-            ->delete();
-        if ($order) {
-            DB::table('order_details')
-                ->where('order_id', $request['order_id'])
-                ->delete();
+        $orderCancelResult = $Order->delete();
+        if ($orderCancelResult) {
+            $orderDetails = OrderDetail::where('order_id', $request['order_id'])->get();
+            foreach ($orderDetails as $orderDetail) {
+                //alert seller
+                $sellerDetails = $orderDetail->sellerDetails()->first();
+                broadcast(new OrderEvent($sellerDetails->user_id));
+                $orderDetail->delete();
+            }
             return 'success';
         } else {
             return 'fail';
@@ -224,15 +225,12 @@ class OrderController extends Controller
         $UserDetail = UserDetail::where('user_id', $userId)->first();
         $UserDetail->balance = $UserDetail->balance + $request['item']['price'];
         $UserDetail->save();
-        $order_details = DB::table('order_details')
-            ->where('id', $request['item']['order_detail_id'])
-            ->where('status', 'Pending')
-            ->delete();
-        if ($order_details) {
-            return 'success';
-        } else {
-            return 'fail';
-        }
+        // the reason for having two ->first() calls is that you are making two separate queries:
+        $orderDetail = OrderDetail::where('id', $request['item']['order_detail_id'])->where('status', 'Pending')->first();
+        $sellerDetails = $orderDetail->sellerDetails()->first();
+        $orderDetail->delete();
+        broadcast(new OrderDetailsEvent($sellerDetails->user_id));
+        return 'success';
     }
 
     public function FIND_ORDER_WITHIN_RADIUS(Request $request)
