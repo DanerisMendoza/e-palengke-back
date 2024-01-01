@@ -82,14 +82,15 @@ class OrderController extends Controller
                 $product = Product::find($OrderDetailInput['product_id']);
                 //alert seller that there is new order
                 $sellerDetails = $product->sellerDetails()->first();
+
+                $cartItems = Cart::where('carts.product_id', $Product->id);
+                $cartItems->delete();
+
                 broadcast(new OrderEvent($sellerDetails->user_id));
             }
         }
         //alert also the customer
         broadcast(new OrderEvent($userId));
-
-        $cartItems = Cart::where('carts.user_id', $userId);
-        $cartItems->delete();
         return 'success';
     }
 
