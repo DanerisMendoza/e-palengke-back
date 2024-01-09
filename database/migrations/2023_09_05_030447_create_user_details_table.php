@@ -28,6 +28,7 @@ return new class extends Migration
             $table->integer('balance')->nullable();
             $table->string('latitude')->nullable();
             $table->string('longitude')->nullable();
+            $table->string('device_token')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

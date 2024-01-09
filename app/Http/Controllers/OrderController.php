@@ -66,7 +66,7 @@ class OrderController extends Controller
             $UserDetail = UserDetail::where('user_id', $userId)->first();
             $UserDetail->balance = $UserDetail->balance - $Order->total;
             $UserDetail->save();
-
+            $notifiedSellers = [];
             foreach ($storeOrders as $OrderDetailInput) {
                 $OrderDetail = new OrderDetail();
                 $OrderDetail->order_id = $Order->id;
@@ -86,7 +86,17 @@ class OrderController extends Controller
                 $cartItems = Cart::where('carts.product_id', $Product->id);
                 $cartItems->delete();
 
-                broadcast(new OrderEvent($sellerDetails->user_id));
+                // broadcast(new OrderEvent($sellerDetails->user_id));
+                // $order = new Order; // Replace $orderId with the actual order ID you want to notify the seller about
+                // $order->notifySeller($sellerDetails->user_id); // Replace $sellerUserId with the user ID of the seller
+
+                if (!in_array($sellerDetails->user_id, $notifiedSellers)) {
+                    broadcast(new OrderEvent($sellerDetails->user_id));
+                    $order = new Order;
+                    $order->notifySeller($sellerDetails->user_id);
+                    // Add the seller's user ID to the array to prevent duplicate notifications
+                    $notifiedSellers[] = $sellerDetails->user_id;
+                }
             }
         }
         //alert also the customer

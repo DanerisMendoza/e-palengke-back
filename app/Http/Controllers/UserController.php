@@ -277,6 +277,12 @@ class UserController extends Controller
         return 'success';
     }
 
+    public function UpdateDeviceToken(Request $request){
+        $UserDetail = UserDetail::find(Auth::user()->id);
+        $UserDetail->device_token = $request['device_token'];
+        $UserDetail->save();
+    }
+
     public function Login(Request $request)
     {
         $credentials = $request->validate([
