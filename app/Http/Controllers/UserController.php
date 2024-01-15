@@ -219,6 +219,19 @@ class UserController extends Controller
             $userDetail->customer_locations = $customer_locations;
         }
 
+        $userDetail->isAdmin = $user_role_details->contains(function($item){
+            return $item->id === 1;
+        });
+        $userDetail->isCustomer = $user_role_details->contains(function($item){
+            return $item->id === 2;
+        });
+        $userDetail->isSeller= $user_role_details->contains(function($item){
+            return $item->id === 3;
+        });
+        $userDetail->isDelivery = $user_role_details->contains(function($item){
+            return $item->id === 4;
+        });
+
         return $userDetail;
     }
 
