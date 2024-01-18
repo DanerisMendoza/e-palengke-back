@@ -15,7 +15,7 @@ class Order extends Model
         'status',
     ];
 
-    public function notifySeller($user_id)
+    public function notifySeller($user_id,$store_id,$order_id)
     {
         $CustomerUserDetail = Auth::user()->userDetails;
         $SellerUserDetail = UserDetail::find($user_id);
@@ -23,7 +23,6 @@ class Order extends Model
         if ($deviceToken != null) {
             $title = 'New Order Alert!';
             $body = "Customer: $CustomerUserDetail->first_name $CustomerUserDetail->last_name";
-
             $serverKey = 'AAAAVBpbxjw:APA91bGS6T4OjP0drbqoRtJFrfCQp7ZYW5lsuDeQ4vuDG0bo_iZ7hDHOxOYlMnOWsgPwcsvgbWm8KmFMVAXdkYodRlzK0JQWnGiUyAReTTHyX7KHYrl8WSTfWny-k7zs0err0R9YOpMU';
             $url = 'https://fcm.googleapis.com/fcm/send';
             $client = new Client();
@@ -37,6 +36,10 @@ class Order extends Model
                     'notification' => [
                         'title' => $title,
                         'body' => $body,
+                    ],
+                    'data' => [
+                        'store_id' => $store_id,
+                        'order_id' => $order_id,
                     ],
                 ],
             ]);

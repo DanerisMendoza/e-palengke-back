@@ -93,7 +93,7 @@ class OrderController extends Controller
                 if (!in_array($sellerDetails->user_id, $notifiedSellers)) {
                     broadcast(new OrderEvent($sellerDetails->user_id));
                     $order = new Order;
-                    $order->notifySeller($sellerDetails->user_id);
+                    $order->notifySeller($sellerDetails->user_id, $OrderDetail->store_id, $OrderDetail->order_id);
                     // Add the seller's user ID to the array to prevent duplicate notifications
                     $notifiedSellers[] = $sellerDetails->user_id;
                 }
