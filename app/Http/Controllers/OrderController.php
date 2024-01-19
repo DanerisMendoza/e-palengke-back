@@ -107,6 +107,7 @@ class OrderController extends Controller
     public function GET_ORDERS(Request $request)
     {
         $store_id = $request->input('store_id');
+        $order_status = $request->input('order_status');
         $userId = Auth::user()->id;
         if (!!$request->input('mode')) {
             $order = DB::table('orders')
@@ -141,6 +142,9 @@ class OrderController extends Controller
                             'transactions.id as transaction_id',
                             'transactions.status as transactions_status'
                         );
+                })
+                ->when(!!$order_status, function($q) use($order_status){
+                    $q->where('orders.status',$order_status);
                 })
                 ->get()
                 ->each(function ($q) {
