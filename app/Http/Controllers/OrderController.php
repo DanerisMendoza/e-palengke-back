@@ -116,6 +116,7 @@ class OrderController extends Controller
                 //customer
                 ->when($request->input('mode') == 'customer', function ($q) use ($userId) {
                     $q->join('stores', 'stores.id', 'order_details.store_id')
+                    ->groupBy('orders.created_at', 'order_details.store_id', 'orders.status', 'orders.id', 'stores.name', 'transactions.id')
                         ->select(
                             'orders.status',
                             'orders.id as order_id',
@@ -124,14 +125,14 @@ class OrderController extends Controller
                             'stores.name',
                             'transactions.id as transaction_id',
                         )
-                        ->where('orders.user_id', $userId)
-                        ->groupBy('orders.created_at', 'order_details.store_id', 'orders.status', 'orders.id', 'stores.name', 'transactions.id');
+                        ->where('orders.user_id', $userId);
                 })
                 //store
                 ->when($request->input('mode') == 'store', function ($q) use ($store_id) {
                     $q->join('user_details', 'user_details.user_id', 'orders.user_id')
                         ->where('order_details.store_id', $store_id)
-                        ->distinct('orders.id')
+                        // ->distinct('orders.id')
+                        ->groupBy('customer_id','customer_name','orders.id','orders.status','orders.created_at','order_details.store_id','transactions.id','transactions.status')
                         ->select(
                             'user_details.id as customer_id',
                             DB::raw("CONCAT_WS(' ', user_details.first_name, user_details.middle_name, user_details.last_name) as customer_name"),
@@ -171,6 +172,7 @@ class OrderController extends Controller
         if ($Order) {
             $Order->update(['status' => 'Preparing']);
             broadcast(new OrderEvent($Order->user_id));
+            broadcast(new OrderDetailsEvent($Order->user_id));
             return 'success';
         }
     }
@@ -181,6 +183,7 @@ class OrderController extends Controller
         if ($Order) {
             $Order->update(['status' => 'To Ship']);
             broadcast(new OrderEvent($Order->user_id));
+            broadcast(new OrderDetailsEvent($Order->user_id));
             return 'success';
         }
     }
@@ -419,11 +422,12 @@ class OrderController extends Controller
     public function GET_ORDER_DETAILS(Request $request)
     {
         $result = DB::table('order_details')
+            ->join('orders', 'orders.id', 'order_details.order_id')
             ->join('products', 'products.id', 'order_details.product_id')
             ->join('stores', 'stores.id', 'order_details.store_id')
             ->where('order_details.order_id', $request['order_id'])
             ->where('order_details.store_id', $request['store_id'])
-            ->select('stores.name as store_name', 'stores.address', 'order_details.id as order_detail_id', 'order_details.quantity', 'order_details.status', 'products.name', 'products.price')
+            ->select('stores.name as store_name', 'stores.address', 'order_details.id as order_detail_id', 'order_details.quantity', 'orders.status', 'products.name', 'products.price')
             ->get();
         return $result;
     }
