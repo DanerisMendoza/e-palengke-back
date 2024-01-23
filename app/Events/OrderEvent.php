@@ -36,4 +36,9 @@ class OrderEvent implements ShouldBroadcast
             new Channel('channel-OrderEvent' . $this->userId),
         ];
     }
+    // comment this function if you will use localhost websockets
+    public function broadcastAs()
+    {
+        return 'OrderEvent';
+    }
 }

@@ -19,7 +19,7 @@ class OrderDetailsEvent implements ShouldBroadcast
     {
         $this->userId = $userId;
     }
-    
+
     public function broadcastWith()
     {
         return ['result' => true];
@@ -35,5 +35,10 @@ class OrderDetailsEvent implements ShouldBroadcast
         return [
             new Channel('channel-OrderDetailsEvent' . $this->userId),
         ];
+    }
+    // comment this function if you will use localhost websockets
+    public function broadcastAs()
+    {
+        return 'OrderDetailsEvent';
     }
 }
