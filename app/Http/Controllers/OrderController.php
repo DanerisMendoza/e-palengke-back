@@ -116,7 +116,7 @@ class OrderController extends Controller
                 //customer
                 ->when($request->input('mode') == 'customer', function ($q) use ($userId) {
                     $q->join('stores', 'stores.id', 'order_details.store_id')
-                    ->groupBy('orders.created_at', 'order_details.store_id', 'orders.status', 'orders.id', 'stores.name', 'transactions.id')
+                        ->groupBy('orders.created_at', 'order_details.store_id', 'orders.status', 'orders.id', 'stores.name', 'transactions.id')
                         ->select(
                             'orders.status',
                             'orders.id as order_id',
@@ -132,7 +132,7 @@ class OrderController extends Controller
                     $q->join('user_details', 'user_details.user_id', 'orders.user_id')
                         ->where('order_details.store_id', $store_id)
                         // ->distinct('orders.id')
-                        ->groupBy('customer_id','customer_name','orders.id','orders.status','orders.created_at','order_details.store_id','transactions.id','transactions.status')
+                        ->groupBy('customer_id', 'customer_name', 'orders.id', 'orders.status', 'orders.created_at', 'order_details.store_id', 'transactions.id', 'transactions.status')
                         ->select(
                             'user_details.id as customer_id',
                             DB::raw("CONCAT_WS(' ', user_details.first_name, user_details.middle_name, user_details.last_name) as customer_name"),
@@ -144,8 +144,8 @@ class OrderController extends Controller
                             'transactions.status as transactions_status'
                         );
                 })
-                ->when(!!$order_status, function($q) use($order_status){
-                    $q->where('orders.status',$order_status);
+                ->when(!!$order_status, function ($q) use ($order_status) {
+                    $q->where('orders.status', $order_status);
                 })
                 ->get()
                 ->each(function ($q) {
@@ -376,22 +376,30 @@ class OrderController extends Controller
 
     public function DROP_OFF(Request $request)
     {
-        $result = DB::table('transactions')
+        $transaction = DB::table('transactions')
             ->where('id', $request['transaction_id']);
-        if ($result) {
-            $result->update(['status' => 'Dropped off']);
+        if ($transaction) {
+            $transaction->update(['status' => 'Dropped off']);
+            broadcast(new OrderDetailsEvent($transaction->first()->user_id));
+            DB::table('orders')
+                ->where('transaction_id', $request['transaction_id'])
+                ->update(['status' => 'Received']);
             return 'success';
         }
     }
 
     public function PICKUP_ORDERS(Request $request)
     {
-        $result = DB::table('transactions')
+        $transaction = DB::table('transactions')
             ->where('id', $request['transaction_id'])
-            ->where('transactions.status', 'To Pickup');
-        if ($result) {
-            $result->update(['status' => 'Picked up']);
-            $result = DB::table('orders')
+            ->where('transactions.status', 'To Pickup')
+            ->first();
+        if ($transaction) {
+            DB::table('transactions')
+                ->where('id', $request['transaction_id'])
+                ->update(['status' => 'Picked up']);
+            broadcast(new OrderDetailsEvent($transaction->user_id));
+            DB::table('orders')
                 ->where('transaction_id', $request['transaction_id'])
                 ->update(['status' => 'To Receive']);
             return 'success';
@@ -400,22 +408,22 @@ class OrderController extends Controller
 
     public function ACCEPT_TRANSACTION(Request $request)
     {
-        $result = DB::table('transactions')
+        $transaction = DB::table('transactions')
             ->where('id', $request['transaction_id'])
             ->where('delivery_id', $request['user_id']);
-        if ($result) {
-            $result->update(['delivery_id' =>  $request['user_id'], 'status' => 'To Pickup']);
+        if ($transaction) {
+            $transaction->update(['delivery_id' =>  $request['user_id'], 'status' => 'To Pickup']);
         }
     }
 
     public function REMOVE_TRANSACTION_DELIVERY_ID(Request $request)
     {
-        $result = DB::table('transactions')
+        $transaction = DB::table('transactions')
             ->where('id', $request['transaction_id'])
             ->where('delivery_id', $request['user_id'])
             ->where('status', 'Pending');
-        if ($result) {
-            $result->update(['delivery_id' => null]);
+        if ($transaction) {
+            $transaction->update(['delivery_id' => null]);
         }
     }
 
