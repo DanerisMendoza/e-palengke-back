@@ -22,7 +22,7 @@ class UserDetail extends Seeder
         $UserDetail->last_name = "";
         $UserDetail->gender = "Male";
         $UserDetail->age = 20;
-        $UserDetail->balance = 0;
+        $UserDetail->balance = 10000;
         $UserDetail->phone_number = "94152604387";
         $UserDetail->address = "admin_address";
         $UserDetail->email = "admin_emailSample@gmail.com";
@@ -35,7 +35,7 @@ class UserDetail extends Seeder
         $UserDetail->last_name = "Barclay";
         $UserDetail->gender = "Male";
         $UserDetail->age = 20;
-        $UserDetail->balance = 0;
+        $UserDetail->balance = 10000;
         $UserDetail->phone_number = "94374207476";
         $UserDetail->address = "Caloocan";
         $UserDetail->email = "Thomas@gmail.com";
@@ -48,7 +48,7 @@ class UserDetail extends Seeder
         $UserDetail->last_name = "Duley";
         $UserDetail->gender = "Male";
         $UserDetail->age = 20;
-        $UserDetail->balance = 0;
+        $UserDetail->balance = 10000;
         $UserDetail->phone_number = "91629221258";
         $UserDetail->address = "Caloocan";
         $UserDetail->email = "Stephanie@gmail.com";
@@ -61,7 +61,7 @@ class UserDetail extends Seeder
         $UserDetail->last_name = "Victor";
         $UserDetail->gender = "Male";
         $UserDetail->age = 20;
-        $UserDetail->balance = 0;
+        $UserDetail->balance = 10000;
         $UserDetail->phone_number = "95128441426";
         $UserDetail->address = "Caloocan";
         $UserDetail->email = "patrick@gmail.com";
@@ -74,7 +74,7 @@ class UserDetail extends Seeder
         $UserDetail->last_name = "Austria";
         $UserDetail->gender = "Male";
         $UserDetail->age = 20;
-        $UserDetail->balance = 0;
+        $UserDetail->balance = 10000;
         $UserDetail->phone_number = "97179268918";
         $UserDetail->address = "Caloocan";
         $UserDetail->email = "Antonio@gmail.com";
@@ -87,7 +87,7 @@ class UserDetail extends Seeder
         $UserDetail->last_name = "Coleman";
         $UserDetail->gender = "Male";
         $UserDetail->age = 20;
-        $UserDetail->balance = 0;
+        $UserDetail->balance = 10000;
         $UserDetail->phone_number = "09121212";
         $UserDetail->address = "Caloocan";
         $UserDetail->email = "john@gmail.com";
