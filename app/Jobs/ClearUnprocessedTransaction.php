@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Models\Transaction;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -10,6 +11,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class ClearUnprocessedTransaction implements ShouldQueue
 {
@@ -23,19 +25,9 @@ class ClearUnprocessedTransaction implements ShouldQueue
 
     public function handle(): void
     {
-        $transactions = DB::table('transactions')
-            ->where('delivery_id', '0')
-            ->get();
-        foreach ($transactions as $transaction) {
-            $updatedTime = \Carbon\Carbon::parse($transaction->updated_at);
-            $currentTime = \Carbon\Carbon::now();
-
-            // Check if more than 1 minute has passed
-            if ($updatedTime->diffInMinutes($currentTime) > 1) {
-                DB::table('transactions')
-                    ->where('id', $transaction->id)
-                    ->update(['delivery_id' => null]);
-            }
-        }
+        $threshold = Carbon::now()->subMinutes(3);
+        Transaction::where('delivery_id', 0)
+            ->where('updated_at', '<=', $threshold)
+            ->update(['delivery_id' => null]);
     }
 }

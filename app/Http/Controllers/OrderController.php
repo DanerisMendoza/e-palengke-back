@@ -260,12 +260,13 @@ class OrderController extends Controller
         $declinedTransactions = $request['declinedTransactions'];
         $radiusInKm = ($radiusInMeters + 1) / 1000;
 
-        if (count($declinedTransactions) != 0) {
-            $transactions = DB::table('transactions')->where('id', $declinedTransactions[count($declinedTransactions) - 1]);
-            if ($transactions) {
-                $transactions->update(['delivery_id' => null]);
-            }
-        }
+        //web function only
+        // if (count($declinedTransactions) != 0) {
+        //     $transactions = DB::table('transactions')->where('id', $declinedTransactions[count($declinedTransactions) - 1]);
+        //     if ($transactions) {
+        //         $transactions->update(['delivery_id' => null]);
+        //     }
+        // }
 
         $result = DB::table('transactions')
             ->join('user_roles', 'user_roles.user_id', 'transactions.user_id')
@@ -309,10 +310,15 @@ class OrderController extends Controller
 
         if ($result->isNotEmpty()) {
             $firstResult = $result[0];
-            $transactions = DB::table('transactions')->where('id', $firstResult->transaction_id);
-            if ($transactions) {
-                $transactions->update(['delivery_id' => $user_id]);
+            DB::table('transactions')->where('id', $firstResult->transaction_id)->first();
+            $transaction = Transaction::find($firstResult->transaction_id);
+            if ($transaction) {
+                $transaction->update([
+                    'delivery_id' => 0,
+                ]);
             }
+
+            \Log::info('trigg');
         }
         return $result;
     }
@@ -409,10 +415,11 @@ class OrderController extends Controller
     public function ACCEPT_TRANSACTION(Request $request)
     {
         $transaction = DB::table('transactions')
-            ->where('id', $request['transaction_id'])
-            ->where('delivery_id', $request['user_id']);
+        ->where('id', $request['transaction_id']);
+        // ->where('delivery_id', $request['user_id']); //web function only
         if ($transaction) {
             $transaction->update(['delivery_id' =>  $request['user_id'], 'status' => 'To Pickup']);
+            return 'success';
         }
     }
 
