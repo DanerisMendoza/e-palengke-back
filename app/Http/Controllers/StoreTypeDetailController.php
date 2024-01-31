@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Http\Controllers;
 
@@ -113,7 +113,7 @@ class StoreTypeDetailController extends Controller
         \Log::info($id);
         // Retrieve the StoreTypeDetail by ID from the database
         $storeTypeDetail = StoreTypeDetail::find($id);
-        
+
         if (!$storeTypeDetail) {
             // Return a response if the resource was not found
             return response()->json(['message' => 'StoreTypeDetail not found'], 404);
