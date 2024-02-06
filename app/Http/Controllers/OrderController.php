@@ -395,15 +395,22 @@ class OrderController extends Controller
 
     public function PICKUP_ORDERS(Request $request)
     {
-        $transaction = DB::table('transactions')
-            ->where('id', $request['transaction_id'])
+        $transaction = Transaction::where('id', $request['transaction_id'])
             ->where('transactions.status', 'To Pickup')
             ->first();
         if ($transaction) {
-            DB::table('transactions')
-                ->where('id', $request['transaction_id'])
+            Transaction::where('id', $request['transaction_id'])
                 ->update(['status' => 'Picked up']);
+            // websocket event trigger(OrderDetailsEvent)
+            $sellerUserId = $transaction->sellerDetails->first()->user_id;
             broadcast(new OrderDetailsEvent($transaction->user_id));
+            broadcast(new OrderDetailsEvent($sellerUserId));
+            // websocket event trigger(OrderEvent)
+            broadcast(new OrderEvent($sellerUserId));
+            broadcast(new OrderEvent($transaction->user_id));
+            // push notification event trigger
+            $order = new Order;
+            $order->notifyCustomer($transaction->user_id);
             DB::table('orders')
                 ->where('transaction_id', $request['transaction_id'])
                 ->update(['status' => 'To Receive']);
