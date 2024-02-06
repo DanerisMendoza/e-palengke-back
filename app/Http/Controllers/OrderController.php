@@ -309,7 +309,7 @@ class OrderController extends Controller
             });
 
         if ($result->isNotEmpty()) {
-            $firstResult = $result[0];
+            $firstResult = $result->first();
             DB::table('transactions')->where('id', $firstResult->transaction_id)->first();
             $transaction = Transaction::find($firstResult->transaction_id);
             if ($transaction) {
@@ -317,9 +317,8 @@ class OrderController extends Controller
                     'delivery_id' => 0,
                 ]);
             }
-
-            \Log::info('trigg');
         }
+        $result = $result->values();
         return $result;
     }
 
