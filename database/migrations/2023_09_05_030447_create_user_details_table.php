@@ -14,10 +14,12 @@ return new class extends Migration
         Schema::create('user_details', function (Blueprint $table) {
             $table->id();
             $table->integer('user_id');
-            $table->string('name');
+            $table->string('first_name');
+            $table->string('middle_name')->nullable();
+            $table->string('last_name');
             $table->string('profile_pic_path')->nullable();
             $table->string('gender');
-            $table->integer('age');
+            $table->integer('age')->nullable();
             $table->string('phone_number');
             $table->string('address');
             $table->string('email');
@@ -26,6 +28,7 @@ return new class extends Migration
             $table->integer('balance')->nullable();
             $table->string('latitude')->nullable();
             $table->string('longitude')->nullable();
+            $table->string('device_token')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

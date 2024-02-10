@@ -44,6 +44,7 @@ class DatabaseSeeder extends Seeder
             StoreSeeder::class,
             StoreTypeSeeder::class,
             DeliveryLocationSeeder::class,
+            ProductSeeder::class,
         ]);
 
         // \App\Models\User::factory(10)->create();

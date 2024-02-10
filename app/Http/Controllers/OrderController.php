@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\OrderEvent;
+use App\Events\OrderDetailsEvent;
 use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\OrderDetail;
@@ -64,7 +66,7 @@ class OrderController extends Controller
             $UserDetail = UserDetail::where('user_id', $userId)->first();
             $UserDetail->balance = $UserDetail->balance - $Order->total;
             $UserDetail->save();
-
+            $notifiedSellers = [];
             foreach ($storeOrders as $OrderDetailInput) {
                 $OrderDetail = new OrderDetail();
                 $OrderDetail->order_id = $Order->id;
@@ -77,18 +79,35 @@ class OrderController extends Controller
                 $Product = Product::where('id', $OrderDetailInput['product_id'])->first();
                 $Product->stock -= $OrderDetailInput['quantity'];
                 $Product->save();
+                $product = Product::find($OrderDetailInput['product_id']);
+                //alert seller that there is new order
+                $sellerDetails = $product->sellerDetails()->first();
+
+                $cartItems = Cart::where('carts.product_id', $Product->id);
+                $cartItems->delete();
+
+                // broadcast(new OrderEvent($sellerDetails->user_id));
+                // $order = new Order; // Replace $orderId with the actual order ID you want to notify the seller about
+                // $order->notifySeller($sellerDetails->user_id); // Replace $sellerUserId with the user ID of the seller
+
+                if (!in_array($sellerDetails->user_id, $notifiedSellers)) {
+                    broadcast(new OrderEvent($sellerDetails->user_id));
+                    $order = new Order;
+                    $order->notifySeller($sellerDetails->user_id, $OrderDetail->store_id, $OrderDetail->order_id);
+                    // Add the seller's user ID to the array to prevent duplicate notifications
+                    $notifiedSellers[] = $sellerDetails->user_id;
+                }
             }
         }
-
-
-        $cartItems = Cart::where('carts.user_id', $userId);
-        $cartItems->delete();
+        //alert also the customer
+        broadcast(new OrderEvent($userId));
         return 'success';
     }
 
     public function GET_ORDERS(Request $request)
     {
         $store_id = $request->input('store_id');
+        $order_status = $request->input('order_status');
         $userId = Auth::user()->id;
         if (!!$request->input('mode')) {
             $order = DB::table('orders')
@@ -97,6 +116,7 @@ class OrderController extends Controller
                 //customer
                 ->when($request->input('mode') == 'customer', function ($q) use ($userId) {
                     $q->join('stores', 'stores.id', 'order_details.store_id')
+                        ->groupBy('orders.created_at', 'order_details.store_id', 'orders.status', 'orders.id', 'stores.name', 'transactions.id')
                         ->select(
                             'orders.status',
                             'orders.id as order_id',
@@ -105,17 +125,17 @@ class OrderController extends Controller
                             'stores.name',
                             'transactions.id as transaction_id',
                         )
-                        ->where('orders.user_id', $userId)
-                        ->groupBy('orders.created_at', 'order_details.store_id', 'orders.status', 'orders.id', 'stores.name','transactions.id');
+                        ->where('orders.user_id', $userId);
                 })
                 //store
                 ->when($request->input('mode') == 'store', function ($q) use ($store_id) {
                     $q->join('user_details', 'user_details.user_id', 'orders.user_id')
                         ->where('order_details.store_id', $store_id)
-                        ->distinct('orders.id')
+                        // ->distinct('orders.id')
+                        ->groupBy('customer_id', 'customer_name', 'orders.id', 'orders.status', 'orders.created_at', 'order_details.store_id', 'transactions.id', 'transactions.status')
                         ->select(
                             'user_details.id as customer_id',
-                            'user_details.name as customer_name',
+                            DB::raw("CONCAT_WS(' ', user_details.first_name, user_details.middle_name, user_details.last_name) as customer_name"),
                             'orders.id as order_id',
                             'orders.status',
                             'orders.created_at',
@@ -123,6 +143,9 @@ class OrderController extends Controller
                             'transactions.id as transaction_id',
                             'transactions.status as transactions_status'
                         );
+                })
+                ->when(!!$order_status, function ($q) use ($order_status) {
+                    $q->where('orders.status', $order_status);
                 })
                 ->get()
                 ->each(function ($q) {
@@ -148,40 +171,41 @@ class OrderController extends Controller
         $Order = Order::find($request['order_id']);
         if ($Order) {
             $Order->update(['status' => 'Preparing']);
+            broadcast(new OrderEvent($Order->user_id));
+            broadcast(new OrderDetailsEvent($Order->user_id));
+            return 'success';
         }
-
-        return 'success';
     }
 
     public function ORDER_TO_SHIP(Request $request)
     {
         $Order = Order::find($request['order_id']);
         if ($Order) {
-            $Order = $Order->update(['status' => 'To Ship']);
-            if ($Order) {
-                return 'success';
-            }
+            $Order->update(['status' => 'To Ship']);
+            broadcast(new OrderEvent($Order->user_id));
+            broadcast(new OrderDetailsEvent($Order->user_id));
+            return 'success';
         }
     }
 
     public function CANCEL_ORDER(Request $request)
     {
         $userId = Auth::user()->id;
-        $Order = DB::table('orders')
-            ->where('id', $request['order_id'])
+        $Order = Order::where('id', $request['order_id'])
             ->where('status', 'Pending')
             ->first();
         $UserDetail = UserDetail::where('user_id', $userId)->first();
         $UserDetail->balance = $UserDetail->balance + $Order->total;
         $UserDetail->save();
-        $order = DB::table('orders')
-            ->where('id', $request['order_id'])
-            ->where('status', 'Pending')
-            ->delete();
-        if ($order) {
-            DB::table('order_details')
-                ->where('order_id', $request['order_id'])
-                ->delete();
+        $orderCancelResult = $Order->delete();
+        if ($orderCancelResult) {
+            $orderDetails = OrderDetail::where('order_id', $request['order_id'])->get();
+            foreach ($orderDetails as $orderDetail) {
+                //alert seller
+                $sellerDetails = $orderDetail->sellerDetails()->first();
+                broadcast(new OrderEvent($sellerDetails->user_id));
+                $orderDetail->delete();
+            }
             return 'success';
         } else {
             return 'fail';
@@ -206,6 +230,7 @@ class OrderController extends Controller
             DB::table('order_details')
                 ->where('order_id', $request['order_id'])
                 ->delete();
+            broadcast(new OrderEvent($Order->user_id));
             return 'success';
         } else {
             return 'fail';
@@ -218,15 +243,12 @@ class OrderController extends Controller
         $UserDetail = UserDetail::where('user_id', $userId)->first();
         $UserDetail->balance = $UserDetail->balance + $request['item']['price'];
         $UserDetail->save();
-        $order_details = DB::table('order_details')
-            ->where('id', $request['item']['order_detail_id'])
-            ->where('status', 'Pending')
-            ->delete();
-        if ($order_details) {
-            return 'success';
-        } else {
-            return 'fail';
-        }
+        // the reason for having two ->first() calls is that you are making two separate queries:
+        $orderDetail = OrderDetail::where('id', $request['item']['order_detail_id'])->where('status', 'Pending')->first();
+        $sellerDetails = $orderDetail->sellerDetails()->first();
+        $orderDetail->delete();
+        broadcast(new OrderDetailsEvent($sellerDetails->user_id));
+        return 'success';
     }
 
     public function FIND_ORDER_WITHIN_RADIUS(Request $request)
@@ -238,18 +260,27 @@ class OrderController extends Controller
         $declinedTransactions = $request['declinedTransactions'];
         $radiusInKm = ($radiusInMeters + 1) / 1000;
 
-        if (count($declinedTransactions) != 0) {
-            $transactions = DB::table('transactions')->where('id', $declinedTransactions[count($declinedTransactions) - 1]);
-            if ($transactions) {
-                $transactions->update(['delivery_id' => null]);
-            }
-        }
+        //web function only
+        // if (count($declinedTransactions) != 0) {
+        //     $transactions = DB::table('transactions')->where('id', $declinedTransactions[count($declinedTransactions) - 1]);
+        //     if ($transactions) {
+        //         $transactions->update(['delivery_id' => null]);
+        //     }
+        // }
 
         $result = DB::table('transactions')
             ->join('user_roles', 'user_roles.user_id', 'transactions.user_id')
             ->join('customer_locations', 'customer_locations.user_role_id', 'user_roles.id')
             ->join('user_details', 'user_details.user_id', 'user_roles.user_id')
-            ->select('user_details.name as customer_name','user_details.phone_number', 'transactions.status', 'user_details.address as customer_address', 'transactions.id as transaction_id', 'customer_locations.latitude', 'customer_locations.longitude')
+            ->select(
+                DB::raw("CONCAT_WS(' ', user_details.first_name, user_details.middle_name, user_details.last_name) as customer_name"),
+                'user_details.phone_number',
+                'transactions.status',
+                'user_details.address as customer_address',
+                'transactions.id as transaction_id',
+                'customer_locations.latitude',
+                'customer_locations.longitude'
+            )
             ->selectRaw('(6371 * acos(cos(radians(?)) * cos(radians(customer_locations.latitude)) * cos(radians(customer_locations.longitude) - radians(?)) + sin(radians(?)) * sin(radians(customer_locations.latitude)))) AS distance', [$latitude, $longitude, $latitude])
             ->having('distance', '<', $radiusInKm)
             ->whereNull('transactions.delivery_id')
@@ -278,12 +309,16 @@ class OrderController extends Controller
             });
 
         if ($result->isNotEmpty()) {
-            $firstResult = $result[0];
-            $transactions = DB::table('transactions')->where('id', $firstResult->transaction_id);
-            if ($transactions) {
-                $transactions->update(['delivery_id' => $user_id]);
+            $firstResult = $result->first();
+            DB::table('transactions')->where('id', $firstResult->transaction_id)->first();
+            $transaction = Transaction::find($firstResult->transaction_id);
+            if ($transaction) {
+                $transaction->update([
+                    'delivery_id' => 0,
+                ]);
             }
         }
+        $result = $result->values();
         return $result;
     }
 
@@ -298,7 +333,15 @@ class OrderController extends Controller
                 $query->where('transactions.status', 'To Pickup')
                     ->orWhere('transactions.status', 'Picked up');
             })
-            ->select('user_details.name as customer_name','user_details.phone_number', 'user_details.address as customer_address', 'transactions.status', 'transactions.id as transaction_id', 'customer_locations.latitude', 'customer_locations.longitude')
+            ->select(
+                DB::raw("CONCAT_WS(' ', user_details.first_name, user_details.middle_name, user_details.last_name) as customer_name"),
+                'user_details.phone_number',
+                'user_details.address as customer_address',
+                'transactions.status',
+                'transactions.id as transaction_id',
+                'customer_locations.latitude',
+                'customer_locations.longitude'
+            )
             ->get()
             ->each(function ($q) {
                 $q->orders = DB::table('orders')
@@ -324,7 +367,12 @@ class OrderController extends Controller
         $result = DB::table('transactions')
             ->join('user_details', 'user_details.user_id', 'transactions.delivery_id')
             ->where('transactions.id', $request['transaction_id'])
-            ->select('user_details.name as delivery_name', 'user_details.phone_number','transactions.status', 'transactions.id as transaction_id')
+            ->select(
+                DB::raw("CONCAT_WS(' ', user_details.first_name, user_details.middle_name, user_details.last_name) as delivery_name"),
+                'user_details.phone_number',
+                'transactions.status',
+                'transactions.id as transaction_id'
+            )
             ->first();
         if ($result) {
             return $result;
@@ -333,22 +381,37 @@ class OrderController extends Controller
 
     public function DROP_OFF(Request $request)
     {
-        $result = DB::table('transactions')
+        $transaction = DB::table('transactions')
             ->where('id', $request['transaction_id']);
-        if ($result) {
-            $result->update(['status' => 'Dropped off']);
+        if ($transaction) {
+            $transaction->update(['status' => 'Dropped off']);
+            broadcast(new OrderDetailsEvent($transaction->first()->user_id));
+            DB::table('orders')
+                ->where('transaction_id', $request['transaction_id'])
+                ->update(['status' => 'Received']);
             return 'success';
         }
     }
-    
+
     public function PICKUP_ORDERS(Request $request)
     {
-        $result = DB::table('transactions')
-            ->where('id', $request['transaction_id'])
-            ->where('transactions.status', 'To Pickup');
-        if ($result) {
-            $result->update(['status' => 'Picked up']);
-            $result = DB::table('orders')
+        $transaction = Transaction::where('id', $request['transaction_id'])
+            ->where('transactions.status', 'To Pickup')
+            ->first();
+        if ($transaction) {
+            Transaction::where('id', $request['transaction_id'])
+                ->update(['status' => 'Picked up']);
+            // websocket event trigger(OrderDetailsEvent)
+            $sellerUserId = $transaction->sellerDetails->first()->user_id;
+            broadcast(new OrderDetailsEvent($transaction->user_id));
+            broadcast(new OrderDetailsEvent($sellerUserId));
+            // websocket event trigger(OrderEvent)
+            broadcast(new OrderEvent($sellerUserId));
+            broadcast(new OrderEvent($transaction->user_id));
+            // push notification event trigger
+            $order = new Order;
+            $order->notifyCustomer($transaction->user_id);
+            DB::table('orders')
                 ->where('transaction_id', $request['transaction_id'])
                 ->update(['status' => 'To Receive']);
             return 'success';
@@ -357,33 +420,35 @@ class OrderController extends Controller
 
     public function ACCEPT_TRANSACTION(Request $request)
     {
-        $result = DB::table('transactions')
-            ->where('id', $request['transaction_id'])
-            ->where('delivery_id', $request['user_id']);
-        if ($result) {
-            $result->update(['delivery_id' =>  $request['user_id'], 'status' => 'To Pickup']);
+        $transaction = DB::table('transactions')
+        ->where('id', $request['transaction_id']);
+        // ->where('delivery_id', $request['user_id']); //web function only
+        if ($transaction) {
+            $transaction->update(['delivery_id' =>  $request['user_id'], 'status' => 'To Pickup']);
+            return 'success';
         }
     }
 
     public function REMOVE_TRANSACTION_DELIVERY_ID(Request $request)
     {
-        $result = DB::table('transactions')
+        $transaction = DB::table('transactions')
             ->where('id', $request['transaction_id'])
             ->where('delivery_id', $request['user_id'])
             ->where('status', 'Pending');
-        if ($result) {
-            $result->update(['delivery_id' => null]);
+        if ($transaction) {
+            $transaction->update(['delivery_id' => null]);
         }
     }
 
     public function GET_ORDER_DETAILS(Request $request)
     {
         $result = DB::table('order_details')
+            ->join('orders', 'orders.id', 'order_details.order_id')
             ->join('products', 'products.id', 'order_details.product_id')
             ->join('stores', 'stores.id', 'order_details.store_id')
             ->where('order_details.order_id', $request['order_id'])
             ->where('order_details.store_id', $request['store_id'])
-            ->select('stores.name as store_name', 'stores.address', 'order_details.id as order_detail_id', 'order_details.quantity', 'order_details.status', 'products.name', 'products.price')
+            ->select('stores.name as store_name', 'stores.address', 'order_details.id as order_detail_id', 'order_details.quantity', 'orders.status', 'products.name', 'products.price')
             ->get();
         return $result;
     }

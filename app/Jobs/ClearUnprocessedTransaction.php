@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Models\Transaction;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -10,27 +11,23 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
-class FindNearByDelivery implements ShouldQueue
+class ClearUnprocessedTransaction implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-    
 
 
-    /**
-     * Create a new job instance.
-     */
     public function __construct()
     {
-
     }
 
-    // public $i = 0;
-    
+
     public function handle(): void
     {
-        $queue = DB::table('queues')->first();
-        // $this->i++;
-        \Log::info($queue->user_id);
+        $threshold = Carbon::now()->subMinutes(3);
+        Transaction::where('delivery_id', 0)
+            ->where('updated_at', '<=', $threshold)
+            ->update(['delivery_id' => null]);
     }
 }

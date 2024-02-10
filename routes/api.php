@@ -15,6 +15,8 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\QueueController;
+use App\Http\Controllers\AnalysisController;
+use App\Http\Controllers\PushNotificationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,6 +43,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/authenticate', [UserController::class, 'authenticate']);
     Route::post('/UpdateUserBalance', [UserController::class, 'UpdateUserBalance']);
     Route::post('/FIND_USER_WITHIN_RADIUS', [UserController::class, 'FIND_USER_WITHIN_RADIUS']);
+    Route::post('/UpdateDeviceToken', [UserController::class, 'UpdateDeviceToken']);
     //REQUIREMENT API
     Route::resource('RequirementDetail', RequirementDetailController::class);
     // Edit a Requirement Detail
@@ -69,6 +72,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/GetApplicants', [UserRoleController::class, 'GetApplicants']);
     Route::patch('/ApproveUserRole/{id}', [UserRoleController::class, 'ApproveUserRole']);
     Route::patch('/DissaproveUserRole/{id}', [UserRoleController::class, 'DissaproveUserRole']);
+    Route::post('/UpdateUserByUserID', [UserController::class, 'UpdateUserByUserID']);
     //USER ROLE DETAIL API
     Route::resource('UserRoleDetail', UserRoleDetailController::class);
     //APPLICANT CREDENTIAL API
@@ -99,4 +103,10 @@ Route::middleware('auth:api')->group(function () {
     //QUEUE API
     Route::post('/MarkOnline', [QueueController::class, 'MarkOnline']);
     Route::post('/MarkOffline', [QueueController::class, 'MarkOffline']);
+    // ANALYSIS API
+    Route::get('/GET_USER_ROLES_ANALYSIS', [AnalysisController::class, 'GET_USER_ROLES_ANALYSIS']);
+    Route::get('/GET_USER_ROLES_STATUS_ANALYSIS', [AnalysisController::class, 'GET_USER_ROLES_STATUS_ANALYSIS']);
+    Route::get('/GET_ORDERS_ANALYSIS', [AnalysisController::class, 'GET_ORDERS_ANALYSIS']);
+    // PUSH NOTIF API
+    Route::post('/SEND_PUSH_NOTIF', [PushNotificationController::class, 'SEND_PUSH_NOTIF']);
 });

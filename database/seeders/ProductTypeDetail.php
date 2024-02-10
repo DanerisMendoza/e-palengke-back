@@ -14,18 +14,22 @@ class ProductTypeDetail extends Seeder
     {
         $ProductTypeDetail = new ProductTypeDetailModel();
         $ProductTypeDetail->name = 'Vegetable';
+        $ProductTypeDetail->pic_path = '/product_type_thumbnail/vegetable.png';
         $ProductTypeDetail->save();
         
         $ProductTypeDetail = new ProductTypeDetailModel();
         $ProductTypeDetail->name = 'Meat';
+        $ProductTypeDetail->pic_path = '/product_type_thumbnail/meat.png';
         $ProductTypeDetail->save();
 
         $ProductTypeDetail = new ProductTypeDetailModel();
-        $ProductTypeDetail->name = 'Tea';
+        $ProductTypeDetail->name = 'Milk Tea';
+        $ProductTypeDetail->pic_path = '/product_type_thumbnail/milk-tea.png';
         $ProductTypeDetail->save();
         
         $ProductTypeDetail = new ProductTypeDetailModel();
         $ProductTypeDetail->name = 'Grilled Foods';
+        $ProductTypeDetail->pic_path = '/product_type_thumbnail/grilled-foods.png';
         $ProductTypeDetail->save();
     }
 }

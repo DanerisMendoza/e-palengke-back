@@ -20,12 +20,12 @@ class User extends Seeder
         $user->save();
         
         $user = new UserModel();
-        $user->username = 'customer1';
+        $user->username = 'Thomas';
         $user->password = Hash::make('123');
         $user->save();
         
         $user = new UserModel();
-        $user->username = 'customer2';
+        $user->username = 'Stephanie';
         $user->password = Hash::make('123');
         $user->save();
         
@@ -35,7 +35,7 @@ class User extends Seeder
         $user->save();
         
         $user = new UserModel();
-        $user->username = 'delivery1';
+        $user->username = 'Antonio';
         $user->password = Hash::make('123');
         $user->save();
 

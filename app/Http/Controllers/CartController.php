@@ -8,7 +8,8 @@ use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
-    public function AddCartProduct(Request $request){
+    public function AddCartProduct(Request $request)
+    {
         $userId = Auth::user()->id;
         $productId = $request->input('product_id');
         // Check if there is an existing cart entry with the same product_id and user_id
@@ -31,12 +32,13 @@ class CartController extends Controller
             return response()->json(['message' => 'Quantity incremented in the cart']);
         }
     }
-    
-    public function IncreaseCartProduct(Request $request){
+
+    public function IncreaseCartProduct(Request $request)
+    {
         $userId = Auth::user()->id;
         $existingCart = Cart::where('user_id', $userId)
-        ->where('product_id', $request['product_id'])
-        ->first();
+            ->where('product_id', $request['product_id'])
+            ->first();
         $existingCart->quantity += 1;
         $existingCart->save();
         return response()->json(['message' => 'Quantity incremented in the cart']);
@@ -48,10 +50,10 @@ class CartController extends Controller
         $existingCart = Cart::where('user_id', $userId)
             ->where('product_id', $request['product_id'])
             ->first();
-    
+
         if ($existingCart) {
             $existingCart->quantity -= 1;
-    
+
             if ($existingCart->quantity <= 0) {
                 // If quantity is less than or equal to 0, delete the cart entry
                 $existingCart->delete();
@@ -66,37 +68,42 @@ class CartController extends Controller
             return response()->json(['message' => 'Product not found in the cart']);
         }
     }
-    
 
-    public function RemoveCartProduct(Request $request){
+
+    public function RemoveCartProduct(Request $request)
+    {
         $userId = Auth::user()->id;
-        $existingCart = Cart::where('user_id', $userId)
-        ->where('product_id', $request['product_id'])
-        ->delete();
+        Cart::where('user_id', $userId)
+            ->where('product_id', $request['product_id'])
+            ->delete();
         return response()->json(['message' => 'Quantity incremented in the cart']);
     }
-    
-    // public function GetCart(Request $request){
-    //     $userId = Auth::user()->id;
-    //     $Cart = Cart::where('carts.user_id',$userId)
-    //     ->join('products','products.id','carts.product_id')
-    //     ->get();
-    //     return $Cart;
-    // }
-    public function GetCart(Request $request){
+
+
+    public function GetCart(Request $request)
+    {
         $userId = Auth::user()->id;
         $cartItems = Cart::where('carts.user_id', $userId)
             ->join('products', 'products.id', 'carts.product_id')
             ->join('stores', 'stores.id', 'carts.store_id')
-            ->select('stores.id','stores.name as store_name','products.price','products.name','products.id', 'products.id as product_id', 'products.stock', 'carts.quantity', 'carts.store_id')
-            ->get();
-    
+            ->select('stores.id', 'stores.name as store_name', 'products.picture_path', 'products.price', 'products.name', 'products.id', 'products.id as product_id', 'products.stock', 'carts.quantity', 'carts.store_id')
+            ->get()
+            ->each(function ($q) {
+                $image_type = substr($q->picture_path, -3);
+                $image_format = '';
+                if ($image_type == 'png' || $image_type == 'jpg') {
+                    $image_format = $image_type;
+                }
+                $base64str = '';
+                $base64str = base64_encode(file_get_contents(public_path($q->picture_path)));
+                $q->base64img = 'data:image/' . $image_format . ';base64,' . $base64str;
+            });
+
         foreach ($cartItems as $item) {
             $remainingStock = $item->stock - $item->quantity;
             $item->stock = $remainingStock;
         }
-    
+
         return $cartItems;
     }
-    
 }
