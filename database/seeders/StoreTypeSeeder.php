@@ -22,5 +22,20 @@ class StoreTypeSeeder extends Seeder
         $StoreType->store_id = 2;
         $StoreType->store_type_details_id = 9;
         $StoreType->save();
+
+        $StoreType = new StoreType();
+        $StoreType->store_id = 3;
+        $StoreType->store_type_details_id = 5;
+        $StoreType->save();
+
+        $StoreType = new StoreType();
+        $StoreType->store_id = 4;
+        $StoreType->store_type_details_id = 8;
+        $StoreType->save();
+
+        $StoreType = new StoreType();
+        $StoreType->store_id = 5;
+        $StoreType->store_type_details_id = 3;
+        $StoreType->save();
     }
 }

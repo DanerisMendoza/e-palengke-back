@@ -60,5 +60,53 @@ class ProductSeeder extends Seeder
         $Product->stock = 15;
         $Product->picture_path = '/products/milk-tea-matcha-657fc63f83ee0.png';
         $Product->save();
+        
+        $Product = new Product();
+        $Product->store_id = 3;
+        $Product->name = "Hammer";
+        $Product->price = "180";
+        $Product->stock = 15;
+        $Product->picture_path = '/products/hammer-5b7b94004ee527.1342253915348254723232.png';
+        $Product->save();
+        
+        $Product = new Product();
+        $Product->store_id = 3;
+        $Product->name = "Pliers";
+        $Product->price = "150";
+        $Product->stock = 15;
+        $Product->picture_path = '/products/pliers-80560122151377484609082214.png';
+        $Product->save();
+        
+        $Product = new Product();
+        $Product->store_id = 4;
+        $Product->name = "Hotdog";
+        $Product->price = "15";
+        $Product->stock = 15;
+        $Product->picture_path = '/products/hotdog-aslkdjaslkdj65as4d026098as7d897.png';
+        $Product->save();
+        
+        $Product = new Product();
+        $Product->store_id = 4;
+        $Product->name = "Fishball";
+        $Product->price = "10";
+        $Product->stock = 15;
+        $Product->picture_path = '/products/fishball-5asd5as4d6sa54d68as7d498z321.png';
+        $Product->save();
+        
+        $Product = new Product();
+        $Product->store_id = 5;
+        $Product->name = "Earphone";
+        $Product->price = "10";
+        $Product->stock = 15;
+        $Product->picture_path = '/products/earphone-aslkdjasd687as987d0asd687.png';
+        $Product->save();
+        
+        $Product = new Product();
+        $Product->store_id = 5;
+        $Product->name = "Speaker";
+        $Product->price = "10";
+        $Product->stock = 15;
+        $Product->picture_path = '/products/speaker-as60d4as687d.png';
+        $Product->save();
     }
 }

@@ -29,7 +29,7 @@ class StoreTypeDetail extends Seeder
         $StoreTypeDetail->save();
      
         $StoreTypeDetail = new StoreTypeDetailModel();
-        $StoreTypeDetail->name = 'Hardware Store:';
+        $StoreTypeDetail->name = 'Hardware Store';
         $StoreTypeDetail->save();
      
         $StoreTypeDetail = new StoreTypeDetailModel();

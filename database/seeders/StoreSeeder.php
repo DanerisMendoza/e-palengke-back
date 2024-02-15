@@ -44,5 +44,53 @@ class StoreSeeder extends Seeder
         $Store->saturday = '9:00 AM - 9:00 PM';
         $Store->sunday = '9:00 AM - 9:00 PM';
         $Store->save();
+
+        $Store = new Store();
+        $Store->user_role_id = 11;
+        $Store->name = 'Margaret Hardware Store';
+        $Store->status = 'active';
+        $Store->latitude = '14.653928734806732';
+        $Store->longitude = '120.96593141555786';
+        $Store->address = 'Sabalo Street Caloocan City';
+        $Store->monday = '9:00 AM - 9:30 PM';
+        $Store->tuesday = '9:00 AM - 9:30 PM';
+        $Store->wednesday = '9:00 AM - 9:30 PM';
+        $Store->thursday = '9:00 AM - 9:30 PM';
+        $Store->friday = '9:00 AM - 9:30 PM';
+        $Store->saturday = '9:00 AM - 9:00 PM';
+        $Store->sunday = '9:00 AM - 9:00 PM';
+        $Store->save();
+
+        $Store = new Store();
+        $Store->user_role_id = 13;
+        $Store->name = 'Walter Street Food Store';
+        $Store->status = 'active';
+        $Store->latitude = '14.654411331343525';
+        $Store->longitude = '120.96590995788576';
+        $Store->address = 'Sabalo Street Caloocan City';
+        $Store->monday = '9:00 AM - 9:30 PM';
+        $Store->tuesday = '9:00 AM - 9:30 PM';
+        $Store->wednesday = '9:00 AM - 9:30 PM';
+        $Store->thursday = '9:00 AM - 9:30 PM';
+        $Store->friday = '9:00 AM - 9:30 PM';
+        $Store->saturday = '9:00 AM - 9:00 PM';
+        $Store->sunday = '9:00 AM - 9:00 PM';
+        $Store->save();
+
+        $Store = new Store();
+        $Store->user_role_id = 13;
+        $Store->name = 'Lewis Electronics Store';
+        $Store->status = 'active';
+        $Store->latitude = '14.65385638271169';
+        $Store->longitude = '120.96543788909914';
+        $Store->address = 'Sabalo Street Caloocan City';
+        $Store->monday = '9:00 AM - 9:30 PM';
+        $Store->tuesday = '9:00 AM - 9:30 PM';
+        $Store->wednesday = '9:00 AM - 9:30 PM';
+        $Store->thursday = '9:00 AM - 9:30 PM';
+        $Store->friday = '9:00 AM - 9:30 PM';
+        $Store->saturday = '9:00 AM - 9:00 PM';
+        $Store->sunday = '9:00 AM - 9:00 PM';
+        $Store->save();
     }
 }

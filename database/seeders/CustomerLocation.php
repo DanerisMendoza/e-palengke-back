@@ -48,5 +48,25 @@ class CustomerLocation extends Seeder
         $CustomerLocation->longitude = "120.96416115760805";
         $CustomerLocation->save();
 
+        $CustomerLocation = new CustomerLocationModel();
+        $CustomerLocation->user_role_id = 11;
+        $CustomerLocation->address = "Caloocan City";
+        $CustomerLocation->latitude = "14.653928734806732";
+        $CustomerLocation->longitude = "120.96593141555786";
+        $CustomerLocation->save();
+
+        $CustomerLocation = new CustomerLocationModel();
+        $CustomerLocation->user_role_id = 13;
+        $CustomerLocation->address = "Caloocan City";
+        $CustomerLocation->latitude = "14.654411331343525";
+        $CustomerLocation->longitude = "120.96590995788576";
+        $CustomerLocation->save();
+
+        $CustomerLocation = new CustomerLocationModel();
+        $CustomerLocation->user_role_id = 15;
+        $CustomerLocation->address = "Caloocan City";
+        $CustomerLocation->latitude = "14.65385638271169";
+        $CustomerLocation->longitude = "120.96543788909914";
+        $CustomerLocation->save();
     }
 }

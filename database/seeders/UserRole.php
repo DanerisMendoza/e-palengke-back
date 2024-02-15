@@ -72,5 +72,44 @@ class UserRole extends Seeder
         $userRole->user_role_details_id = 2;
         $userRole->status = 'active';
         $userRole->save();
+
+        //margaret -> customer & seller
+        $userRole = new UserRoleModel();
+        $userRole->user_id = 7;
+        $userRole->user_role_details_id = 2;
+        $userRole->status = 'active';
+        $userRole->save();
+        //11
+        $userRole = new UserRoleModel();
+        $userRole->user_id = 7;
+        $userRole->user_role_details_id = 3;
+        $userRole->status = 'active';
+        $userRole->save();
+
+        // walter -> customer & seller
+        $userRole = new UserRoleModel();
+        $userRole->user_id = 8;
+        $userRole->user_role_details_id = 2;
+        $userRole->status = 'active';
+        $userRole->save();
+
+        $userRole = new UserRoleModel();
+        $userRole->user_id = 8;
+        $userRole->user_role_details_id = 3;
+        $userRole->status = 'active';
+        $userRole->save();
+
+        // Lewis -> customer & seller
+        $userRole = new UserRoleModel();
+        $userRole->user_id = 9;
+        $userRole->user_role_details_id = 2;
+        $userRole->status = 'active';
+        $userRole->save();
+
+        $userRole = new UserRoleModel();
+        $userRole->user_id = 9;
+        $userRole->user_role_details_id = 3;
+        $userRole->status = 'active';
+        $userRole->save();
     }
 }
