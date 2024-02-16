@@ -13,15 +13,15 @@ class StoreTypeDetail extends Seeder
     public function run(): void
     {
         $StoreTypeDetail = new StoreTypeDetailModel();
-        $StoreTypeDetail->name = 'Grocery Store';
+        $StoreTypeDetail->name = 'Grocery';
         $StoreTypeDetail->save();
 
         $StoreTypeDetail = new StoreTypeDetailModel();
-        $StoreTypeDetail->name = 'Clothing Store';
+        $StoreTypeDetail->name = 'Clothing';
         $StoreTypeDetail->save();
         
         $StoreTypeDetail = new StoreTypeDetailModel();
-        $StoreTypeDetail->name = 'Electronics Store';
+        $StoreTypeDetail->name = 'Electronics';
         $StoreTypeDetail->save();
      
         $StoreTypeDetail = new StoreTypeDetailModel();
@@ -29,7 +29,7 @@ class StoreTypeDetail extends Seeder
         $StoreTypeDetail->save();
      
         $StoreTypeDetail = new StoreTypeDetailModel();
-        $StoreTypeDetail->name = 'Hardware Store';
+        $StoreTypeDetail->name = 'Hardware';
         $StoreTypeDetail->save();
      
         $StoreTypeDetail = new StoreTypeDetailModel();
@@ -37,19 +37,19 @@ class StoreTypeDetail extends Seeder
         $StoreTypeDetail->save();
 
         $StoreTypeDetail = new StoreTypeDetailModel();
-        $StoreTypeDetail->name = 'Department Store';
+        $StoreTypeDetail->name = 'Department';
         $StoreTypeDetail->save();
 
         $StoreTypeDetail = new StoreTypeDetailModel();
-        $StoreTypeDetail->name = 'Street Food Store';
+        $StoreTypeDetail->name = 'Street Food';
         $StoreTypeDetail->save();
 
         $StoreTypeDetail = new StoreTypeDetailModel();
-        $StoreTypeDetail->name = 'Milk Tea Store';
+        $StoreTypeDetail->name = 'Milk Tea';
         $StoreTypeDetail->save();
       
         $StoreTypeDetail = new StoreTypeDetailModel();
-        $StoreTypeDetail->name = 'others';
+        $StoreTypeDetail->name = 'Others';
         $StoreTypeDetail->save();
     }
 }
