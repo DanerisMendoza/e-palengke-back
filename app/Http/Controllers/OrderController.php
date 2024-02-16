@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\OrderEvent;
 use App\Events\OrderDetailsEvent;
+use App\Events\TransactionEvent;
 use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\OrderDetail;
@@ -381,10 +382,15 @@ class OrderController extends Controller
 
     public function DROP_OFF(Request $request)
     {
-        $transaction = DB::table('transactions')
-            ->where('id', $request['transaction_id']);
+        $transaction = Transaction::find($request['transaction_id']);
         if ($transaction) {
             $transaction->update(['status' => 'Dropped off']);
+            $sellersDetail = $transaction->sellersDetail();
+            foreach($sellersDetail as $seller){
+                broadcast(new OrderDetailsEvent($seller->id));
+                broadcast(new OrderEvent($seller->id));
+            }
+            broadcast(new OrderEvent($transaction->first()->user_id));
             broadcast(new OrderDetailsEvent($transaction->first()->user_id));
             DB::table('orders')
                 ->where('transaction_id', $request['transaction_id'])
@@ -401,12 +407,14 @@ class OrderController extends Controller
         if ($transaction) {
             Transaction::where('id', $request['transaction_id'])
                 ->update(['status' => 'Picked up']);
-            // websocket event trigger(OrderDetailsEvent)
-            $sellerUserId = $transaction->sellerDetails->first()->user_id;
+            $sellersDetail = $transaction->sellersDetail();
+            // websocket event trigger (seller)
+            foreach($sellersDetail as $seller){
+                broadcast(new OrderDetailsEvent($seller->id));
+                broadcast(new OrderEvent($seller->id));
+            }
+            // websocket event trigger (customer)
             broadcast(new OrderDetailsEvent($transaction->user_id));
-            broadcast(new OrderDetailsEvent($sellerUserId));
-            // websocket event trigger(OrderEvent)
-            broadcast(new OrderEvent($sellerUserId));
             broadcast(new OrderEvent($transaction->user_id));
             // push notification event trigger
             $order = new Order;
@@ -420,11 +428,17 @@ class OrderController extends Controller
 
     public function ACCEPT_TRANSACTION(Request $request)
     {
-        $transaction = DB::table('transactions')
-        ->where('id', $request['transaction_id']);
-        // ->where('delivery_id', $request['user_id']); //web function only
+        $delivery_id = Auth::user()->id;
+        $transaction = Transaction::where('id', $request['transaction_id'])
+            ->first();
         if ($transaction) {
-            $transaction->update(['delivery_id' =>  $request['user_id'], 'status' => 'To Pickup']);
+            Transaction::where('id', $request['transaction_id'])
+            ->update(['delivery_id' => $request['user_id'], 'status' => 'To Pickup']);
+            $sellersDetail = $transaction->sellersDetail();
+            foreach($sellersDetail as $seller){
+                broadcast(new TransactionEvent($seller->id, $delivery_id));
+            }
+            broadcast(new TransactionEvent($transaction->user_id, $delivery_id));
             return 'success';
         }
     }
