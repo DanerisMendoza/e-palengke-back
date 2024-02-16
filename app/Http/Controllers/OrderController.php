@@ -167,6 +167,20 @@ class OrderController extends Controller
     }
 
 
+    public function COMPLETE_ORDER(Request $request)
+    {
+        $Order = Order::find($request['order_id']);
+        if ($Order) {
+            $Order->update(['status' => 'Completed']);
+            $sellerDetails = $Order->sellerDetails()->first();
+            broadcast(new OrderEvent($Order->user_id));
+            broadcast(new OrderDetailsEvent($Order->user_id));
+            broadcast(new OrderEvent($sellerDetails->user_id));
+            broadcast(new OrderDetailsEvent($sellerDetails->user_id));
+            return 'success';
+        }
+    }
+
     public function ACCEPT_ORDER(Request $request)
     {
         $Order = Order::find($request['order_id']);
@@ -202,11 +216,14 @@ class OrderController extends Controller
         if ($orderCancelResult) {
             $orderDetails = OrderDetail::where('order_id', $request['order_id'])->get();
             foreach ($orderDetails as $orderDetail) {
-                //alert seller
-                $sellerDetails = $orderDetail->sellerDetails()->first();
-                broadcast(new OrderEvent($sellerDetails->user_id));
                 $orderDetail->delete();
             }
+            //alert seller
+            $sellerDetails = $orderDetail->sellerDetails()->first();
+            broadcast(new OrderEvent($sellerDetails->user_id));
+            broadcast(new OrderDetailsEvent($sellerDetails->user_id));
+            broadcast(new OrderEvent($Order->user_id));
+            broadcast(new OrderDetailsEvent($Order->user_id));
             return 'success';
         } else {
             return 'fail';
