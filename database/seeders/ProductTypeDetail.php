@@ -31,5 +31,20 @@ class ProductTypeDetail extends Seeder
         $ProductTypeDetail->name = 'Grilled Foods';
         $ProductTypeDetail->pic_path = '/product_type_thumbnail/grilled-foods.png';
         $ProductTypeDetail->save();
+
+        $ProductTypeDetail = new ProductTypeDetailModel();
+        $ProductTypeDetail->name = 'Gadgets Accessories';
+        $ProductTypeDetail->pic_path = '/product_type_thumbnail/gadgets-accessories.png';
+        $ProductTypeDetail->save();
+
+        $ProductTypeDetail = new ProductTypeDetailModel();
+        $ProductTypeDetail->name = 'Tools';
+        $ProductTypeDetail->pic_path = '/product_type_thumbnail/tools.png';
+        $ProductTypeDetail->save();
+
+        $ProductTypeDetail = new ProductTypeDetailModel();
+        $ProductTypeDetail->name = 'Street Foods';
+        $ProductTypeDetail->pic_path = '/product_type_thumbnail/street-foods.png';
+        $ProductTypeDetail->save();
     }
 }

@@ -15,6 +15,7 @@ class ProductSeeder extends Seeder
     {
         $Product = new Product();
         $Product->store_id = 1;
+        $Product->product_type_details_id = 4;
         $Product->name = "Grilled Chicken";
         $Product->price = "150";
         $Product->stock = 20;
@@ -23,6 +24,7 @@ class ProductSeeder extends Seeder
    
         $Product = new Product();
         $Product->store_id = 1;
+        $Product->product_type_details_id = 4;
         $Product->name = "Grilled Liempo";
         $Product->price = "250";
         $Product->stock = 20;
@@ -31,6 +33,7 @@ class ProductSeeder extends Seeder
         
         $Product = new Product();
         $Product->store_id = 1;
+        $Product->product_type_details_id = 4;
         $Product->name = "Isaw";
         $Product->price = "10";
         $Product->stock = 15;
@@ -39,6 +42,7 @@ class ProductSeeder extends Seeder
        
         $Product = new Product();
         $Product->store_id = 1;
+        $Product->product_type_details_id = 4;
         $Product->name = "Pork Barbecue";
         $Product->price = "20";
         $Product->stock = 15;
@@ -47,6 +51,7 @@ class ProductSeeder extends Seeder
         
         $Product = new Product();
         $Product->store_id = 2;
+        $Product->product_type_details_id = 3;
         $Product->name = "Milk Tea Original";
         $Product->price = "39";
         $Product->stock = 15;
@@ -55,6 +60,7 @@ class ProductSeeder extends Seeder
         
         $Product = new Product();
         $Product->store_id = 2;
+        $Product->product_type_details_id = 3;
         $Product->name = "Milk Tea Matcha";
         $Product->price = "39";
         $Product->stock = 15;
@@ -63,6 +69,7 @@ class ProductSeeder extends Seeder
         
         $Product = new Product();
         $Product->store_id = 3;
+        $Product->product_type_details_id = 6;
         $Product->name = "Hammer";
         $Product->price = "180";
         $Product->stock = 15;
@@ -71,6 +78,7 @@ class ProductSeeder extends Seeder
         
         $Product = new Product();
         $Product->store_id = 3;
+        $Product->product_type_details_id = 6;
         $Product->name = "Pliers";
         $Product->price = "150";
         $Product->stock = 15;
@@ -79,6 +87,7 @@ class ProductSeeder extends Seeder
         
         $Product = new Product();
         $Product->store_id = 4;
+        $Product->product_type_details_id = 7;
         $Product->name = "Hotdog";
         $Product->price = "15";
         $Product->stock = 15;
@@ -87,6 +96,7 @@ class ProductSeeder extends Seeder
         
         $Product = new Product();
         $Product->store_id = 4;
+        $Product->product_type_details_id = 7;
         $Product->name = "Fishball";
         $Product->price = "10";
         $Product->stock = 15;
@@ -95,6 +105,7 @@ class ProductSeeder extends Seeder
         
         $Product = new Product();
         $Product->store_id = 5;
+        $Product->product_type_details_id = 5;
         $Product->name = "Earphone";
         $Product->price = "10";
         $Product->stock = 15;
@@ -103,6 +114,7 @@ class ProductSeeder extends Seeder
         
         $Product = new Product();
         $Product->store_id = 5;
+        $Product->product_type_details_id = 5;
         $Product->name = "Speaker";
         $Product->price = "10";
         $Product->stock = 15;
