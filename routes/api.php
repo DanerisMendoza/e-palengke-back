@@ -41,6 +41,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/GetSideNav', [UserController::class, 'GetSideNav']);
     Route::get('/GetAllSideNav', [UserController::class, 'GetAllSideNav']);
     Route::get('/authenticate', [UserController::class, 'authenticate']);
+    Route::get('/GetUserDetailsById', [UserController::class, 'GetUserDetailsById']);
     Route::post('/UpdateUserBalance', [UserController::class, 'UpdateUserBalance']);
     Route::post('/FIND_USER_WITHIN_RADIUS', [UserController::class, 'FIND_USER_WITHIN_RADIUS']);
     Route::post('/UpdateDeviceToken', [UserController::class, 'UpdateDeviceToken']);

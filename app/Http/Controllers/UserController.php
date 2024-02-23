@@ -157,6 +157,32 @@ class UserController extends Controller
         return 'success';
     }
 
+    public function GetUserDetailsById(Request $request)
+    {
+        $userId = $request->user_id;
+        $userDetail = DB::table('users')
+            ->join('user_details', 'users.id', '=', 'user_details.user_id')
+            ->where('users.id', '=', $userId)
+            ->select(
+                'users.username',
+                'users.id as user_id',
+                'user_details.*',
+                DB::raw("CONCAT_WS(' ', user_details.first_name, user_details.middle_name, user_details.last_name) as name")
+            )
+            ->first();
+        if ($userDetail->profile_pic_path != null) {
+            $image_type = substr($userDetail->profile_pic_path, -3);
+            $image_format = '';
+            if ($image_type == 'png' || $image_type == 'jpg') {
+                $image_format = $image_type;
+            }
+            $base64str = '';
+            $base64str = base64_encode(file_get_contents(public_path($userDetail->profile_pic_path)));
+            $userDetail->base64img = 'data:image/' . $image_format . ';base64,' . $base64str;
+        }
+        return $userDetail;
+    }
+
     public function GetUserDetails()
     {
         $userId = Auth::user()->id;
@@ -219,16 +245,16 @@ class UserController extends Controller
             $userDetail->customer_locations = $customer_locations;
         }
 
-        $userDetail->isAdmin = $user_role_details->contains(function($item){
+        $userDetail->isAdmin = $user_role_details->contains(function ($item) {
             return $item->id === 1;
         });
-        $userDetail->isCustomer = $user_role_details->contains(function($item){
+        $userDetail->isCustomer = $user_role_details->contains(function ($item) {
             return $item->id === 2;
         });
-        $userDetail->isSeller= $user_role_details->contains(function($item){
+        $userDetail->isSeller = $user_role_details->contains(function ($item) {
             return $item->id === 3;
         });
-        $userDetail->isDelivery = $user_role_details->contains(function($item){
+        $userDetail->isDelivery = $user_role_details->contains(function ($item) {
             return $item->id === 4;
         });
 
@@ -290,7 +316,8 @@ class UserController extends Controller
         return 'success';
     }
 
-    public function UpdateDeviceToken(Request $request){
+    public function UpdateDeviceToken(Request $request)
+    {
         $UserDetail = UserDetail::find(Auth::user()->id);
         $UserDetail->device_token = $request['device_token'];
         $UserDetail->save();

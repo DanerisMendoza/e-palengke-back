@@ -117,10 +117,11 @@ class OrderController extends Controller
                 //customer
                 ->when($request->input('mode') == 'customer', function ($q) use ($userId) {
                     $q->join('stores', 'stores.id', 'order_details.store_id')
-                        ->groupBy('orders.created_at', 'order_details.store_id', 'orders.status', 'orders.id', 'stores.name', 'transactions.id')
+                        ->groupBy('orders.delivery_id', 'orders.created_at', 'order_details.store_id', 'orders.status', 'orders.id', 'stores.name', 'transactions.id')
                         ->select(
                             'orders.status',
                             'orders.id as order_id',
+                            'orders.delivery_id',
                             'order_details.store_id',
                             'orders.created_at',
                             'stores.name',
@@ -133,8 +134,9 @@ class OrderController extends Controller
                     $q->join('user_details', 'user_details.user_id', 'orders.user_id')
                         ->where('order_details.store_id', $store_id)
                         // ->distinct('orders.id')
-                        ->groupBy('customer_id', 'customer_name', 'orders.id', 'orders.status', 'orders.created_at', 'order_details.store_id', 'transactions.id', 'transactions.status')
+                        ->groupBy('orders.delivery_id', 'customer_id', 'customer_name', 'orders.id', 'orders.status', 'orders.created_at', 'order_details.store_id', 'transactions.id', 'transactions.status')
                         ->select(
+                            'orders.delivery_id',
                             'user_details.id as customer_id',
                             DB::raw("CONCAT_WS(' ', user_details.first_name, user_details.middle_name, user_details.last_name) as customer_name"),
                             'orders.id as order_id',
@@ -403,7 +405,7 @@ class OrderController extends Controller
         if ($transaction) {
             $transaction->update(['status' => 'Dropped off']);
             $sellersDetail = $transaction->sellersDetail();
-            foreach($sellersDetail as $seller){
+            foreach ($sellersDetail as $seller) {
                 broadcast(new OrderDetailsEvent($seller->id));
                 broadcast(new OrderEvent($seller->id));
             }
@@ -426,7 +428,7 @@ class OrderController extends Controller
                 ->update(['status' => 'Picked up']);
             $sellersDetail = $transaction->sellersDetail();
             // websocket event trigger (seller)
-            foreach($sellersDetail as $seller){
+            foreach ($sellersDetail as $seller) {
                 broadcast(new OrderDetailsEvent($seller->id));
                 broadcast(new OrderEvent($seller->id));
             }
@@ -449,10 +451,13 @@ class OrderController extends Controller
         $transaction = Transaction::where('id', $request['transaction_id'])
             ->first();
         if ($transaction) {
+            $Order = Order::where('transaction_id',$request['transaction_id']);
+            $Order->update(['delivery_id' => $delivery_id]);
+
             Transaction::where('id', $request['transaction_id'])
-            ->update(['delivery_id' => $request['user_id'], 'status' => 'To Pickup']);
+                ->update(['delivery_id' => $request['user_id'], 'status' => 'To Pickup']);
             $sellersDetail = $transaction->sellersDetail();
-            foreach($sellersDetail as $seller){
+            foreach ($sellersDetail as $seller) {
                 broadcast(new TransactionEvent($seller->id, $delivery_id));
             }
             broadcast(new TransactionEvent($transaction->user_id, $delivery_id));
