@@ -44,15 +44,11 @@ Route::get('/pingme', function () {
 // });
 
 // Route::get('/migrate', function() {
-//     // Run migrations
 //     $exitCode = Artisan::call('migrate');
-
 //     return 'Migrations completed';
 // });
 
 // Route::get('/seed', function() {
-//     // Seed the database
 //     $exitCode = Artisan::call('db:seed');
-
 //     return 'Seeders completed';
 // });
