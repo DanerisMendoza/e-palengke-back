@@ -47,23 +47,20 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/UpdateDeviceToken', [UserController::class, 'UpdateDeviceToken']);
     //REQUIREMENT API
     Route::resource('RequirementDetail', RequirementDetailController::class);
-    // Edit a Requirement Detail
-    Route::put('/RequirementDetail/{id}', [RequirementDetailController::class, 'edit']);    
+    Route::put('/RequirementDetail/{id}', [RequirementDetailController::class, 'edit']);
     Route::put('/RequirementDetail/{id}', [RequirementDetailController::class, 'store']);
     //STORE API
     Route::resource('StoreTypeDetail', StoreTypeDetailController::class);
     Route::get('/GetActiveStore', [StoreController::class, 'GetActiveStore']);
-     // Edit a Store Detail
-     Route::put('/StoreTypeDetail/{id}', [StoreTypeDetailController::class, 'edit']);    
-     Route::put('/StoreTypeDetail/{id}', [StoreTypeDetailController::class, 'store']);
+    Route::put('/StoreTypeDetail/{id}', [StoreTypeDetailController::class, 'edit']);
+    Route::put('/StoreTypeDetail/{id}', [StoreTypeDetailController::class, 'store']);
     //PRODUCT API 
     Route::resource('ProductTypeDetail', ProductTypeDetailController::class);
     Route::resource('Product', ProductController::class);
-    // Edit Product 
+    Route::get('/GetProductByType', [ProductController::class, 'GetProductByType']);
     Route::put('/Product/{id}', [ProductController::class, 'edit']);
     Route::put('/Product/{id}', [ProductController::class, 'store']);
-    // Edit a Product Type Detail
-    Route::put('/ProductTypeDetail/{id}', [ProductTypeDetailController::class, 'edit']);    
+    Route::put('/ProductTypeDetail/{id}', [ProductTypeDetailController::class, 'edit']);
     Route::put('/ProductTypeDetail/{id}', [ProductTypeDetailController::class, 'store']);
     //USER ROLE API
     Route::resource('UserRole', UserRoleController::class);
