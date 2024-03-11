@@ -403,16 +403,19 @@ class OrderController extends Controller
 
     public function DROP_OFF(Request $request)
     {
-        $transaction = Transaction::find($request['transaction_id']);
+          $transaction = Transaction::where('id', $request['transaction_id'])
+            ->where('transactions.status', 'Picked up')
+            ->first();
         if ($transaction) {
-            $transaction->update(['status' => 'Dropped off']);
+            Transaction::where('id', $request['transaction_id'])
+                ->update(['status' => 'Dropped off']);
             $sellersDetail = $transaction->sellersDetail();
             foreach ($sellersDetail as $seller) {
                 broadcast(new OrderDetailsEvent($seller->id));
                 broadcast(new OrderEvent($seller->id));
             }
-            broadcast(new OrderEvent($transaction->first()->user_id));
-            broadcast(new OrderDetailsEvent($transaction->first()->user_id));
+            broadcast(new OrderEvent($transaction->user_id));
+            broadcast(new OrderDetailsEvent($transaction->user_id));
             DB::table('orders')
                 ->where('transaction_id', $request['transaction_id'])
                 ->update(['status' => 'Received']);
