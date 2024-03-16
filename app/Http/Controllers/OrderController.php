@@ -393,10 +393,21 @@ class OrderController extends Controller
             ->select(
                 DB::raw("CONCAT_WS(' ', user_details.first_name, user_details.middle_name, user_details.last_name) as delivery_name"),
                 'user_details.phone_number',
+                'user_details.profile_pic_path',
                 'transactions.status',
                 'transactions.id as transaction_id'
             )
             ->first();
+        if ($result->profile_pic_path != null) {
+            $image_type = substr($result->profile_pic_path, -3);
+            $image_format = '';
+            if ($image_type == 'png' || $image_type == 'jpg') {
+                $image_format = $image_type;
+            }
+            $base64str = '';
+            $base64str = base64_encode(file_get_contents(public_path($result->profile_pic_path)));
+            $result->base64img = 'data:image/' . $image_format . ';base64,' . $base64str;
+        }
         if ($result) {
             return $result;
         }
