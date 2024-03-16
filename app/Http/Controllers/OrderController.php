@@ -296,6 +296,7 @@ class OrderController extends Controller
                 DB::raw("CONCAT_WS(' ', user_details.first_name, user_details.middle_name, user_details.last_name) as customer_name"),
                 'user_details.phone_number',
                 'transactions.status',
+                'transactions.delivery_id',
                 'transactions.created_at',
                 'user_details.address as customer_address',
                 'transactions.id as transaction_id',
@@ -473,9 +474,7 @@ class OrderController extends Controller
     public function REMOVE_TRANSACTION_DELIVERY_ID(Request $request)
     {
         $transaction = DB::table('transactions')
-            ->where('id', $request['transaction_id'])
-            ->where('delivery_id', $request['user_id'])
-            ->where('status', 'Pending');
+            ->where('id', $request['transaction_id']);
         if ($transaction) {
             $transaction->update(['delivery_id' => null]);
         }
