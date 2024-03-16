@@ -404,7 +404,8 @@ class OrderController extends Controller
 
     public function DROP_OFF(Request $request)
     {
-          $transaction = Transaction::where('id', $request['transaction_id'])
+        $userId = Auth::user()->id;
+        $transaction = Transaction::where('id', $request['transaction_id'])
             ->where('transactions.status', 'Picked up')
             ->first();
         if ($transaction) {
@@ -417,6 +418,9 @@ class OrderController extends Controller
             }
             broadcast(new OrderEvent($transaction->user_id));
             broadcast(new OrderDetailsEvent($transaction->user_id));
+            $UserDetail = UserDetail::where('user_id', $userId)->first();
+            $UserDetail->balance = $UserDetail->balance + 20;
+            $UserDetail->save();
             DB::table('orders')
                 ->where('transaction_id', $request['transaction_id'])
                 ->update(['status' => 'Received']);
@@ -457,7 +461,7 @@ class OrderController extends Controller
         $transaction = Transaction::where('id', $request['transaction_id'])
             ->first();
         if ($transaction) {
-            $Order = Order::where('transaction_id',$request['transaction_id']);
+            $Order = Order::where('transaction_id', $request['transaction_id']);
             $Order->update(['delivery_id' => $delivery_id]);
 
             Transaction::where('id', $request['transaction_id'])
