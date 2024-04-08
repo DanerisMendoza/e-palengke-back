@@ -17,6 +17,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\QueueController;
 use App\Http\Controllers\AnalysisController;
 use App\Http\Controllers\PushNotificationController;
+use App\Http\Controllers\ForgotPasswordController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,6 +33,10 @@ use App\Http\Controllers\PushNotificationController;
 Route::post('/Login', [UserController::class, 'Login']);
 Route::post('/Register', [UserController::class, 'Register']);
 Route::get('/GET_REQUIREMENT_DETAIL_BY_USER_ROLE_DETAILS_ID/{id}', [RequirementDetailController::class, 'GET_REQUIREMENT_DETAIL_BY_USER_ROLE_DETAILS_ID']);
+
+Route::post('/sendResetCode', [ForgotPasswordController::class, 'sendResetCode']);
+Route::post('/checkVerificationCode', [ForgotPasswordController::class, 'checkVerificationCode']);
+Route::post('/changePassword', [ForgotPasswordController::class, 'changePassword']);
 
 Route::middleware('auth:api')->group(function () {
     //USER API

@@ -13,6 +13,13 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
+    protected $fillable = [
+        'username',
+        'password',
+        'reset_code', // Add this line
+        // Add other fields as needed
+    ];
+
     public function findForPassport(string $username): User
     {
         return $this->where('username', $username)->first();
