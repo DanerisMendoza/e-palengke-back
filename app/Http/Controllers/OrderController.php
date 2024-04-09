@@ -398,7 +398,7 @@ class OrderController extends Controller
                 'transactions.id as transaction_id'
             )
             ->first();
-        if ($result->profile_pic_path != null) {
+        if ($result != null && $result->profile_pic_path != null) {
             $image_type = substr($result->profile_pic_path, -3);
             $image_format = '';
             if ($image_type == 'png' || $image_type == 'jpg') {
