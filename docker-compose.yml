@@ -1,0 +1,66 @@
+version: "3.8"
+
+networks:
+  web-app:
+
+services:
+ 
+
+  backend-dev:
+    container_name: backend-laravel
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+      args:
+        - UID=${UID:-1000}
+        - GID=${GID:-1000}
+    volumes:
+      - ./:/var/www/html:delegated
+    restart: unless-stopped
+    networks:
+      - web-app
+
+  web-server:
+    container_name: webserver-nginx
+    build:
+      context: ./
+      dockerfile: ./nginx/Dockerfile
+      args:
+        - UID=${UID:-1000}
+        - GID=${GID:-1000}
+    ports:
+      - "8084:80"
+    volumes:
+      - ./:/var/www/html:delegated
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - backend-dev
+      - mysql_db
+    restart: unless-stopped
+    networks:
+      - web-app
+
+  mysql_db:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: epal
+    ports:
+      - 3006:3006
+    restart: unless-stopped
+    networks:
+      - web-app
+    volumes:
+     - epalengke-app:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    ports:
+      - 9001:80
+    environment:
+      - PMA_ARBITRARY=1
+    restart: unless-stopped
+    networks:
+      - web-app
+volumes:
+  epalengke-app:
